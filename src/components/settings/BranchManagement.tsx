@@ -5,7 +5,7 @@
 // Add, edit, toggle, delete branches
 // ============================================================
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, lazy, Suspense } from "react";
 import {
   Plus,
   MapPin,
@@ -18,7 +18,11 @@ import {
   ToggleLeft,
   ToggleRight,
   Building2,
+  Map,
 } from "lucide-react";
+
+// Dynamic import — Leaflet uses window/document and can't be SSR'd
+const MapPicker = lazy(() => import("./MapPicker"));
 import type { BranchWithManager, BranchFormData } from "@/app/(app)/settings/branch-actions";
 import {
   createBranch,
@@ -211,7 +215,35 @@ export default function BranchManagement({
               />
             </div>
 
-            {/* Address */}
+            {/* Map Picker */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+                <Map className="w-3.5 h-3.5" />
+                موقع الفرع على الخريطة
+              </label>
+              <Suspense
+                fallback={
+                  <div className="w-full h-64 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
+                    <Loader2 className="w-5 h-5 animate-spin text-zinc-400" />
+                  </div>
+                }
+              >
+                <MapPicker
+                  latitude={form.latitude}
+                  longitude={form.longitude}
+                  onLocationChange={(lat, lng, address) => {
+                    setForm((prev) => ({
+                      ...prev,
+                      latitude: lat,
+                      longitude: lng,
+                      ...(address ? { address } : {}),
+                    }));
+                  }}
+                />
+              </Suspense>
+            </div>
+
+            {/* Address (auto-filled from map, editable) */}
             <div className="sm:col-span-2">
               <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
                 العنوان
@@ -220,43 +252,9 @@ export default function BranchManagement({
                 type="text"
                 value={form.address || ""}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                placeholder="العنوان التفصيلي للفرع"
+                placeholder="يتم تعبئته تلقائياً عند اختيار الموقع"
                 className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
-              />
-            </div>
-
-            {/* Latitude */}
-            <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
-                خط العرض (Latitude)
-              </label>
-              <input
-                type="number"
-                step="0.0001"
-                value={form.latitude}
-                onChange={(e) =>
-                  setForm({ ...form, latitude: parseFloat(e.target.value) || 0 })
-                }
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
-              />
-            </div>
-
-            {/* Longitude */}
-            <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
-                خط الطول (Longitude)
-              </label>
-              <input
-                type="number"
-                step="0.0001"
-                value={form.longitude}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    longitude: parseFloat(e.target.value) || 0,
-                  })
-                }
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                dir="rtl"
               />
             </div>
 
