@@ -338,14 +338,23 @@ export async function generateWeeklySchedule(
       for (const slot of branchSlots) {
         let assigned = 0;
 
+        // Default availability: 9:00–17:00 every day
+        const defaultStart = new Date("1970-01-01T09:00:00");
+        const defaultEnd = new Date("1970-01-01T17:00:00");
+
         // Find available candidates for this day
         const candidates = employees
           .filter((emp: EmployeeWithIncludes) => {
-            // Must have availability on this day
-            const avail = emp.availability.find(
-              (a: { dayOfWeek: number }) => a.dayOfWeek === dow
-            );
-            if (!avail) return false;
+            // Check availability: if employee has availability records,
+            // they must have one for this day. If NO records at all,
+            // treat as available every day (default hours).
+            const hasAnyAvailability = emp.availability.length > 0;
+            if (hasAnyAvailability) {
+              const avail = emp.availability.find(
+                (a: { dayOfWeek: number }) => a.dayOfWeek === dow
+              );
+              if (!avail) return false;
+            }
 
             // Not already assigned this day
             if (employeeDayAssigned.has(`${emp.id}:${dateStr}`)) return false;
@@ -360,9 +369,10 @@ export async function generateWeeklySchedule(
             return true;
           })
           .map((emp: EmployeeWithIncludes) => {
+            // Use explicit availability if exists, otherwise default 9-17
             const avail = emp.availability.find(
               (a: { dayOfWeek: number }) => a.dayOfWeek === dow
-            )!;
+            ) ?? { startTime: defaultStart, endTime: defaultEnd };
 
             // ---- SCORING ----
             let score = 0;
