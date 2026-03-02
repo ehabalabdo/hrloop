@@ -6,6 +6,7 @@
 // ============================================================
 
 import prisma from "@/lib/db";
+import type { PrismaClient } from "@prisma/client";
 import type { AttendanceAction } from "@/lib/types";
 
 /**
@@ -138,7 +139,7 @@ export async function handleAttendance(params: {
   }
 
   try {
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Omit<PrismaClient, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>) => {
       // Verify the shift exists and belongs to this user
       const shift = await tx.shift.findFirst({
         where: { id: shiftId, userId },
