@@ -5,9 +5,23 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const results: Record<string, unknown> = {};
 
-  // Step 1: Check env
-  results.hasDbUrl = !!process.env.DATABASE_URL;
-  results.dbUrlPrefix = process.env.DATABASE_URL?.substring(0, 30) + "...";
+  // Step 0: Set PG* env vars from DATABASE_URL
+  const dbUrl = process.env.DATABASE_URL!;
+  results.hasDbUrl = !!dbUrl;
+  results.dbUrlPrefix = dbUrl?.substring(0, 30) + "...";
+  
+  try {
+    const url = new URL(dbUrl);
+    process.env.PGHOST = url.hostname;
+    process.env.PGPORT = url.port || "5432";
+    process.env.PGDATABASE = url.pathname.slice(1);
+    process.env.PGUSER = decodeURIComponent(url.username);
+    process.env.PGPASSWORD = decodeURIComponent(url.password);
+    process.env.PGSSLMODE = "require";
+    results.pgVarsSet = true;
+  } catch {
+    results.pgVarsSet = false;
+  }
 
   // Step 2: Test neon() direct
   try {
