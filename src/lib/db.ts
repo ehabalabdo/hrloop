@@ -16,6 +16,22 @@ function createPrismaClient() {
   if (!connectionString) {
     throw new Error("DATABASE_URL environment variable is not set");
   }
+
+  // Parse DATABASE_URL and set PG* env vars as fallback
+  // This fixes PrismaNeon adapter which creates internal Pool/Client
+  // without forwarding the connection string
+  try {
+    const url = new URL(connectionString);
+    if (!process.env.PGHOST) process.env.PGHOST = url.hostname;
+    if (!process.env.PGPORT) process.env.PGPORT = url.port || "5432";
+    if (!process.env.PGDATABASE) process.env.PGDATABASE = url.pathname.slice(1);
+    if (!process.env.PGUSER) process.env.PGUSER = decodeURIComponent(url.username);
+    if (!process.env.PGPASSWORD) process.env.PGPASSWORD = decodeURIComponent(url.password);
+    if (!process.env.PGSSLMODE) process.env.PGSSLMODE = "require";
+  } catch {
+    // Ignore parse errors — Pool will use connectionString directly
+  }
+
   const pool = new Pool({ connectionString });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const adapter = new PrismaNeon(pool as any);
