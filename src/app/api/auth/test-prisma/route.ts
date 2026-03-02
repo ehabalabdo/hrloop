@@ -19,12 +19,21 @@ export async function GET() {
     results.neonDirect = { ok: false, error: String(e) };
   }
 
-  // Step 3: Test Prisma with parsed URL params
+  // Step 3: Test Pool directly (no Prisma)
   try {
-    const { PrismaClient } = await import(".prisma/client");
     const { Pool } = await import("@neondatabase/serverless");
-    const { PrismaNeon } = await import("@prisma/adapter-neon");
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+    const client = await pool.connect();
+    const res = await client.query("SELECT COUNT(*) as cnt FROM users");
+    results.poolDirect = { ok: true, count: res.rows[0].cnt };
+    client.release();
+  } catch (e) {
+    results.poolDirect = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 300) };
+  }
 
+  // Step 4: Test Pool with parsed params (no Prisma)
+  try {
+    const { Pool } = await import("@neondatabase/serverless");
     const dbUrl = new URL(process.env.DATABASE_URL!);
     const pool = new Pool({
       host: dbUrl.hostname,
@@ -34,14 +43,24 @@ export async function GET() {
       password: decodeURIComponent(dbUrl.password),
       ssl: true,
     });
-    const adapter = new PrismaNeon(pool as any);
-    const prisma = new PrismaClient({ adapter } as any);
-
-    const count = await prisma.user.count();
-    results.prismaPoolParsed = { ok: true, count };
-    await prisma.$disconnect();
+    const client = await pool.connect();
+    const res = await client.query("SELECT COUNT(*) as cnt FROM users");
+    results.poolParsed = { ok: true, count: res.rows[0].cnt };
+    client.release();
   } catch (e) {
-    results.prismaPoolParsed = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 500) };
+    results.poolParsed = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 300) };
+  }
+
+  // Step 5: Test Client directly
+  try {
+    const { Client } = await import("@neondatabase/serverless");
+    const client = new Client(process.env.DATABASE_URL!);
+    await client.connect();
+    const res = await client.query("SELECT COUNT(*) as cnt FROM users");
+    results.clientDirect = { ok: true, count: res.rows[0].cnt };
+    await client.end();
+  } catch (e) {
+    results.clientDirect = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 300) };
   }
 
   // Step 4: Test Prisma with neon() HTTP adapter
