@@ -26,7 +26,7 @@ import type {
   PayrollSummary,
   PayslipData,
 } from "@/lib/payroll-types";
-import { MONTH_NAMES } from "@/lib/payroll-types";
+import { MONTH_NAMES_AR } from "@/lib/payroll-types";
 
 import {
   getPayrollList,
@@ -75,7 +75,7 @@ export default function PayrollDashboard({
   const [isPending, startTransition] = useTransition();
   const [loadingPayslip, setLoadingPayslip] = useState(false);
 
-  const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
+  const monthLabel = `${MONTH_NAMES_AR[month - 1]} ${year}`;
 
   // ----- Fetch payroll data -----
   const refresh = useCallback(
@@ -229,20 +229,20 @@ export default function PayrollDashboard({
     items.length > 0 && items.every((i: PayrollListItem) => i.isLocked);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
       {/* Header */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-brand-magenta/10 dark:bg-brand-magenta/10 rounded-xl flex items-center justify-center">
-              <Wallet className="w-5 h-5 text-brand-magenta dark:text-brand-magenta" />
+            <div className="w-10 h-10 bg-brand-purple/10 rounded-2xl flex items-center justify-center">
+              <Wallet className="w-5 h-5 text-brand-purple" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                Payroll & Deductions
+                الرواتب والخصومات
               </h1>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Monthly salary reconciliation engine
+                محرك تسوية الرواتب الشهري
               </p>
             </div>
           </div>
@@ -256,13 +256,13 @@ export default function PayrollDashboard({
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 py-5 space-y-5">
         {/* Summary Cards */}
         <PayrollSummaryCards summary={summary} monthLabel={monthLabel} />
 
         {/* Actions Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Left: Branch Filter */}
+          {/* Branch Filter */}
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-zinc-400" />
             <select
@@ -270,9 +270,9 @@ export default function PayrollDashboard({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setBranchId(e.target.value)
               }
-              className="text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-1.5 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+              className="text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
             >
-              <option value="">All Branches</option>
+              <option value="">جميع الفروع</option>
               {branches.map((b: Branch) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
@@ -281,29 +281,29 @@ export default function PayrollDashboard({
             </select>
           </div>
 
-          {/* Right: Action Buttons */}
+          {/* Action Buttons */}
           <div className="flex items-center gap-2">
             <button
               onClick={handleGenerate}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-brand-magenta hover:bg-brand-magenta/90 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-brand-magenta hover:bg-brand-magenta/90 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shadow-lg shadow-brand-magenta/25"
             >
               {isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
                 <RefreshCw className="w-3.5 h-3.5" />
               )}
-              Generate Payslips
+              توليد الكشوفات
             </button>
 
             {!allLocked && items.length > 0 && (
               <button
                 onClick={handleLock}
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-brand-purple hover:bg-brand-purple-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-brand-purple hover:bg-brand-purple-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
               >
                 <Lock className="w-3.5 h-3.5" />
-                Approve &amp; Lock
+                اعتماد وقفل
               </button>
             )}
 
@@ -311,20 +311,20 @@ export default function PayrollDashboard({
               <button
                 onClick={handleUnlock}
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
               >
                 <Unlock className="w-3.5 h-3.5" />
-                Unlock for Corrections
+                فتح للتعديل
               </button>
             )}
           </div>
         </div>
 
-        {/* Loading overlay */}
+        {/* Loading */}
         {isPending && (
           <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin" />
-            Processing...
+            جاري المعالجة...
           </div>
         )}
 
@@ -335,10 +335,10 @@ export default function PayrollDashboard({
       {/* Payslip Modal */}
       {loadingPayslip && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-8 flex items-center gap-3">
-            <Loader2 className="w-6 h-6 animate-spin text-brand-magenta" />
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 flex items-center gap-3">
+            <Loader2 className="w-6 h-6 animate-spin text-brand-purple" />
             <span className="text-sm text-zinc-600 dark:text-zinc-400">
-              Loading payslip...
+              جاري تحميل كشف الراتب...
             </span>
           </div>
         </div>
@@ -355,11 +355,11 @@ export default function PayrollDashboard({
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
+          className={`fixed bottom-24 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 z-50 px-4 py-3 rounded-2xl shadow-xl text-sm font-medium ${
             toast.type === "success"
-              ? "bg-brand-magenta text-white"
+              ? "bg-emerald-600 text-white"
               : "bg-red-600 text-white"
-          } animate-in slide-in-from-bottom-4`}
+          }`}
         >
           {toast.message}
         </div>

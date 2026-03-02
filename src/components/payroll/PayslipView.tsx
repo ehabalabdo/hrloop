@@ -25,14 +25,14 @@ import Link from "next/link";
 import { submitDispute } from "@/app/(app)/attendance/resilience-actions";
 
 function formatCurrency(n: number): string {
-  return n.toLocaleString("en-US", {
+  return n.toLocaleString("ar-SA", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 }
 
 function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("en-US", {
+  return new Date(iso).toLocaleTimeString("ar-SA", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
@@ -78,7 +78,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
       {/* Header */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -94,8 +94,8 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                 {p.userName}
               </h1>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                {p.monthLabel} — {p.branchName ?? "No Branch"} —{" "}
-                <span className="uppercase">{p.userRole}</span>
+                {p.monthLabel} — {p.branchName ?? "بدون فرع"} —{" "}
+                <span className="uppercase">{p.userRole === "MANAGER" ? "مدير" : p.userRole === "OWNER" ? "مالك" : "موظف"}</span>
               </p>
             </div>
           </div>
@@ -105,7 +105,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-purple-dark text-white rounded-lg transition-colors print:hidden"
           >
             <Printer className="w-3 h-3" />
-            Print
+            طباعة
           </button>
         </div>
       </div>
@@ -114,48 +114,48 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Financial Summary */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-4 text-center">
-            <DollarSign className="w-6 h-6 text-brand-magenta dark:text-brand-magenta mx-auto mb-1" />
-            <div className="text-xs text-zinc-500 mb-1">Base Salary</div>
-            <div className="text-xl font-bold text-brand-magenta dark:text-brand-magenta">
-              ${formatCurrency(p.baseSalary)}
-            </div>
-          </div>
-
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-4 text-center">
-            <TrendingDown className="w-6 h-6 text-red-600 dark:text-red-400 mx-auto mb-1" />
-            <div className="text-xs text-zinc-500 mb-1">Total Deductions</div>
-            <div className="text-xl font-bold text-red-600 dark:text-red-400">
-              -${formatCurrency(p.totalDeductions)}
-            </div>
-          </div>
-
-          <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 rounded-xl p-4 text-center">
+          <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 dark:border-brand-purple/20 rounded-2xl p-4 text-center">
             <DollarSign className="w-6 h-6 text-brand-purple mx-auto mb-1" />
-            <div className="text-xs text-zinc-500 mb-1">Net Salary</div>
-            <div className="text-xl font-bold text-brand-purple dark:text-brand-purple">
-              ${formatCurrency(p.finalNetSalary)}
+            <div className="text-xs text-zinc-500 mb-1">الراتب الأساسي</div>
+            <div className="text-xl font-bold text-brand-purple">
+              {formatCurrency(p.baseSalary)} ر.س
+            </div>
+          </div>
+
+          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-2xl p-4 text-center">
+            <TrendingDown className="w-6 h-6 text-red-600 dark:text-red-400 mx-auto mb-1" />
+            <div className="text-xs text-zinc-500 mb-1">إجمالي الخصومات</div>
+            <div className="text-xl font-bold text-red-600 dark:text-red-400">
+              -{formatCurrency(p.totalDeductions)} ر.س
+            </div>
+          </div>
+
+          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-center">
+            <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-1" />
+            <div className="text-xs text-zinc-500 mb-1">صافي الراتب</div>
+            <div className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+              {formatCurrency(p.finalNetSalary)} ر.س
             </div>
           </div>
         </div>
 
         {/* Breakdown */}
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5 space-y-4">
+        <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm p-5 space-y-4">
           <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-            Earnings & Deductions Breakdown
+            تفاصيل الراتب والخصومات
           </h3>
 
           <div className="space-y-2">
-            <Row label="Base Salary" value={p.baseSalary} type="earning" />
+            <Row label="الراتب الأساسي" value={p.baseSalary} type="earning" />
             {p.overtimePay > 0 && (
               <Row
-                label={`Overtime (${p.totalOvertimeHours.toFixed(1)} hrs)`}
+                label={`العمل الإضافي (${p.totalOvertimeHours.toFixed(1)} ساعة)`}
                 value={p.overtimePay}
                 type="bonus"
               />
             )}
             {p.totalBonuses > 0 && (
-              <Row label="Bonuses" value={p.totalBonuses} type="bonus" />
+              <Row label="المكافآت" value={p.totalBonuses} type="bonus" />
             )}
           </div>
 
@@ -164,7 +164,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
           <div className="space-y-2">
             {p.latePenalties > 0 && (
               <DeductionRow
-                label={`Late Arrivals (${p.totalLateMinutes.toFixed(0)} min)`}
+                label={`التأخير (${p.totalLateMinutes.toFixed(0)} دقيقة)`}
                 value={p.latePenalties}
                 canDispute={!!p.payslipId}
                 onDispute={() =>
@@ -174,7 +174,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             )}
             {p.earlyLeavePenalties > 0 && (
               <DeductionRow
-                label={`Early Leave (${p.totalEarlyLeaveMinutes.toFixed(0)} min)`}
+                label={`الخروج المبكر (${p.totalEarlyLeaveMinutes.toFixed(0)} دقيقة)`}
                 value={p.earlyLeavePenalties}
                 canDispute={!!p.payslipId}
                 onDispute={() =>
@@ -187,7 +187,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             )}
             {p.absenceDeductions > 0 && (
               <DeductionRow
-                label={`Absences (${p.totalAbsentDays} days)`}
+                label={`الغياب (${p.totalAbsentDays} يوم)`}
                 value={p.absenceDeductions}
                 canDispute={!!p.payslipId}
                 onDispute={() =>
@@ -200,7 +200,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             )}
             {p.totalDeductions === 0 && (
               <div className="text-xs text-zinc-400 italic">
-                No deductions this month
+                لا توجد خصومات هذا الشهر
               </div>
             )}
           </div>
@@ -209,10 +209,10 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
           <div className="flex items-center justify-between">
             <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-              Net Salary
+              صافي الراتب
             </span>
-            <span className="text-xl font-bold text-brand-magenta dark:text-brand-magenta">
-              ${formatCurrency(p.finalNetSalary)}
+            <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+              {formatCurrency(p.finalNetSalary)} ر.س
             </span>
           </div>
         </div>
@@ -221,19 +221,19 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
         <div className="grid grid-cols-4 gap-3">
           <StatBox
             icon={<Calendar className="w-5 h-5" />}
-            label="Total Shifts"
+            label="إجمالي الورديات"
             value={p.totalShifts.toString()}
             color="text-brand-purple"
           />
           <StatBox
             icon={<Clock className="w-5 h-5" />}
-            label="Hours Worked"
+            label="ساعات العمل"
             value={p.totalHoursWorked.toFixed(1)}
-            color="text-brand-magenta dark:text-brand-magenta"
+            color="text-brand-purple"
           />
           <StatBox
             icon={<AlertTriangle className="w-5 h-5" />}
-            label="Late (min)"
+            label="تأخير (د)"
             value={p.totalLateMinutes.toFixed(0)}
             color={
               p.totalLateMinutes > 0
@@ -243,7 +243,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
           />
           <StatBox
             icon={<Ban className="w-5 h-5" />}
-            label="Absent Days"
+            label="أيام الغياب"
             value={p.totalAbsentDays.toString()}
             color={
               p.totalAbsentDays > 0
@@ -255,10 +255,10 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
         {/* Shift Table */}
         {p.shifts.length > 0 && (
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+          <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm overflow-hidden">
             <div className="px-5 py-3 border-b border-zinc-200 dark:border-zinc-700">
               <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                Shift-by-Shift Breakdown
+                تفاصيل كل وردية
               </h3>
             </div>
             <div className="overflow-x-auto">
@@ -266,22 +266,22 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                 <thead>
                   <tr className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
                     <th className="px-4 py-2.5 text-left font-semibold text-zinc-500">
-                      Date
+                      التاريخ
                     </th>
                     <th className="px-4 py-2.5 text-left font-semibold text-zinc-500">
-                      Branch
+                      الفرع
                     </th>
                     <th className="px-4 py-2.5 text-center font-semibold text-zinc-500">
-                      Scheduled
+                      المجدول
                     </th>
                     <th className="px-4 py-2.5 text-center font-semibold text-zinc-500">
-                      Actual
+                      الفعلي
                     </th>
                     <th className="px-4 py-2.5 text-center font-semibold text-zinc-500">
-                      Status
+                      الحالة
                     </th>
                     <th className="px-4 py-2.5 text-right font-semibold text-zinc-500">
-                      Late
+                      تأخير
                     </th>
                   </tr>
                 </thead>
@@ -292,7 +292,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                       className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/30"
                     >
                       <td className="px-4 py-2.5 text-zinc-700 dark:text-zinc-300 font-medium">
-                        {new Date(shift.date).toLocaleDateString("en-US", {
+                        {new Date(shift.date).toLocaleDateString("ar-SA", {
                           weekday: "short",
                           month: "short",
                           day: "numeric",
@@ -338,40 +338,39 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
         {/* Footer */}
         <div className="text-center text-xs text-zinc-400 dark:text-zinc-500 py-4 print:py-2">
-          Generated by HR Loop &bull;{" "}
-          {new Date(p.generatedAt).toLocaleDateString()} &bull; Electronic
-          payslip
+          HR Loop &bull;{" "}
+          {new Date(p.generatedAt).toLocaleDateString("ar-SA")} &bull; كشف راتب إلكتروني
         </div>
       </div>
 
       {/* Dispute Form Modal */}
       {disputeForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 print:hidden">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+          <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
             <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-amber-500" />
-                Dispute Deduction
+                اعتراض على الخصم
               </h2>
               <p className="text-sm text-zinc-500 mt-1">
-                Disputing{" "}
-                <span className="font-semibold uppercase">
-                  {disputeForm.type.replace(/_/g, " ")}
+                الاعتراض على{" "}
+                <span className="font-semibold">
+                  {disputeForm.type === "LATE_PENALTY" ? "عقوبة التأخير" : disputeForm.type === "EARLY_LEAVE_PENALTY" ? "عقوبة الخروج المبكر" : "خصم الغياب"}
                 </span>{" "}
-                — {disputeForm.amount.toFixed(2)} SAR
+                — {disputeForm.amount.toFixed(2)} ر.س
               </p>
             </div>
             <div className="p-5 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-                  Why are you disputing this deduction?
+                  لماذا تعترض على هذا الخصم؟
                 </label>
                 <textarea
                   value={disputeReason}
                   onChange={(e) => setDisputeReason(e.target.value)}
                   rows={4}
-                  placeholder="Explain why you believe this deduction is incorrect..."
-                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none resize-none"
+                  placeholder="اشرح لماذا تعتقد أن هذا الخصم غير صحيح..."
+                  className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none resize-none"
                 />
               </div>
               <div className="flex gap-3">
@@ -380,21 +379,21 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                     setDisputeForm(null);
                     setDisputeReason("");
                   }}
-                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl py-2.5 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-2xl py-2.5 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition active:scale-95"
                 >
-                  Cancel
+                  إلغاء
                 </button>
                 <button
                   onClick={handleDispute}
                   disabled={!disputeReason.trim() || isPending}
-                  className="flex-1 bg-amber-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                  className="flex-1 bg-amber-500 text-white rounded-2xl py-2.5 text-sm font-medium hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2 active:scale-95"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <MessageSquare className="w-4 h-4" />
                   )}
-                  Submit Dispute
+                  إرسال الاعتراض
                 </button>
               </div>
             </div>
@@ -405,9 +404,9 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium print:hidden ${
+          className={`fixed bottom-24 left-4 right-4 z-50 px-4 py-3 rounded-2xl shadow-lg text-sm font-medium text-center print:hidden ${
             toast.type === "success"
-              ? "bg-brand-magenta text-white"
+              ? "bg-emerald-600 text-white"
               : "bg-red-600 text-white"
           }`}
         >
@@ -442,7 +441,7 @@ function Row({
     <div className="flex items-center justify-between text-sm">
       <span className="text-zinc-600 dark:text-zinc-400">{label}</span>
       <span className={`font-semibold ${colors[type]}`}>
-        {prefix}${formatCurrency(value)}
+        {prefix}{formatCurrency(value)} ر.س
       </span>
     </div>
   );
@@ -460,7 +459,7 @@ function StatBox({
   color: string;
 }) {
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 text-center">
+    <div className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-3 text-center">
       <div className={`${color} mx-auto mb-1 flex justify-center`}>{icon}</div>
       <div className={`text-lg font-bold ${color}`}>{value}</div>
       <div className="text-[10px] text-zinc-400 font-medium">{label}</div>
@@ -469,9 +468,15 @@ function StatBox({
 }
 
 function StatusBadge({ status }: { status: string }) {
+  const statusLabels: Record<string, string> = {
+    present: "حاضر",
+    partial: "جزئي",
+    absent: "غائب",
+  };
+
   const styles = {
     present:
-      "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
+      "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
     partial:
       "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
     absent:
@@ -493,7 +498,7 @@ function StatusBadge({ status }: { status: string }) {
       }`}
     >
       {icons[s] ?? icons.absent}
-      {status}
+      {statusLabels[s] ?? status}
     </span>
   );
 }
@@ -514,15 +519,15 @@ function DeductionRow({
       <span className="text-zinc-600 dark:text-zinc-400">{label}</span>
       <div className="flex items-center gap-2">
         <span className="font-semibold text-red-600 dark:text-red-400">
-          -${formatCurrency(value)}
+          -{formatCurrency(value)} ر.س
         </span>
         {canDispute && (
           <button
             onClick={onDispute}
             className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 font-medium transition-colors print:hidden"
-            title="Dispute this deduction"
+            title="اعتراض على هذا الخصم"
           >
-            Dispute
+            اعتراض
           </button>
         )}
       </div>

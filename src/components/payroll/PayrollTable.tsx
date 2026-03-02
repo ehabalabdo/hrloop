@@ -1,8 +1,7 @@
 "use client";
 
 // ============================================================
-// Payroll Table
-// Admin view: all employees with financial breakdown
+// Payroll Table — Arabic, card-based mobile-first
 // ============================================================
 
 import { useState } from "react";
@@ -62,174 +61,129 @@ export default function PayrollTable({
     return sortAsc ? cmp : -cmp;
   });
 
-  const columns: { key: SortField; label: string; align?: string }[] = [
-    { key: "userName", label: "Employee" },
-    { key: "totalShifts", label: "Shifts", align: "center" },
-    { key: "totalLateMinutes", label: "Late (min)", align: "center" },
-    { key: "totalOvertimeHours", label: "OT (hrs)", align: "center" },
-    { key: "totalDeductions", label: "Deductions", align: "right" },
-    { key: "finalNetSalary", label: "Net Salary", align: "right" },
+  const sortOptions: { key: SortField; label: string }[] = [
+    { key: "userName", label: "الاسم" },
+    { key: "finalNetSalary", label: "صافي الراتب" },
+    { key: "totalDeductions", label: "الخصومات" },
+    { key: "totalLateMinutes", label: "التأخير" },
   ];
 
-  return (
-    <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
-              {columns.map((col) => (
-                <th
-                  key={col.key}
-                  className={`px-4 py-3 font-semibold text-zinc-600 dark:text-zinc-400 text-xs uppercase tracking-wider cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-200 select-none transition-colors ${
-                    col.align === "center"
-                      ? "text-center"
-                      : col.align === "right"
-                      ? "text-right"
-                      : "text-left"
-                  }`}
-                  onClick={() => handleSort(col.key)}
-                >
-                  <span className="inline-flex items-center gap-1">
-                    {col.label}
-                    <ArrowUpDown className="w-3 h-3 opacity-40" />
-                  </span>
-                </th>
-              ))}
-              <th className="px-4 py-3 text-center text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-4 py-3 w-10" />
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="px-4 py-12 text-center text-zinc-400 dark:text-zinc-500"
-                >
-                  No payroll data. Generate payslips first.
-                </td>
-              </tr>
-            ) : (
-              sorted.map((item, idx) => (
-                <tr
-                  key={item.userId}
-                  className={`border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors ${
-                    idx % 2 === 0 ? "" : "bg-zinc-25 dark:bg-zinc-900/50"
-                  }`}
-                >
-                  {/* Employee */}
-                  <td className="px-4 py-3">
-                    <div>
-                      <div className="font-semibold text-zinc-900 dark:text-zinc-100">
-                        {item.userName}
-                      </div>
-                      <div className="text-[11px] text-zinc-400 flex items-center gap-2">
-                        <span
-                          className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
-                            item.userRole === "MANAGER"
-                              ? "bg-brand-purple/10 text-brand-purple"
-                              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
-                          }`}
-                        >
-                          {item.userRole}
-                        </span>
-                        {item.branchName && (
-                          <span className="truncate">{item.branchName}</span>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Shifts */}
-                  <td className="px-4 py-3 text-center font-medium text-zinc-700 dark:text-zinc-300">
-                    {item.totalShifts}
-                  </td>
-
-                  {/* Late Minutes */}
-                  <td className="px-4 py-3 text-center">
-                    {item.totalLateMinutes > 0 ? (
-                      <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
-                        <Clock className="w-3 h-3" />
-                        {item.totalLateMinutes.toFixed(0)}
-                      </span>
-                    ) : (
-                      <span className="text-zinc-300 dark:text-zinc-600">
-                        0
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Overtime */}
-                  <td className="px-4 py-3 text-center">
-                    {item.totalOvertimeHours > 0 ? (
-                      <span className="text-amber-600 dark:text-amber-400 font-medium">
-                        {item.totalOvertimeHours.toFixed(1)}
-                      </span>
-                    ) : (
-                      <span className="text-zinc-300 dark:text-zinc-600">
-                        0
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Deductions */}
-                  <td className="px-4 py-3 text-right">
-                    {item.totalDeductions > 0 ? (
-                      <span className="text-red-600 dark:text-red-400 font-semibold">
-                        -${formatCurrency(item.totalDeductions)}
-                      </span>
-                    ) : (
-                      <span className="text-zinc-300 dark:text-zinc-600">
-                        $0.00
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Net Salary */}
-                  <td className="px-4 py-3 text-right">
-                    <span className="text-brand-magenta dark:text-brand-magenta font-bold text-base">
-                      ${formatCurrency(item.finalNetSalary)}
-                    </span>
-                  </td>
-
-                  {/* Lock Status */}
-                  <td className="px-4 py-3 text-center">
-                    {item.isLocked ? (
-                      <span className="inline-flex items-center gap-1 text-brand-magenta dark:text-brand-magenta text-xs font-medium">
-                        <Lock className="w-3 h-3" />
-                        Locked
-                      </span>
-                    ) : item.payslipId ? (
-                      <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 text-xs font-medium">
-                        <Unlock className="w-3 h-3" />
-                        Draft
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1 text-zinc-400 text-xs">
-                        <AlertTriangle className="w-3 h-3" />
-                        None
-                      </span>
-                    )}
-                  </td>
-
-                  {/* View */}
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => onViewPayslip(item.userId)}
-                      className="p-1.5 rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-purple/10 text-brand-purple transition-colors"
-                      title="View payslip details"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+  if (sorted.length === 0) {
+    return (
+      <div className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 rounded-3xl p-8 text-center">
+        <AlertTriangle className="w-8 h-8 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
+        <p className="text-sm text-zinc-400 dark:text-zinc-500">
+          لا توجد بيانات رواتب. قم بتوليد كشوفات الرواتب أولاً.
+        </p>
       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {/* Sort chips */}
+      <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+        {sortOptions.map((opt) => (
+          <button
+            key={opt.key}
+            onClick={() => handleSort(opt.key)}
+            className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all active:scale-95 shrink-0 ${
+              sortField === opt.key
+                ? "bg-brand-purple text-white border-brand-purple shadow-sm"
+                : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700"
+            }`}
+          >
+            {opt.label}
+            <ArrowUpDown className="w-3 h-3 opacity-60" />
+          </button>
+        ))}
+      </div>
+
+      {/* Cards */}
+      {sorted.map((item) => (
+        <div
+          key={item.userId}
+          className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 rounded-3xl p-4 shadow-sm"
+        >
+          {/* Header: name + status + view button */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="min-w-0">
+                <div className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                  {item.userName}
+                </div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span
+                    className={`px-1.5 py-0.5 rounded-lg text-[9px] font-bold ${
+                      item.userRole === "MANAGER"
+                        ? "bg-brand-purple/10 text-brand-purple"
+                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
+                    }`}
+                  >
+                    {item.userRole === "MANAGER" ? "مدير" : "موظف"}
+                  </span>
+                  {item.branchName && (
+                    <span className="text-[11px] text-zinc-400 truncate">
+                      {item.branchName}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Status */}
+              {item.isLocked ? (
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
+                  <Lock className="w-3 h-3" />
+                  مقفل
+                </span>
+              ) : item.payslipId ? (
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-[10px] font-bold">
+                  <Unlock className="w-3 h-3" />
+                  مسودة
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-400 text-[10px] font-bold">
+                  بدون
+                </span>
+              )}
+
+              <button
+                onClick={() => onViewPayslip(item.userId)}
+                className="p-2 rounded-2xl bg-brand-purple/10 hover:bg-brand-purple/15 text-brand-purple transition-colors active:scale-95"
+                title="عرض كشف الراتب"
+              >
+                <Eye className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-4 gap-2">
+            <div className="text-center p-2 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl">
+              <div className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item.totalShifts}</div>
+              <div className="text-[9px] text-zinc-400">الورديات</div>
+            </div>
+            <div className="text-center p-2 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl">
+              <div className={`text-sm font-bold ${item.totalLateMinutes > 0 ? "text-red-600 dark:text-red-400" : "text-zinc-400"}`}>
+                {item.totalLateMinutes > 0 ? item.totalLateMinutes.toFixed(0) : "0"}
+              </div>
+              <div className="text-[9px] text-zinc-400">تأخير (د)</div>
+            </div>
+            <div className="text-center p-2 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl">
+              <div className={`text-sm font-bold ${item.totalDeductions > 0 ? "text-red-600 dark:text-red-400" : "text-zinc-400"}`}>
+                {item.totalDeductions > 0 ? `-$${formatCurrency(item.totalDeductions)}` : "$0"}
+              </div>
+              <div className="text-[9px] text-zinc-400">الخصومات</div>
+            </div>
+            <div className="text-center p-2 bg-brand-purple/5 dark:bg-brand-purple/10 rounded-2xl">
+              <div className="text-sm font-bold text-brand-purple">${formatCurrency(item.finalNetSalary)}</div>
+              <div className="text-[9px] text-zinc-400">صافي الراتب</div>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

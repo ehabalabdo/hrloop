@@ -121,3 +121,23 @@ export const DAY_NAMES_SHORT = [
   "Fri",
   "Sat",
 ];
+
+export const DAY_NAMES_AR = [
+  "الأحد",
+  "الإثنين",
+  "الثلاثاء",
+  "الأربعاء",
+  "الخميس",
+  "الجمعة",
+  "السبت",
+];
+
+export const DAY_NAMES_SHORT_AR = [
+  "أحد",
+  "إثن",
+  "ثلا",
+  "أرب",
+  "خمي",
+  "جمع",
+  "سبت",
+];

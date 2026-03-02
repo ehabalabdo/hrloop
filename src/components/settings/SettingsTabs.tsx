@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// Settings Tabs — Wraps Settings, Device Management, Audit Trail
+// Settings Tabs — Arabic, mobile-first pill tabs
 // ============================================================
 
 import { useState, type ReactNode } from "react";
@@ -32,36 +32,36 @@ export default function SettingsTabs({
   const [tab, setTab] = useState<TabKey>("settings");
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
+      <div className="bg-white dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800/40 sticky top-0 z-20">
+        <div className="max-w-2xl mx-auto px-5 py-4">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 bg-violet-100 dark:bg-violet-900/30 rounded-xl flex items-center justify-center">
-              <Settings className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+            <div className="w-10 h-10 bg-brand-purple/10 dark:bg-brand-purple/20 rounded-2xl flex items-center justify-center">
+              <Settings className="w-5 h-5 text-brand-purple" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-                Admin Settings
+                إعدادات النظام
               </h1>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                System configuration, devices &amp; audit trail
+                الإعدادات، الأجهزة، الفروع وسجل النظام
               </p>
             </div>
           </div>
 
-          {/* Tab Bar */}
-          <div className="flex gap-1 border-b border-zinc-200 dark:border-zinc-700 -mb-[1px]">
+          {/* Scrollable Pill Tabs */}
+          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 pb-0.5">
             {TABS.map((t) => {
               const Icon = t.icon;
               return (
                 <button
                   key={t.key}
                   onClick={() => setTab(t.key)}
-                  className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${
                     tab === t.key
-                      ? "border-violet-600 text-violet-600 dark:text-violet-400"
-                      : "border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
+                      : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -74,7 +74,7 @@ export default function SettingsTabs({
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-2xl mx-auto px-5 py-5">
         {tab === "settings" && settingsPanel}
         {tab === "branches" && branchManagement}
         {tab === "devices" && deviceManagement}

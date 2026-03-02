@@ -32,10 +32,17 @@ export interface LeaveBalance {
 }
 
 export const LEAVE_TYPE_LABELS: Record<LeaveType, string> = {
-  ANNUAL: "Annual Leave",
-  SICK: "Sick Leave",
-  EMERGENCY: "Emergency Leave",
-  UNPAID: "Unpaid Leave",
+  ANNUAL: "إجازة سنوية",
+  SICK: "إجازة مرضية",
+  EMERGENCY: "إجازة طارئة",
+  UNPAID: "إجازة بدون راتب",
+};
+
+export const LEAVE_STATUS_LABELS: Record<LeaveStatus, string> = {
+  PENDING: "معلّقة",
+  APPROVED: "مقبولة",
+  REJECTED: "مرفوضة",
+  CANCELLED: "ملغاة",
 };
 
 export const LEAVE_STATUS_COLORS: Record<

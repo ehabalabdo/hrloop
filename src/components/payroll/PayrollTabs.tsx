@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// Payroll Tabs — Wraps Payroll Dashboard, Disputes, Overrides
+// Payroll Tabs — Arabic, pill-style
 // ============================================================
 
 import { useState, type ReactNode } from "react";
@@ -16,9 +16,9 @@ interface PayrollTabsProps {
 }
 
 const TABS = [
-  { key: "payroll", label: "Payroll", icon: Wallet },
-  { key: "disputes", label: "Disputes", icon: AlertTriangle },
-  { key: "overrides", label: "Overrides", icon: Camera },
+  { key: "payroll", label: "الرواتب", icon: Wallet },
+  { key: "disputes", label: "الاعتراضات", icon: AlertTriangle },
+  { key: "overrides", label: "التعديلات", icon: Camera },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -38,10 +38,10 @@ export default function PayrollTabs({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19]">
       {/* Tab Bar */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex gap-1">
+        <div className="max-w-2xl mx-auto px-4 flex gap-2 overflow-x-auto no-scrollbar py-3">
           {TABS.map((t) => {
             const Icon = t.icon;
             const badge = badges[t.key] ?? 0;
@@ -49,10 +49,10 @@ export default function PayrollTabs({
               <button
                 key={t.key}
                 onClick={() => setTab(t.key)}
-                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all active:scale-95 shrink-0 ${
                   tab === t.key
-                    ? "border-amber-500 text-amber-600 dark:text-amber-400"
-                    : "border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    ? "bg-brand-purple text-white shadow-sm"
+                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 bg-zinc-100 dark:bg-zinc-800"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -71,17 +71,17 @@ export default function PayrollTabs({
       {/* Content */}
       {tab === "payroll" && payrollDashboard}
       {tab === "disputes" && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
           <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-            Penalty Disputes
+            اعتراضات العقوبات
           </h2>
           {disputesPanel}
         </div>
       )}
       {tab === "overrides" && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+        <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
           <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">
-            Manual Override Requests
+            طلبات التعديل اليدوي
           </h2>
           {overridesPanel}
         </div>

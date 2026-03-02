@@ -1,12 +1,11 @@
 "use client";
 
 // ============================================================
-// Month Picker for Payroll
-// Select month and year for payroll processing
+// Month Picker — Arabic mobile-first
 // ============================================================
 
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
-import { MONTH_NAMES } from "@/lib/payroll-types";
+import { MONTH_NAMES_AR } from "@/lib/payroll-types";
 
 interface MonthPickerProps {
   month: number;
@@ -35,35 +34,35 @@ export default function MonthPicker({
   };
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <button
         onClick={prev}
-        className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-        title="Previous month"
+        className="p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors shadow-sm active:scale-95"
+        title="الشهر السابق"
       >
-        <ChevronLeft className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
+        <ChevronRight className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
       </button>
 
-      <div className="flex items-center gap-2 min-w-[200px] justify-center">
-        <Calendar className="w-4 h-4 text-brand-magenta" />
+      <div className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 rounded-2xl shadow-sm min-w-[160px] sm:min-w-[200px] justify-center">
+        <Calendar className="w-4 h-4 text-brand-purple" />
         <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          {MONTH_NAMES[month - 1]} {year}
+          {MONTH_NAMES_AR[month - 1]} {year}
         </span>
       </div>
 
       <button
         onClick={next}
-        className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-        title="Next month"
+        className="p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors shadow-sm active:scale-95"
+        title="الشهر التالي"
       >
-        <ChevronRight className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
+        <ChevronLeft className="w-4 h-4 text-zinc-600 dark:text-zinc-400" />
       </button>
 
       <button
         onClick={goToCurrentMonth}
-        className="ml-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-brand-magenta/5 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta border border-brand-magenta/15 dark:border-brand-magenta/20 hover:bg-brand-magenta/10 dark:hover:bg-brand-magenta/10 transition-colors"
+        className="px-3 py-2 text-xs font-semibold rounded-2xl bg-brand-purple/10 text-brand-purple border border-brand-purple/20 hover:bg-brand-purple/15 transition-colors active:scale-95"
       >
-        This Month
+        الشهر الحالي
       </button>
     </div>
   );

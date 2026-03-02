@@ -231,29 +231,33 @@ export default function AppSidebar({
         {children}
       </main>
 
-      {/* ===== Mobile Bottom Nav (Glassmorphic) ===== */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-zinc-200/50 dark:border-white/5">
-        <div className="flex items-center justify-around px-2 py-2">
+      {/* ===== Mobile Bottom Nav — Polished, larger touch targets ===== */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-200/60 dark:border-zinc-800/40 safe-area-pb">
+        <div className="flex items-stretch justify-around px-1">
           {mobileItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[56px] ${
+                className={`flex flex-col items-center justify-center gap-1 py-3 px-2 flex-1 min-w-0 transition-all relative ${
                   active
                     ? "text-brand-purple"
-                    : "text-zinc-400 dark:text-zinc-500"
+                    : "text-zinc-400 dark:text-zinc-500 active:text-brand-purple/60"
                 }`}
               >
+                {/* Active indicator dot */}
+                {active && (
+                  <div className="absolute top-1 left-1/2 -translate-x-1/2 w-5 h-1 rounded-full bg-brand-purple" />
+                )}
                 <div
-                  className={`p-1.5 rounded-xl transition-all ${
+                  className={`p-2 rounded-2xl transition-all ${
                     active ? "bg-brand-purple/10" : ""
                   }`}
                 >
                   <item.icon className={`w-5 h-5 ${active ? "text-brand-purple" : ""}`} />
                 </div>
-                <span className={`text-[10px] font-semibold ${active ? "text-brand-purple" : ""}`}>
+                <span className={`text-[10px] font-bold truncate max-w-full ${active ? "text-brand-purple" : ""}`}>
                   {item.shortLabel}
                 </span>
               </Link>

@@ -165,7 +165,7 @@ export default function ScheduleDashboard({
   };
 
   return (
-    <div className="flex h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="flex h-screen bg-zinc-50 dark:bg-[#0f0a19]">
       {/* Sidebar */}
       <ScheduleSidebar
         filters={filters}
@@ -211,9 +211,9 @@ export default function ScheduleDashboard({
               <div className="w-px h-6 bg-zinc-200 dark:bg-zinc-700 hidden sm:block" />
 
               <div className="flex items-center gap-2">
-                <LayoutGrid className="w-4 h-4 text-purple-500" />
+                <LayoutGrid className="w-4 h-4 text-brand-purple" />
                 <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-                  Schedule Engine
+                  محرك الجدولة
                 </span>
               </div>
             </div>
@@ -244,8 +244,8 @@ export default function ScheduleDashboard({
             {/* Loading indicator */}
             {isPending && (
               <div className="flex items-center gap-2 text-xs text-zinc-400">
-                <div className="w-3 h-3 border-2 border-brand-magenta border-t-transparent rounded-full animate-spin" />
-                Refreshing...
+                <div className="w-3 h-3 border-2 border-brand-purple border-t-transparent rounded-full animate-spin" />
+                جاري التحديث...
               </div>
             )}
           </div>
@@ -262,30 +262,30 @@ export default function ScheduleDashboard({
           />
 
           {/* Legend */}
-          <div className="mt-4 flex items-center gap-6 flex-wrap text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="mt-4 flex items-center gap-4 sm:gap-6 flex-wrap text-xs text-zinc-500 dark:text-zinc-400">
             <div className="flex items-center gap-2">
               <div className="w-4 h-2 rounded bg-brand-purple/15 dark:bg-brand-purple/20 border border-brand-purple/20 dark:border-brand-purple/30" />
-              <span>Manager</span>
+              <span>مدير</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-2 rounded bg-brand-magenta/15 dark:bg-brand-magenta/15 border border-brand-magenta/20 dark:border-brand-magenta/30" />
-              <span>Staff</span>
+              <span>موظف</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-amber-400" />
-              <span>Draft</span>
+              <span>مسودة</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-brand-magenta" />
-              <span>Published</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span>منشور</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 border-l-2 border-orange-400" />
-              <span>Understaffed</span>
+              <span>نقص موظفين</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[10px]">⚡</span>
-              <span>Drag & drop to move staff between branches</span>
+              <span>اسحب وأفلت لنقل الموظفين بين الفروع</span>
             </div>
           </div>
         </div>

@@ -1,12 +1,11 @@
 "use client";
 
 // ============================================================
-// Geofence Status Component
-// Shows real-time location status relative to the branch.
+// Geofence Status — Arabic, compact pill design
 // ============================================================
 
 import { useEffect, useState, useCallback } from "react";
-import { MapPin, MapPinOff, Loader2 } from "lucide-react";
+import { MapPin, MapPinOff, Loader2, RefreshCw } from "lucide-react";
 import { checkGeofence, getGeolocationErrorMessage } from "@/lib/geofence";
 import type { GeofenceResult } from "@/lib/geofence";
 
@@ -41,7 +40,7 @@ export default function GeofenceStatus({
       if (error && typeof error === "object" && "code" in error) {
         setErrorMessage(getGeolocationErrorMessage(error as GeolocationPositionError));
       } else {
-        setErrorMessage("Could not determine your location.");
+        setErrorMessage("تعذّر تحديد موقعك");
       }
       onStatusChange(null);
     }
@@ -49,69 +48,72 @@ export default function GeofenceStatus({
 
   useEffect(() => {
     checkLocation();
-
-    // Recheck every 30 seconds
     const interval = setInterval(checkLocation, 30000);
     return () => clearInterval(interval);
   }, [checkLocation]);
 
+  const RefreshBtn = () => (
+    <button
+      onClick={checkLocation}
+      className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+      aria-label="تحديث الموقع"
+    >
+      <RefreshCw className="w-3.5 h-3.5" />
+    </button>
+  );
+
   return (
     <div className="w-full">
       {status === "checking" && (
-        <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 rounded-xl px-4 py-3">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="text-sm font-medium">Checking your location...</span>
+        <div className="flex items-center justify-center gap-2 text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl px-5 py-3.5">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span className="text-sm font-medium">جاري تحديد الموقع...</span>
         </div>
       )}
 
       {status === "within" && (
-        <div className="flex items-center gap-2 text-brand-magenta dark:text-brand-magenta bg-brand-magenta/5 dark:bg-brand-magenta/10 rounded-xl px-4 py-3 border border-brand-magenta/15 dark:border-brand-magenta/20">
-          <MapPin className="w-5 h-5" />
-          <div className="flex-1">
-            <span className="text-sm font-medium">You are at the branch</span>
+        <div className="flex items-center gap-3 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/40 rounded-2xl px-5 py-3.5">
+          <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
+              أنت في موقع الفرع
+            </span>
             {distance !== null && (
-              <span className="text-xs ml-1 opacity-70">({distance}m away)</span>
+              <span className="text-xs text-emerald-600/70 dark:text-emerald-500/60 mr-1.5">
+                ({distance} متر)
+              </span>
             )}
           </div>
-          <button
-            onClick={checkLocation}
-            className="text-xs underline opacity-60 hover:opacity-100 transition-opacity"
-          >
-            Refresh
-          </button>
+          <RefreshBtn />
         </div>
       )}
 
       {status === "outside" && (
-        <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 rounded-xl px-4 py-3 border border-amber-200 dark:border-amber-800">
-          <MapPinOff className="w-5 h-5" />
-          <div className="flex-1">
-            <span className="text-sm font-medium">You are not at the branch location</span>
+        <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-800/40 rounded-2xl px-5 py-3.5">
+          <MapPinOff className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+              أنت خارج نطاق الفرع
+            </span>
             {distance !== null && (
-              <span className="text-xs ml-1 opacity-70">({distance}m away, max {geofenceRadius}m)</span>
+              <span className="text-xs text-amber-600/70 dark:text-amber-500/60 mr-1.5">
+                ({distance} متر من أصل {geofenceRadius})
+              </span>
             )}
           </div>
-          <button
-            onClick={checkLocation}
-            className="text-xs underline opacity-60 hover:opacity-100 transition-opacity"
-          >
-            Retry
-          </button>
+          <RefreshBtn />
         </div>
       )}
 
       {status === "error" && (
-        <div className="flex items-center gap-2 text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/30 rounded-xl px-4 py-3 border border-red-200 dark:border-red-800">
-          <MapPinOff className="w-5 h-5" />
-          <div className="flex-1">
-            <span className="text-sm font-medium">{errorMessage}</span>
+        <div className="flex items-center gap-3 bg-red-50 dark:bg-red-950/20 border border-red-200/60 dark:border-red-800/40 rounded-2xl px-5 py-3.5">
+          <MapPinOff className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <span className="text-sm font-semibold text-red-700 dark:text-red-400">
+              {errorMessage}
+            </span>
           </div>
-          <button
-            onClick={checkLocation}
-            className="text-xs underline opacity-60 hover:opacity-100 transition-opacity"
-          >
-            Retry
-          </button>
+          <RefreshBtn />
         </div>
       )}
     </div>

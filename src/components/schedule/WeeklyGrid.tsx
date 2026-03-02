@@ -16,9 +16,8 @@ import type {
   BranchWithSchedule,
   DaySchedule,
 } from "@/lib/schedule-types";
+import { DAY_NAMES_SHORT_AR } from "@/lib/schedule-types";
 import EmployeeChip from "./EmployeeChip";
-
-const DAY_HEADERS_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 interface WeeklyGridProps {
   branches: BranchWithSchedule[];
@@ -41,15 +40,15 @@ export default function WeeklyGrid({
   const dayIndexes = weekDays.map((d) => new Date(d).getDay());
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto no-scrollbar">
       <div className="min-w-[900px]">
         {/* Header row */}
-        <div className="grid grid-cols-[200px_repeat(7,1fr)] gap-px bg-zinc-200 dark:bg-zinc-700 rounded-t-xl overflow-hidden">
+        <div className="grid grid-cols-[200px_repeat(7,1fr)] gap-px bg-zinc-200 dark:bg-zinc-700 rounded-t-2xl overflow-hidden">
           {/* Branch column header */}
           <div className="bg-zinc-100 dark:bg-zinc-800 px-3 py-2.5 flex items-center gap-2">
             <Users className="w-4 h-4 text-zinc-400" />
-            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 uppercase tracking-wider">
-              Branch
+            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 tracking-wider">
+              الفرع
             </span>
           </div>
 
@@ -57,7 +56,7 @@ export default function WeeklyGrid({
           {weekDays.map((dateStr, i) => {
             const date = new Date(dateStr);
             const dayNum = date.getDate();
-            const dayName = DAY_HEADERS_SHORT[dayIndexes[i]];
+            const dayName = DAY_NAMES_SHORT_AR[dayIndexes[i]];
             const isToday = dateStr === new Date().toISOString().split("T")[0];
 
             return (
@@ -93,12 +92,12 @@ export default function WeeklyGrid({
         </div>
 
         {/* Branch rows */}
-        <div className="bg-zinc-200 dark:bg-zinc-700 rounded-b-xl overflow-hidden">
+        <div className="bg-zinc-200 dark:bg-zinc-700 rounded-b-2xl overflow-hidden">
           {branches.length === 0 ? (
             <div className="bg-white dark:bg-zinc-900 px-6 py-12 text-center">
               <Users className="w-8 h-8 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                No branches found. Add branches to start scheduling.
+                لا توجد فروع. أضف فروعاً لبدء الجدولة.
               </p>
             </div>
           ) : (

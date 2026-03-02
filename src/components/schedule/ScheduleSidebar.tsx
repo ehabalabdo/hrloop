@@ -20,7 +20,7 @@ import {
   X,
 } from "lucide-react";
 import type { ScheduleFilter } from "@/lib/schedule-types";
-import { DAY_NAMES_SHORT } from "@/lib/schedule-types";
+import { DAY_NAMES_SHORT_AR } from "@/lib/schedule-types";
 
 interface SidebarProps {
   filters: ScheduleFilter;
@@ -104,7 +104,7 @@ export default function ScheduleSidebar({
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-zinc-500" />
             <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-              Filters
+              الفلاتر
             </span>
           </div>
           <button
@@ -119,7 +119,7 @@ export default function ScheduleSidebar({
         <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
             <Building2 className="w-3.5 h-3.5" />
-            Branch City
+            المدينة
           </label>
           <select
             value={filters.branchCity || ""}
@@ -131,7 +131,7 @@ export default function ScheduleSidebar({
             }
             className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
-            <option value="">All Cities</option>
+            <option value="">جميع المدن</option>
             {cities.map((city) => (
               <option key={city} value={city}>
                 {city}
@@ -144,7 +144,7 @@ export default function ScheduleSidebar({
         <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
             <UserCog className="w-3.5 h-3.5" />
-            Manager
+            المدير
           </label>
           <select
             value={filters.managerName || ""}
@@ -156,7 +156,7 @@ export default function ScheduleSidebar({
             }
             className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
-            <option value="">All Managers</option>
+            <option value="">جميع المدراء</option>
             {managers.map((mgr) => (
               <option key={mgr} value={mgr}>
                 {mgr}
@@ -185,7 +185,7 @@ export default function ScheduleSidebar({
           <div className="flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5 text-orange-500" />
             <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              Understaffed Only
+              نقص موظفين فقط
             </span>
           </div>
         </label>
@@ -200,9 +200,9 @@ export default function ScheduleSidebar({
                 showUnderstaffedOnly: undefined,
               })
             }
-            className="w-full px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="w-full px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
-            Clear All Filters
+            مسح الفلاتر
           </button>
         )}
 
@@ -214,7 +214,7 @@ export default function ScheduleSidebar({
           <div className="flex items-center gap-2 mb-3">
             <Settings2 className="w-4 h-4 text-zinc-500" />
             <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-              Staff Requirements
+              متطلبات الموظفين
             </span>
           </div>
 
@@ -253,7 +253,7 @@ export default function ScheduleSidebar({
                       {editReqs.map((req, i) => (
                         <div key={req.dayOfWeek} className="text-center">
                           <div className="text-[9px] font-bold text-zinc-400 mb-1">
-                            {DAY_NAMES_SHORT[req.dayOfWeek]}
+                            {DAY_NAMES_SHORT_AR[req.dayOfWeek]}
                           </div>
                           <input
                             type="number"
@@ -280,7 +280,7 @@ export default function ScheduleSidebar({
                       className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium bg-brand-magenta hover:bg-brand-magenta/90 text-white rounded-lg disabled:opacity-50 transition-colors"
                     >
                       <Save className="w-3 h-3" />
-                      {saving ? "Saving..." : "Save"}
+                      {saving ? "جاري الحفظ..." : "حفظ"}
                     </button>
                   </div>
                 )}

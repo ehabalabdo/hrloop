@@ -289,96 +289,89 @@ export default function AttendanceDashboard({
     setPendingAction(null);
   };
 
-  // Get greeting based on time of day
+  // Arabic greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return "صباح الخير";
+    if (hour < 17) return "مساء الخير";
+    return "مساء النور";
   };
 
   // Status indicator
   const getStatusLabel = () => {
     switch (state.status) {
       case "clocked_in":
-        return { text: "في الوردية", color: "bg-brand-magenta" };
+        return { text: "في الوردية", color: "bg-brand-magenta", glow: "shadow-brand-magenta/40" };
       case "on_break":
-        return { text: "في استراحة", color: "bg-brand-orange" };
+        return { text: "في استراحة", color: "bg-brand-orange", glow: "shadow-brand-orange/40" };
       default:
-        return { text: "غير متصل", color: "bg-zinc-400" };
+        return { text: "لم يبدأ", color: "bg-zinc-400", glow: "" };
     }
   };
 
   const statusInfo = getStatusLabel();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0f0a19] flex flex-col">
-      {/* Offline Banner */}
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] flex flex-col pb-24">
+      {/* ─── Connectivity Banners ─── */}
       {!isOnline && (
-        <div className="bg-red-600 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
+        <div className="bg-red-600 text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
           <WifiOff className="w-4 h-4" />
-          <span>You are offline. Actions will be queued and synced later.</span>
+          <span>أنت غير متصل بالإنترنت — سيتم حفظ العمليات ومزامنتها لاحقاً</span>
         </div>
       )}
-
-      {/* Syncing / Pending Banner */}
       {syncing && (
-        <div className="bg-amber-500 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
+        <div className="bg-amber-500 text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span>Syncing offline actions...</span>
+          <span>جاري مزامنة العمليات المعلّقة...</span>
         </div>
       )}
       {!syncing && pendingOffline > 0 && isOnline && (
-        <div className="bg-brand-purple text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
+        <div className="bg-brand-purple text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
           <Upload className="w-4 h-4" />
-          <span>{pendingOffline} pending action{pendingOffline > 1 ? "s" : ""} to sync</span>
+          <span>{pendingOffline} عملية معلّقة بانتظار المزامنة</span>
         </div>
       )}
 
-      {/* Header */}
-      <header className="px-5 pt-6 pb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-brand-purple-light">
-              {getGreeting()}
-            </p>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-              {userName}
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Online indicator */}
-            <div className="flex items-center gap-1.5">
-              {isOnline ? (
-                <Wifi className="w-4 h-4 text-brand-magenta" />
-              ) : (
-                <WifiOff className="w-4 h-4 text-red-500" />
-              )}
-            </div>
-            {/* Status Badge */}
-            <div className="flex items-center gap-2 bg-zinc-100 dark:bg-zinc-800 rounded-full px-3 py-1.5">
-              <div className={`w-2 h-2 rounded-full ${statusInfo.color}`} />
-              <span className="text-xs font-medium text-zinc-600 dark:text-zinc-300">
-                {statusInfo.text}
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* ─── Hero Section: Timer + Greeting ─── */}
+      <div className="relative bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-purple-light overflow-hidden">
+        {/* Decorative circles */}
+        <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full" />
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full" />
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center px-5 pb-8 gap-6">
-        {/* Live Timer */}
-        <div className="w-full flex flex-col items-center py-8 bg-gradient-to-b from-brand-purple/5 to-transparent dark:from-brand-purple/10 rounded-3xl border border-brand-purple/10">
-          <span className="text-xs text-brand-purple uppercase tracking-wider font-semibold mb-2">
-            مدة الوردية
-          </span>
+        <div className="relative z-10 px-6 pt-8 pb-10">
+          {/* Top row: greeting + status */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <p className="text-sm text-white/60 font-medium">{getGreeting()}</p>
+              <h1 className="text-2xl font-bold text-white mt-0.5">{userName}</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              {isOnline ? (
+                <Wifi className="w-4 h-4 text-white/40" />
+              ) : (
+                <WifiOff className="w-4 h-4 text-red-300" />
+              )}
+              <div className={`flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5`}>
+                <div className={`w-2 h-2 rounded-full ${statusInfo.color} shadow-sm ${statusInfo.glow}`} />
+                <span className="text-xs font-medium text-white/90">{statusInfo.text}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Big Timer */}
           <LiveTimer
             startTime={state.clockInTime}
             isActive={state.status === "clocked_in" || state.status === "on_break"}
           />
         </div>
 
+        {/* Curved bottom edge */}
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-zinc-50 dark:bg-[#0f0a19] rounded-t-[2rem]" />
+      </div>
+
+      {/* ─── Main Content ─── */}
+      <main className="flex-1 flex flex-col px-5 gap-5 -mt-1">
         {/* Shift Info */}
         {state.currentShift && (
           <ShiftInfo
@@ -392,13 +385,13 @@ export default function AttendanceDashboard({
 
         {/* No Shift Message */}
         {!state.currentShift && (
-          <div className="w-full text-center py-8 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
+          <div className="w-full text-center py-12 bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm">
             <CalendarEmpty />
-            <p className="text-zinc-500 dark:text-zinc-400 font-medium mt-3">
-              No shift scheduled for today
+            <p className="text-zinc-600 dark:text-zinc-400 font-semibold text-base mt-4">
+              لا توجد وردية مجدولة اليوم
             </p>
-            <p className="text-zinc-400 dark:text-zinc-500 text-sm mt-1">
-              Check with your manager for schedule updates.
+            <p className="text-zinc-400 dark:text-zinc-500 text-sm mt-1.5">
+              تواصل مع مديرك لمعرفة جدول العمل
             </p>
           </div>
         )}
@@ -416,19 +409,19 @@ export default function AttendanceDashboard({
         {/* Message Banner */}
         {message && (
           <div
-            className={`w-full rounded-xl px-4 py-3 text-sm font-medium ${
+            className={`w-full rounded-2xl px-5 py-3.5 text-sm font-medium ${
               message.type === "success"
-                ? "bg-brand-magenta/5 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta border border-brand-magenta/15 dark:border-brand-magenta/20"
-                : "bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
+                ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40"
+                : "bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border border-red-200/60 dark:border-red-800/40"
             }`}
           >
             {message.text}
           </div>
         )}
 
-        {/* Action Buttons */}
+        {/* ─── Action Buttons (the hero CTA) ─── */}
         {state.currentShift && (
-          <div className="w-full flex flex-col items-center mt-2">
+          <div className="w-full bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm px-6 py-8">
             <ActionButtons
               status={state.status}
               isWithinFence={geofenceResult?.isWithinFence ?? false}
@@ -441,39 +434,41 @@ export default function AttendanceDashboard({
         )}
 
         {/* Biometric Status Footer */}
-        <div className="w-full mt-auto pt-4 border-t border-zinc-100 dark:border-zinc-800">
+        <div className="w-full py-4 mt-2">
           <div className="flex items-center justify-center gap-2 text-xs text-zinc-400 dark:text-zinc-500">
             <Fingerprint className="w-3.5 h-3.5" />
             <span>
               {hasBiometric
-                ? "Biometrics registered — Device verified"
-                : "Biometrics not registered"}
+                ? "البصمة مسجّلة — الجهاز مُعتمد"
+                : "البصمة غير مسجّلة"}
             </span>
           </div>
         </div>
       </main>
 
-      {/* Manual Override Form Modal */}
+      {/* ─── Manual Override Modal (Arabic, bottom sheet on mobile) ─── */}
       {showOverrideForm && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-4">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center">
+          <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-zinc-100 dark:border-zinc-800/40">
+              <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-4 sm:hidden" />
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2.5">
                 <Camera className="w-5 h-5 text-brand-purple" />
                 طلب تجاوز يدوي
               </h2>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                You appear to be outside the geofence. Take a live photo to verify your location.
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1.5 leading-relaxed">
+                أنت خارج نطاق الفرع. التقط صورة حية لتأكيد موقعك.
               </p>
             </div>
 
-            <div className="p-5 space-y-4">
+            <div className="p-6 space-y-5">
               {/* Camera Preview / Captured Photo */}
-              <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-hidden">
+              <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-2xl overflow-hidden">
                 {overridePhoto ? (
                   <img
                     src={overridePhoto}
-                    alt="Captured"
+                    alt="صورة ملتقطة"
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -488,7 +483,7 @@ export default function AttendanceDashboard({
                     {!streamRef.current && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500">
                         <Camera className="w-10 h-10 mb-2" />
-                        <span className="text-sm">Camera not started</span>
+                        <span className="text-sm">الكاميرا غير مفعّلة</span>
                       </div>
                     )}
                   </>
@@ -502,18 +497,18 @@ export default function AttendanceDashboard({
                     {!streamRef.current ? (
                       <button
                         onClick={startCamera}
-                        className="flex-1 bg-brand-purple text-white rounded-xl py-2.5 text-sm font-medium hover:bg-brand-purple transition flex items-center justify-center gap-2"
+                        className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-purple-dark transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
-                        Start Camera
+                        تشغيل الكاميرا
                       </button>
                     ) : (
                       <button
                         onClick={capturePhoto}
-                        className="flex-1 bg-brand-magenta/50 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-brand-magenta transition flex items-center justify-center gap-2"
+                        className="flex-1 bg-brand-magenta text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-magenta/90 transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
-                        Capture Photo
+                        التقاط صورة
                       </button>
                     )}
                   </>
@@ -523,46 +518,46 @@ export default function AttendanceDashboard({
                       setOverridePhoto(null);
                       startCamera();
                     }}
-                    className="flex-1 bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 rounded-xl py-2.5 text-sm font-medium hover:bg-zinc-300 dark:hover:bg-zinc-600 transition"
+                    className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-2xl py-3.5 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
                   >
-                    Retake Photo
+                    إعادة التصوير
                   </button>
                 )}
               </div>
 
               {/* Reason */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-                  Reason for override
+                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                  سبب التجاوز
                 </label>
                 <textarea
                   value={overrideReason}
                   onChange={(e) => setOverrideReason(e.target.value)}
                   rows={3}
-                  placeholder="E.g. GPS drift, building entrance not in range..."
-                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
+                  placeholder="مثال: انحراف GPS، مدخل المبنى خارج النطاق..."
+                  className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
                 />
               </div>
 
               {/* Submit / Cancel */}
-              <div className="flex gap-3">
+              <div className="flex gap-3 pt-1">
                 <button
                   onClick={cancelOverride}
-                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl py-2.5 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-2xl py-3.5 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
                 >
-                  Cancel
+                  إلغاء
                 </button>
                 <button
                   onClick={submitOverride}
                   disabled={!overridePhoto || !overrideReason.trim() || isLoading}
-                  className="flex-1 bg-brand-purple text-white rounded-xl py-2.5 text-sm font-medium hover:bg-brand-purple disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                  className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-purple-dark disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <Upload className="w-4 h-4" />
                   )}
-                  Submit Override
+                  إرسال الطلب
                 </button>
               </div>
             </div>
@@ -570,14 +565,14 @@ export default function AttendanceDashboard({
         </div>
       )}
 
-      {/* Toast Notifications */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm">
+      {/* ─── Toast Notifications (positioned above bottom nav) ─── */}
+      <div className="fixed bottom-24 left-4 right-4 sm:left-auto sm:right-4 sm:max-w-sm z-50 flex flex-col gap-2">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`px-4 py-3 rounded-xl text-sm font-medium shadow-lg animate-in slide-in-from-right-5 fade-in duration-300 ${
+            className={`px-5 py-3.5 rounded-2xl text-sm font-semibold shadow-xl animate-in slide-in-from-bottom-3 fade-in duration-300 ${
               toast.type === "success"
-                ? "bg-brand-magenta text-white"
+                ? "bg-emerald-600 text-white"
                 : toast.type === "error"
                   ? "bg-red-600 text-white"
                   : "bg-brand-purple text-white"
@@ -595,7 +590,7 @@ export default function AttendanceDashboard({
 function CalendarEmpty() {
   return (
     <svg
-      className="w-12 h-12 mx-auto text-zinc-300 dark:text-zinc-600"
+      className="w-14 h-14 mx-auto text-zinc-200 dark:text-zinc-700"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"

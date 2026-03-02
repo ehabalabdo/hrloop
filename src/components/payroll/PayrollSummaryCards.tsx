@@ -1,8 +1,7 @@
 "use client";
 
 // ============================================================
-// Payroll Summary Cards
-// Top-level financial overview for the admin dashboard
+// Payroll Summary Cards — Arabic mobile-first
 // ============================================================
 
 import {
@@ -34,85 +33,81 @@ export default function PayrollSummaryCards({
   const cards = [
     {
       icon: DollarSign,
-      label: "Total Payroll Cost",
+      label: "إجمالي الرواتب",
       value: formatCurrency(summary.totalPayrollCost),
       prefix: "$",
-      color: "text-brand-magenta dark:text-brand-magenta",
-      bg: "bg-brand-magenta/5 dark:bg-brand-magenta/10",
-      border: "border-brand-magenta/15 dark:border-brand-magenta/20",
+      color: "text-brand-purple",
+      iconBg: "bg-brand-purple/10",
       large: true,
     },
     {
       icon: Users,
-      label: "Employees",
+      label: "الموظفين",
       value: summary.totalEmployees.toString(),
-      color: "text-brand-purple",
-      bg: "bg-brand-purple/5 dark:bg-brand-purple/10",
-      border: "border-brand-purple/15",
+      color: "text-brand-purple dark:text-brand-purple-light",
+      iconBg: "bg-brand-purple/10",
     },
     {
       icon: Calculator,
-      label: "Average Salary",
+      label: "متوسط الراتب",
       value: formatCurrency(summary.averageSalary),
       prefix: "$",
-      color: "text-purple-600 dark:text-purple-400",
-      bg: "bg-purple-50 dark:bg-purple-950/30",
-      border: "border-purple-200 dark:border-purple-800",
+      color: "text-brand-purple dark:text-brand-purple-light",
+      iconBg: "bg-brand-purple/10",
     },
     {
       icon: TrendingDown,
-      label: "Total Deductions",
+      label: "إجمالي الخصومات",
       value: formatCurrency(summary.totalDeductions),
       prefix: "-$",
       color: "text-red-600 dark:text-red-400",
-      bg: "bg-red-50 dark:bg-red-950/30",
-      border: "border-red-200 dark:border-red-800",
+      iconBg: "bg-red-100 dark:bg-red-950/40",
     },
     {
       icon: TrendingUp,
-      label: "Total Bonuses",
+      label: "إجمالي المكافآت",
       value: formatCurrency(summary.totalBonuses),
       prefix: "+$",
-      color: "text-green-600 dark:text-green-400",
-      bg: "bg-green-50 dark:bg-green-950/30",
-      border: "border-green-200 dark:border-green-800",
+      color: "text-emerald-600 dark:text-emerald-400",
+      iconBg: "bg-emerald-100 dark:bg-emerald-950/40",
     },
     {
       icon: Clock,
-      label: "Total Overtime (hrs)",
+      label: "العمل الإضافي (ساعات)",
       value: summary.totalOvertimePay.toFixed(1),
       color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-950/30",
-      border: "border-amber-200 dark:border-amber-800",
+      iconBg: "bg-amber-100 dark:bg-amber-950/40",
     },
   ];
 
   return (
     <div>
-      <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-3">
-        {monthLabel} — Financial Summary
+      <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-3">
+        {monthLabel} — الملخص المالي
       </div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
         {cards.map((card) => (
           <div
             key={card.label}
-            className={`${card.bg} border ${card.border} rounded-xl p-3 ${
-              card.large ? "col-span-2 sm:col-span-1" : ""
+            className={`flex items-center gap-2.5 px-3 py-3 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 rounded-2xl shadow-sm min-w-fit shrink-0 ${
+              card.large ? "min-w-[180px]" : ""
             }`}
           >
-            <div className="flex items-center gap-2 mb-1.5">
+            <div className={`w-9 h-9 ${card.iconBg} rounded-xl flex items-center justify-center shrink-0`}>
               <card.icon className={`w-4 h-4 ${card.color}`} />
-              <span className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
-                {card.label}
-              </span>
             </div>
-            <div className={`text-lg font-bold ${card.color}`}>
-              {card.prefix && (
-                <span className="text-sm font-medium opacity-70">
-                  {card.prefix}
-                </span>
-              )}
-              {card.value}
+            <div className="text-right">
+              <div className={`text-lg font-bold leading-none ${card.color}`}>
+                {card.prefix && (
+                  <span className="text-sm font-medium opacity-70">
+                    {card.prefix}
+                  </span>
+                )}
+                {card.value}
+              </div>
+              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
+                {card.label}
+              </div>
             </div>
           </div>
         ))}

@@ -1,8 +1,7 @@
 "use client";
 
 // ============================================================
-// Schedule Stats Bar
-// Shows key metrics at the top of the dashboard
+// Schedule Stats Bar — Arabic mobile-first
 // ============================================================
 
 import {
@@ -22,60 +21,62 @@ export default function StatsBar({ stats }: StatsBarProps) {
   const statItems = [
     {
       icon: CalendarDays,
-      label: "Total Shifts",
+      label: "إجمالي الورديات",
       value: stats.totalShifts,
       color: "text-brand-purple",
-      bg: "bg-brand-purple/5 dark:bg-brand-purple/10",
+      iconBg: "bg-brand-purple/10",
     },
     {
       icon: FileText,
-      label: "Drafts",
+      label: "مسودات",
       value: stats.draftShifts,
       color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-950/30",
+      iconBg: "bg-amber-100 dark:bg-amber-950/40",
     },
     {
       icon: CheckCircle2,
-      label: "Published",
+      label: "منشورة",
       value: stats.publishedShifts,
-      color: "text-brand-magenta dark:text-brand-magenta",
-      bg: "bg-brand-magenta/5 dark:bg-brand-magenta/10",
+      color: "text-emerald-600 dark:text-emerald-400",
+      iconBg: "bg-emerald-100 dark:bg-emerald-950/40",
     },
     {
       icon: AlertTriangle,
-      label: "Understaffed",
+      label: "نقص موظفين",
       value: stats.understaffedSlots,
       color:
         stats.understaffedSlots > 0
           ? "text-red-600 dark:text-red-400"
           : "text-zinc-400 dark:text-zinc-500",
-      bg:
+      iconBg:
         stats.understaffedSlots > 0
-          ? "bg-red-50 dark:bg-red-950/30"
-          : "bg-zinc-50 dark:bg-zinc-800",
+          ? "bg-red-100 dark:bg-red-950/40"
+          : "bg-zinc-100 dark:bg-zinc-800",
     },
     {
       icon: Building2,
-      label: "Fully Staffed",
+      label: "مكتمل التوظيف",
       value: `${stats.fullyStaffedBranches}/${stats.totalBranches}`,
-      color: "text-purple-600 dark:text-purple-400",
-      bg: "bg-purple-50 dark:bg-purple-950/30",
+      color: "text-brand-purple dark:text-brand-purple-light",
+      iconBg: "bg-brand-purple/10",
     },
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+    <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
       {statItems.map((item) => (
         <div
           key={item.label}
-          className={`${item.bg} rounded-xl p-3 flex items-center gap-3`}
+          className="flex items-center gap-2.5 px-3 py-2.5 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 rounded-2xl shadow-sm min-w-fit shrink-0"
         >
-          <item.icon className={`w-5 h-5 ${item.color} shrink-0`} />
-          <div>
-            <div className={`text-lg font-bold ${item.color}`}>
+          <div className={`w-8 h-8 ${item.iconBg} rounded-xl flex items-center justify-center shrink-0`}>
+            <item.icon className={`w-4 h-4 ${item.color}`} />
+          </div>
+          <div className="text-right">
+            <div className={`text-lg font-bold leading-none ${item.color}`}>
               {item.value}
             </div>
-            <div className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+            <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
               {item.label}
             </div>
           </div>

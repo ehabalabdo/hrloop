@@ -1,9 +1,7 @@
 "use client";
 
 // ============================================================
-// Employee Chip Component
-// Draggable chip representing an employee in the schedule grid
-// Color-coded by role: Manager (blue), Staff (emerald)
+// Employee Chip — Arabic, draggable schedule entry
 // ============================================================
 
 import { GripVertical, X } from "lucide-react";
@@ -28,7 +26,7 @@ export default function EmployeeChip({
 
   const statusDot = entry.status === "DRAFT"
     ? "bg-amber-400"
-    : "bg-brand-magenta";
+    : "bg-emerald-500";
 
   return (
     <div
@@ -40,10 +38,10 @@ export default function EmployeeChip({
         e.dataTransfer.setData("sourceBranchId", entry.branchId);
         e.dataTransfer.effectAllowed = "move";
       }}
-      className={`group flex items-center gap-1 px-2 py-1 rounded-lg border text-xs font-medium cursor-grab active:cursor-grabbing transition-all hover:shadow-sm ${roleStyles} ${
+      className={`group flex items-center gap-1 px-2 py-1.5 rounded-xl border text-xs font-medium cursor-grab active:cursor-grabbing transition-all hover:shadow-sm ${roleStyles} ${
         isDraft ? "border-dashed" : ""
       }`}
-      title={`${entry.userName} (${entry.userRole}) — ${entry.status}`}
+      title={`${entry.userName} (${isManager ? "مدير" : "موظف"}) — ${entry.status === "DRAFT" ? "مسودة" : "منشور"}`}
     >
       {isDraft && (
         <GripVertical className="w-3 h-3 opacity-40 group-hover:opacity-100 shrink-0" />
@@ -54,7 +52,7 @@ export default function EmployeeChip({
       <span className="truncate max-w-[100px]">{entry.userName}</span>
 
       {isManager && (
-        <span className="text-[9px] font-bold opacity-60 shrink-0">MGR</span>
+        <span className="text-[9px] font-bold opacity-60 shrink-0">مدير</span>
       )}
 
       {isDraft && onRemove && (
@@ -63,8 +61,8 @@ export default function EmployeeChip({
             e.stopPropagation();
             onRemove(entry.shiftId);
           }}
-          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-red-100 dark:hover:bg-red-900/30"
-          title="Remove shift"
+          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+          title="إزالة الوردية"
         >
           <X className="w-3 h-3 text-red-500" />
         </button>

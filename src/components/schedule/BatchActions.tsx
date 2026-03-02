@@ -1,8 +1,7 @@
 "use client";
 
 // ============================================================
-// Batch Action Buttons
-// Generate Draft, Publish Schedule, Clear Week
+// Batch Action Buttons — Arabic mobile-first
 // ============================================================
 
 import { useState } from "react";
@@ -54,7 +53,7 @@ export default function BatchActions({
       const result = await fn();
       showToast(result.success ? "success" : "error", result.message);
     } catch {
-      showToast("error", "An unexpected error occurred.");
+      showToast("error", "حدث خطأ غير متوقع");
     }
     setLoading(null);
   };
@@ -62,63 +61,63 @@ export default function BatchActions({
   return (
     <div className="relative">
       <div className="flex items-center gap-2 flex-wrap">
-        {/* Generate Draft */}
+        {/* توليد مسودة */}
         <button
           onClick={() => handleAction("generate", onGenerate)}
           disabled={loading !== null}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white rounded-xl shadow-lg shadow-purple-600/25 hover:shadow-purple-600/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-gradient-to-r from-brand-purple-dark to-brand-purple hover:from-brand-purple hover:to-brand-purple-light text-white rounded-2xl shadow-lg shadow-brand-purple/25 hover:shadow-brand-purple/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
         >
           {loading === "generate" ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <Wand2 className="w-4 h-4" />
           )}
-          Generate Draft
+          توليد مسودة
         </button>
 
-        {/* Publish Schedule */}
+        {/* نشر الجدول */}
         <button
           onClick={() => handleAction("publish", onPublish)}
           disabled={loading !== null || !hasDrafts}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-brand-magenta hover:bg-brand-magenta/90 text-white rounded-xl shadow-lg shadow-brand-magenta/25 hover:shadow-brand-magenta/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
         >
           {loading === "publish" ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <Send className="w-4 h-4" />
           )}
-          Publish Schedule
+          نشر الجدول
         </button>
 
-        {/* Clear Week */}
+        {/* مسح المسودات */}
         <button
           onClick={() => {
             if (
               window.confirm(
-                "Are you sure you want to delete all DRAFT shifts for this week? This cannot be undone."
+                "هل أنت متأكد من حذف جميع المسودات لهذا الأسبوع؟ لا يمكن التراجع."
               )
             ) {
               handleAction("clear", onClear);
             }
           }}
           disabled={loading !== null || !hasDrafts}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-zinc-100 dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-zinc-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 border border-zinc-200 dark:border-zinc-700 hover:border-red-300 dark:hover:border-red-800 rounded-xl disabled:opacity-50 transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-white dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-zinc-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 border border-zinc-200 dark:border-zinc-700 hover:border-red-300 dark:hover:border-red-800 rounded-2xl disabled:opacity-50 transition-all active:scale-95"
         >
           {loading === "clear" ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <Trash2 className="w-4 h-4" />
           )}
-          Clear Drafts
+          مسح المسودات
         </button>
       </div>
 
       {/* Toast notification */}
       {toast && (
         <div
-          className={`absolute top-full mt-3 left-0 right-0 sm:left-auto sm:right-0 sm:w-96 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border ${
+          className={`fixed bottom-24 left-4 right-4 sm:left-auto sm:right-4 sm:w-96 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border ${
             toast.type === "success"
-              ? "bg-brand-magenta/5 dark:bg-brand-magenta/10 border-brand-magenta/15 dark:border-brand-magenta/20 text-brand-magenta dark:text-brand-magenta/70"
+              ? "bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
               : "bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300"
           }`}
         >

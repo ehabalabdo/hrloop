@@ -1,12 +1,11 @@
 "use client";
 
 // ============================================================
-// Action Buttons Component
-// Dynamic check-in/out and break buttons based on current state.
+// Action Buttons — Contextual attendance hub
+// One big primary action per state. Mobile-first, Arabic.
 // ============================================================
 
 import { Fingerprint, LogIn, LogOut, Coffee, Play, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface ActionButtonsProps {
   status: "not_clocked_in" | "clocked_in" | "on_break";
@@ -27,159 +26,131 @@ export default function ActionButtons({
 }: ActionButtonsProps) {
   const disabled = !isWithinFence || isLoading;
 
-  // If user has no biometric registered, show registration button
+  // ── Biometric Registration ──
   if (!hasBiometric) {
     return (
-      <div className="flex flex-col items-center gap-4 w-full">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center px-4">
-          Register your biometrics to start using attendance.
-          This only needs to be done once.
+      <div className="flex flex-col items-center gap-5 w-full px-2">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center leading-relaxed">
+          سجّل بصمتك لبدء استخدام نظام الحضور.
+          <br />
+          <span className="text-xs text-zinc-400">يتم التسجيل مرة واحدة فقط</span>
         </p>
         <button
           onClick={onRegisterBiometric}
           disabled={isLoading}
-          className={cn(
-            "w-full max-w-xs flex items-center justify-center gap-3",
-            "px-8 py-5 rounded-2xl text-lg font-semibold",
-            "bg-brand-purple hover:bg-brand-purple-dark text-white",
-            "shadow-lg shadow-brand-purple/25 hover:shadow-brand-purple/40",
-            "transition-all duration-200 active:scale-95",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-          )}
+          className="w-full flex items-center justify-center gap-3 px-6 py-5 rounded-3xl text-lg font-bold bg-brand-purple text-white shadow-xl shadow-brand-purple/20 hover:shadow-brand-purple/40 transition-all duration-300 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <Loader2 className="w-6 h-6 animate-spin" />
           ) : (
             <Fingerprint className="w-6 h-6" />
           )}
-          <span>{isLoading ? "Registering..." : "Register Biometrics"}</span>
+          <span>{isLoading ? "جاري التسجيل..." : "تسجيل البصمة"}</span>
         </button>
       </div>
     );
   }
 
-  // Not clocked in - Show "Check In" button
+  // ── Not Clocked In → Big "تسجيل حضور" (Check In) ──
   if (status === "not_clocked_in") {
     return (
-      <div className="flex flex-col items-center gap-4 w-full">
+      <div className="flex flex-col items-center gap-5 w-full px-2">
+        {/* Giant circular action button */}
         <button
           onClick={() => onAction("CLOCK_IN")}
           disabled={disabled}
-          className={cn(
-            "w-full max-w-xs flex items-center justify-center gap-3",
-            "px-8 py-6 rounded-2xl text-xl font-bold",
-            "bg-brand-magenta hover:bg-brand-magenta/90 text-white",
-            "shadow-lg shadow-brand-magenta/30 hover:shadow-brand-magenta/50",
-            "transition-all duration-200 active:scale-95",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-          )}
+          className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-full flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-brand-magenta to-brand-magenta/80 text-white shadow-2xl shadow-brand-magenta/30 hover:shadow-brand-magenta/50 transition-all duration-300 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
         >
-          {isLoading ? (
-            <Loader2 className="w-7 h-7 animate-spin" />
-          ) : (
-            <LogIn className="w-7 h-7" />
+          {/* Pulse ring animation */}
+          {!disabled && (
+            <div className="absolute inset-0 rounded-full bg-brand-magenta/20 animate-ping" />
           )}
-          <span>{isLoading ? "Verifying..." : "Check In"}</span>
+          <div className="relative z-10 flex flex-col items-center gap-2">
+            {isLoading ? (
+              <Loader2 className="w-10 h-10 animate-spin" />
+            ) : (
+              <LogIn className="w-10 h-10" />
+            )}
+            <span className="text-xl font-bold">
+              {isLoading ? "جاري التحقق..." : "تسجيل حضور"}
+            </span>
+          </div>
         </button>
+
         {!isWithinFence && (
-          <p className="text-xs text-amber-600 dark:text-amber-400 text-center">
-            Check-in is disabled until you are at the branch.
-          </p>
+          <div className="text-center bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl px-5 py-3">
+            <p className="text-sm text-amber-700 dark:text-amber-400 font-medium">
+              يجب أن تكون في موقع الفرع للتسجيل
+            </p>
+          </div>
         )}
       </div>
     );
   }
 
-  // Clocked in - Show "Break" and "Check Out" buttons
+  // ── Clocked In → Break + Check Out ──
   if (status === "clocked_in") {
     return (
-      <div className="flex flex-col items-center gap-3 w-full">
+      <div className="flex flex-col items-center gap-4 w-full px-2">
+        {/* Primary: Start Break */}
         <button
           onClick={() => onAction("BREAK_START")}
           disabled={disabled}
-          className={cn(
-            "w-full max-w-xs flex items-center justify-center gap-3",
-            "px-8 py-5 rounded-2xl text-lg font-semibold",
-            "bg-brand-orange hover:bg-brand-orange-dark text-white",
-            "shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40",
-            "transition-all duration-200 active:scale-95",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-          )}
+          className="w-full flex items-center justify-center gap-3 px-6 py-5 rounded-3xl text-lg font-bold bg-brand-orange text-white shadow-xl shadow-brand-orange/20 hover:shadow-brand-orange/40 transition-all duration-300 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {isLoading ? (
             <Loader2 className="w-6 h-6 animate-spin" />
           ) : (
             <Coffee className="w-6 h-6" />
           )}
-          <span>Start Break</span>
+          <span>بدء استراحة</span>
         </button>
 
+        {/* Secondary: Check Out */}
         <button
           onClick={() => onAction("CLOCK_OUT")}
           disabled={disabled}
-          className={cn(
-            "w-full max-w-xs flex items-center justify-center gap-3",
-            "px-8 py-5 rounded-2xl text-lg font-semibold",
-            "bg-red-600 hover:bg-red-700 text-white",
-            "shadow-lg shadow-red-600/25 hover:shadow-red-600/40",
-            "transition-all duration-200 active:scale-95",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-          )}
+          className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-3xl text-base font-semibold border-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/10 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {isLoading ? (
-            <Loader2 className="w-6 h-6 animate-spin" />
-          ) : (
-            <LogOut className="w-6 h-6" />
-          )}
-          <span>Check Out</span>
+          <LogOut className="w-5 h-5" />
+          <span>تسجيل انصراف</span>
         </button>
       </div>
     );
   }
 
-  // On break - Show "End Break" button
+  // ── On Break → End Break (primary) + Check Out (secondary) ──
   if (status === "on_break") {
     return (
-      <div className="flex flex-col items-center gap-4 w-full">
+      <div className="flex flex-col items-center gap-4 w-full px-2">
+        {/* Break indicator */}
         <div className="flex items-center gap-2 text-brand-orange animate-pulse">
           <Coffee className="w-5 h-5" />
-          <span className="text-sm font-medium">On Break</span>
+          <span className="text-base font-semibold">في استراحة الآن</span>
         </div>
 
+        {/* Primary: End Break */}
         <button
           onClick={() => onAction("BREAK_END")}
           disabled={disabled}
-          className={cn(
-            "w-full max-w-xs flex items-center justify-center gap-3",
-            "px-8 py-6 rounded-2xl text-xl font-bold",
-            "bg-brand-purple-light hover:bg-brand-purple text-white",
-            "shadow-lg shadow-brand-purple-light/30 hover:shadow-brand-purple/50",
-            "transition-all duration-200 active:scale-95",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-          )}
+          className="w-full flex items-center justify-center gap-3 px-6 py-5 rounded-3xl text-lg font-bold bg-gradient-to-r from-brand-purple-light to-brand-purple text-white shadow-xl shadow-brand-purple/20 hover:shadow-brand-purple/40 transition-all duration-300 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {isLoading ? (
-            <Loader2 className="w-7 h-7 animate-spin" />
+            <Loader2 className="w-6 h-6 animate-spin" />
           ) : (
-            <Play className="w-7 h-7" />
+            <Play className="w-6 h-6" />
           )}
-          <span>{isLoading ? "Verifying..." : "End Break"}</span>
+          <span>{isLoading ? "جاري التحقق..." : "إنهاء الاستراحة"}</span>
         </button>
 
+        {/* Secondary: Check Out */}
         <button
           onClick={() => onAction("CLOCK_OUT")}
           disabled={disabled}
-          className={cn(
-            "w-full max-w-xs flex items-center justify-center gap-3",
-            "px-6 py-4 rounded-2xl text-base font-semibold",
-            "bg-red-600 hover:bg-red-700 text-white",
-            "shadow-lg shadow-red-600/25 hover:shadow-red-600/40",
-            "transition-all duration-200 active:scale-95",
-            "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
-          )}
+          className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-3xl text-base font-semibold border-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/10 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
-          <span>Check Out</span>
+          <span>تسجيل انصراف</span>
         </button>
       </div>
     );

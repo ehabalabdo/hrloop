@@ -58,11 +58,11 @@ function formatCurrency(n: number): string {
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return "الآن";
+  if (mins < 60) return `منذ ${mins} د`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
+  if (hrs < 24) return `منذ ${hrs} س`;
+  return `منذ ${Math.floor(hrs / 24)} يوم`;
 }
 
 export default function DashboardView({
@@ -150,28 +150,27 @@ export default function DashboardView({
   ];
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0f0a19]">
-      {/* Header */}
-      <div className="bg-white dark:bg-[#0f0a19] border-b border-zinc-200 dark:border-zinc-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
+      {/* ─── Header ─── */}
+      <div className="bg-white dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800/40 sticky top-0 z-20">
+        <div className="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
               لوحة التحكم
             </h1>
-            <p className="text-xs text-brand-purple-light">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
               نظرة شاملة على جميع الفروع
             </p>
           </div>
 
-          {/* System Status */}
           <div className="flex items-center gap-2">
             {health.database ? (
-              <span className="flex items-center gap-1.5 text-xs text-brand-magenta font-medium">
+              <span className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium bg-emerald-50 dark:bg-emerald-950/20 rounded-full px-3 py-1">
                 <Wifi className="w-3.5 h-3.5" />
                 متصل
               </span>
             ) : (
-              <span className="flex items-center gap-1.5 text-xs text-red-600 font-medium">
+              <span className="flex items-center gap-1.5 text-xs text-red-600 font-medium bg-red-50 dark:bg-red-950/20 rounded-full px-3 py-1">
                 <WifiOff className="w-3.5 h-3.5" />
                 غير متصل
               </span>
@@ -180,23 +179,25 @@ export default function DashboardView({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="max-w-3xl mx-auto px-5 py-5 space-y-5">
+        {/* ─── KPI Cards ─── */}
+        <div className="grid grid-cols-2 gap-3">
           {kpiCards.map((card) => (
             <div
               key={card.label}
-              className={`${card.bg} border ${card.border} rounded-2xl p-4`}
+              className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm p-5"
             >
-              <div className="flex items-center gap-2 mb-2">
-                <card.icon className={`w-4 h-4 ${card.color}`} />
-                <span className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
-                  {card.label}
-                </span>
+              <div className="flex items-center gap-2 mb-3">
+                <div className={`w-8 h-8 rounded-2xl ${card.bg} flex items-center justify-center`}>
+                  <card.icon className={`w-4 h-4 ${card.color}`} />
+                </div>
               </div>
-              <div className={`text-xl font-bold ${card.color}`}>
+              <div className={`text-2xl font-bold ${card.color}`}>
                 {card.value}
               </div>
+              <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium mt-1 block">
+                {card.label}
+              </span>
               {card.sub && (
                 <div className="text-[10px] text-zinc-400 mt-0.5">
                   {card.sub}
@@ -206,10 +207,10 @@ export default function DashboardView({
           ))}
         </div>
 
-        {/* Top Branches + Chart Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ─── Top Branches + Chart ─── */}
+        <div className="space-y-5">
           {/* Top Perfect Branches */}
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+          <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm p-5">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-4 h-4 text-brand-magenta" />
               <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
@@ -250,14 +251,14 @@ export default function DashboardView({
               )}
               {metrics.topPerfectBranches.length === 0 && (
                 <p className="text-xs text-zinc-400 italic">
-                  No branch data yet
+                  لا توجد بيانات فروع بعد
                 </p>
               )}
             </div>
           </div>
 
           {/* Lateness Frequency Chart */}
-          <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5 lg:col-span-2">
+          <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                 التأخير حسب الفرع (أعلى 15)
@@ -318,152 +319,93 @@ export default function DashboardView({
               </ResponsiveContainer>
             ) : (
               <div className="h-[260px] flex items-center justify-center text-sm text-zinc-400">
-                No attendance data available yet
+                لا توجد بيانات حضور بعد
               </div>
             )}
           </div>
         </div>
 
-        {/* Branch Performance Table */}
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-          <div className="px-5 py-3 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
-            <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+        {/* ─── Branch Performance Cards (Mobile-first) ─── */}
+        <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-zinc-100 dark:border-zinc-800/40 flex items-center justify-between">
+            <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               ترتيب أداء الفروع
             </h2>
             <button
               onClick={handleExportBranches}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 rounded-lg transition-colors"
+              className="p-2 rounded-2xl bg-zinc-50 dark:bg-zinc-800 text-zinc-500 hover:text-brand-purple transition-colors"
+              title="تصدير CSV"
             >
-              <Download className="w-3 h-3" />
-              Export CSV
+              <Download className="w-4 h-4" />
             </button>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    #
-                  </th>
-                  <th className="px-4 py-2.5 text-left text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Branch
-                  </th>
-                  <th className="px-4 py-2.5 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Staff
-                  </th>
-                  <th className="px-4 py-2.5 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Shifts
-                  </th>
-                  <th className="px-4 py-2.5 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Late
-                  </th>
-                  <th className="px-4 py-2.5 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Late (min)
-                  </th>
-                  <th className="px-4 py-2.5 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Absences
-                  </th>
-                  <th className="px-4 py-2.5 text-center text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-                    Score
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rankedBranches.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={8}
-                      className="px-4 py-12 text-center text-zinc-400"
-                    >
-                      No branch data available
-                    </td>
-                  </tr>
-                ) : (
-                  rankedBranches.map(
-                    (b: BranchPerformance, idx: number) => (
-                      <tr
-                        key={b.id}
-                        className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/30"
-                      >
-                        <td className="px-4 py-2.5 text-zinc-400 font-medium">
-                          {idx + 1}
-                        </td>
-                        <td className="px-4 py-2.5 font-semibold text-zinc-900 dark:text-zinc-100">
-                          {b.name}
-                        </td>
-                        <td className="px-4 py-2.5 text-center text-zinc-600 dark:text-zinc-400">
-                          {b.employeeCount}
-                        </td>
-                        <td className="px-4 py-2.5 text-center text-zinc-600 dark:text-zinc-400">
-                          {b.totalShifts}
-                        </td>
-                        <td className="px-4 py-2.5 text-center">
-                          {b.lateFrequency > 0 ? (
-                            <span className="text-red-600 dark:text-red-400 font-medium">
-                              {b.lateFrequency}
-                            </span>
-                          ) : (
-                            <span className="text-zinc-300 dark:text-zinc-600">
-                              0
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2.5 text-center">
-                          {b.totalLateMinutes > 0 ? (
-                            <span className="text-red-600 dark:text-red-400 font-medium">
-                              {b.totalLateMinutes}
-                            </span>
-                          ) : (
-                            <span className="text-zinc-300 dark:text-zinc-600">
-                              0
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2.5 text-center">
-                          {b.totalAbsences > 0 ? (
-                            <span className="text-amber-600 dark:text-amber-400 font-medium">
-                              {b.totalAbsences}
-                            </span>
-                          ) : (
-                            <span className="text-zinc-300 dark:text-zinc-600">
-                              0
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-2.5 text-center">
-                          <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${
-                              b.attendanceScore >= 80
-                                ? "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta"
-                                : b.attendanceScore >= 60
-                                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
-                                : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
-                            }`}
-                          >
-                            {b.attendanceScore}%
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  )
-                )}
-              </tbody>
-            </table>
-          </div>
+
+          {rankedBranches.length === 0 ? (
+            <div className="px-5 py-12 text-center text-zinc-400 text-sm">
+              لا توجد بيانات فروع
+            </div>
+          ) : (
+            <div className="divide-y divide-zinc-100 dark:divide-zinc-800/40">
+              {rankedBranches.map((b: BranchPerformance, idx: number) => (
+                <div key={b.id} className="px-5 py-4">
+                  {/* Branch name & rank */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                        idx === 0 ? "bg-amber-100 text-amber-600" : idx === 1 ? "bg-zinc-200 text-zinc-600" : idx === 2 ? "bg-orange-100 text-orange-600" : "bg-zinc-100 text-zinc-400"
+                      }`}>
+                        {idx + 1}
+                      </div>
+                      <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{b.name}</span>
+                    </div>
+                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
+                      b.attendanceScore >= 80
+                        ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600"
+                        : b.attendanceScore >= 60
+                        ? "bg-amber-50 dark:bg-amber-950/20 text-amber-600"
+                        : "bg-red-50 dark:bg-red-950/20 text-red-600"
+                    }`}>
+                      {b.attendanceScore}%
+                    </span>
+                  </div>
+
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-4 gap-2">
+                    <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-xl px-2.5 py-2 text-center">
+                      <span className="text-[10px] text-zinc-400 block">الموظفين</span>
+                      <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{b.employeeCount}</span>
+                    </div>
+                    <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-xl px-2.5 py-2 text-center">
+                      <span className="text-[10px] text-zinc-400 block">الورديات</span>
+                      <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{b.totalShifts}</span>
+                    </div>
+                    <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-xl px-2.5 py-2 text-center">
+                      <span className="text-[10px] text-zinc-400 block">التأخير</span>
+                      <span className={`text-sm font-bold ${b.lateFrequency > 0 ? "text-red-600" : "text-zinc-300"}`}>{b.lateFrequency}</span>
+                    </div>
+                    <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-xl px-2.5 py-2 text-center">
+                      <span className="text-[10px] text-zinc-400 block">الغياب</span>
+                      <span className={`text-sm font-bold ${b.totalAbsences > 0 ? "text-amber-600" : "text-zinc-300"}`}>{b.totalAbsences}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Activity Log */}
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+        {/* ─── Activity Log ─── */}
+        <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4 text-brand-magenta" />
-            <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+            <Activity className="w-4 h-4 text-brand-purple" />
+            <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               النشاط الأخير
             </h2>
           </div>
           <div className="space-y-2">
             {activities.length === 0 ? (
               <p className="text-xs text-zinc-400 italic">
-                No recent activity
+                لا يوجد نشاط حديث
               </p>
             ) : (
               activities.map((a: ActivityLogItem) => (
