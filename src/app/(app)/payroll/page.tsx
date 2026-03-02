@@ -10,6 +10,8 @@ import PayrollDashboard from "@/components/payroll/PayrollDashboard";
 import DisputesManagement from "@/components/payroll/DisputesManagement";
 import OverrideReviewPanel from "@/components/attendance/OverrideReviewPanel";
 import PayrollTabs from "@/components/payroll/PayrollTabs";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "HR Loop — Payroll & Deductions",
@@ -20,6 +22,11 @@ export const metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function PayrollPage() {
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
   const now = new Date();
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
@@ -32,9 +39,8 @@ export default async function PayrollPage() {
     getPendingOverrides(),
   ]);
 
-  // Actor info — in production, from session
-  const reviewerId = "system";
-  const reviewerName = "Admin";
+  const reviewerId = session.userId;
+  const reviewerName = session.fullName;
 
   return (
     <PayrollTabs

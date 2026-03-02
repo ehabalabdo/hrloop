@@ -3,6 +3,7 @@
 // ============================================================
 // AppSidebar — Global Navigation for HR Loop
 // Connects: Dashboard, Attendance, Schedule, Payroll, Leaves, Settings
+// Shows current user info and logout button
 // ============================================================
 
 import { useState } from "react";
@@ -20,7 +21,10 @@ import {
   X,
   Clock,
   ChevronRight,
+  LogOut,
+  User,
 } from "lucide-react";
+import { logoutAction } from "@/app/login/actions";
 
 const NAV_ITEMS = [
   {
@@ -67,10 +71,30 @@ const NAV_ITEMS = [
   },
 ];
 
+const ROLE_LABELS: Record<string, string> = {
+  OWNER: "مالك",
+  MANAGER: "مدير فرع",
+  STAFF: "موظف",
+};
+
+const ROLE_COLORS: Record<string, string> = {
+  OWNER: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  MANAGER: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  STAFF: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
+};
+
+type UserInfo = {
+  fullName: string;
+  email: string;
+  role: "OWNER" | "MANAGER" | "STAFF";
+};
+
 export default function AppSidebar({
   children,
+  user,
 }: {
   children: React.ReactNode;
+  user: UserInfo;
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -119,11 +143,30 @@ export default function AppSidebar({
           ))}
         </nav>
 
-        {/* Footer */}
-        <div className="px-4 py-3 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="text-[10px] text-zinc-400">
-            HR Loop v1.0 — {new Date().getFullYear()}
+        {/* User Info & Logout */}
+        <div className="px-3 py-3 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center gap-2.5 px-2 mb-2">
+            <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0">
+              <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                {user.fullName}
+              </p>
+              <span className={`inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-md mt-0.5 ${ROLE_COLORS[user.role]}`}>
+                {ROLE_LABELS[user.role]}
+              </span>
+            </div>
           </div>
+          <form action={logoutAction}>
+            <button
+              type="submit"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              تسجيل الخروج
+            </button>
+          </form>
         </div>
       </aside>
 
@@ -159,7 +202,7 @@ export default function AppSidebar({
 
       {/* Mobile Slide-out */}
       <div
-        className={`lg:hidden fixed top-0 left-0 bottom-0 z-40 w-64 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transform transition-transform duration-200 ${
+        className={`lg:hidden fixed top-0 left-0 bottom-0 z-40 w-64 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transform transition-transform duration-200 flex flex-col ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -184,7 +227,7 @@ export default function AppSidebar({
           </button>
         </div>
 
-        <nav className="px-3 py-4 space-y-1">
+        <nav className="px-3 py-4 space-y-1 flex-1">
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
@@ -205,6 +248,32 @@ export default function AppSidebar({
             </Link>
           ))}
         </nav>
+
+        {/* Mobile User Info & Logout */}
+        <div className="px-3 py-3 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center gap-2.5 px-2 mb-2">
+            <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0">
+              <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                {user.fullName}
+              </p>
+              <span className={`inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-md mt-0.5 ${ROLE_COLORS[user.role]}`}>
+                {ROLE_LABELS[user.role]}
+              </span>
+            </div>
+          </div>
+          <form action={logoutAction}>
+            <button
+              type="submit"
+              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              تسجيل الخروج
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* Main Content */}

@@ -1,7 +1,15 @@
 import { Clock, MapPin, Fingerprint, Building2, Users, Shield, Wallet, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  // If user is already logged in, redirect to dashboard
+  const session = await getSession();
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
       {/* Header */}
@@ -17,22 +25,10 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <Link
-              href="/dashboard"
-              className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+              href="/login"
+              className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
             >
-              Dashboard →
-            </Link>
-            <Link
-              href="/payroll"
-              className="text-sm font-medium text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors hidden sm:inline"
-            >
-              Payroll →
-            </Link>
-            <Link
-              href="/attendance"
-              className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors hidden sm:inline"
-            >
-              Attendance →
+              تسجيل الدخول →
             </Link>
           </div>
         </div>
@@ -62,11 +58,11 @@ export default function Home() {
           </p>
 
           <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all duration-200 active:scale-95 text-lg"
+            href="/login"
+            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-200 active:scale-95 text-lg"
           >
             <LayoutDashboard className="w-5 h-5" />
-            Open Command Center
+            تسجيل الدخول
           </Link>
         </div>
 
@@ -108,7 +104,7 @@ export default function Home() {
             </p>
           </div>
 
-          <Link href="/payroll" className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 text-center hover:ring-2 hover:ring-amber-300 dark:hover:ring-amber-700 transition-all">
+          <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 text-center">
             <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
               <Wallet className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
@@ -118,7 +114,7 @@ export default function Home() {
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
               Automated salary reconciliation with deductions & overtime
             </p>
-          </Link>
+          </div>
         </div>
 
         {/* Stats */}

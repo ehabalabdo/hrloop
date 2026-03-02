@@ -9,10 +9,17 @@ import {
   getSystemLogActors,
 } from "@/lib/system-logger";
 import SettingsTabs from "@/components/settings/SettingsTabs";
+import { getSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
   const [settings, employees, logs, actionTypes, actors] = await Promise.all([
     getGlobalSettings(),
     getEmployeeBiometricStatus(),
@@ -21,9 +28,8 @@ export default async function SettingsPage() {
     getSystemLogActors(),
   ]);
 
-  // Use system actor for now — in production, comes from session
-  const actorId = "system";
-  const actorName = "Admin";
+  const actorId = session.userId;
+  const actorName = session.fullName;
 
   return (
     <SettingsTabs
