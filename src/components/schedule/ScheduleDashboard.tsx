@@ -151,6 +151,29 @@ export default function ScheduleDashboard({
     refreshData(newStart);
   };
 
+  // Jump to a specific date's week
+  const goToWeek = (dateStr: string) => {
+    const picked = new Date(dateStr);
+    if (isNaN(picked.getTime())) return;
+    const day = picked.getDay();
+    const diff = picked.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(picked);
+    monday.setDate(diff);
+    monday.setHours(0, 0, 0, 0);
+    const newStart = monday.toISOString().split("T")[0];
+    setWeekStart(newStart);
+    
+    // Select the picked day within the week
+    const newWeekDays = Array.from({ length: 7 }, (_, i) => {
+      const nd = new Date(monday);
+      nd.setDate(nd.getDate() + i);
+      return nd.toISOString().split("T")[0];
+    });
+    const pickedIdx = newWeekDays.indexOf(dateStr);
+    setSelectedDay(pickedIdx >= 0 ? pickedIdx : 0);
+    refreshData(newStart);
+  };
+
   // Actions
   const handleAction = async (
     actionName: string,
@@ -253,9 +276,23 @@ export default function ScheduleDashboard({
             >
               <ChevronRight className="w-4 h-4 text-zinc-600 dark:text-zinc-300" />
             </button>
-            <div className="flex-[2] text-center font-bold text-zinc-800 dark:text-zinc-100 text-[15px]">
-              {data.weekLabel}
-            </div>
+
+            {/* Clickable week label — opens native date picker */}
+            <label className="flex-[2] text-center cursor-pointer relative">
+              <span className="font-bold text-zinc-800 dark:text-zinc-100 text-[15px]">
+                {data.weekLabel}
+              </span>
+              <span className="block text-[11px] text-brand-purple font-semibold mt-0.5">اضغط لاختيار أسبوع</span>
+              <input
+                type="date"
+                value={weekStart}
+                onChange={(e) => {
+                  if (e.target.value) goToWeek(e.target.value);
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              />
+            </label>
+
             <button
               onClick={() => shiftWeek(7)}
               className="p-3 bg-white dark:bg-zinc-700 shadow-sm rounded-xl active:scale-95 transition-transform"
