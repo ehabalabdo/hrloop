@@ -15,6 +15,20 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
+  // PrismaNeon internally creates Pool/Client instances that read PG* env vars.
+  // We must set them so those internal connections work.
+  try {
+    const url = new URL(connectionString);
+    process.env.PGHOST = url.hostname;
+    process.env.PGPORT = url.port || "5432";
+    process.env.PGDATABASE = url.pathname.slice(1);
+    process.env.PGUSER = decodeURIComponent(url.username);
+    process.env.PGPASSWORD = decodeURIComponent(url.password);
+    process.env.PGSSLMODE = "require";
+  } catch {
+    // Ignore parse errors
+  }
+
   // Use neon() HTTP transport — reliable on Vercel serverless (no WebSocket needed)
   // Enum queries work because schema has @@map to snake_case DB enum names
   const sql = neon(connectionString);
