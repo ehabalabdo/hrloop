@@ -1,0 +1,222 @@
+// HR Loop - Prisma Schema
+// Comprehensive HR system for 40-branch mobile phone retail chain
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum UserRole {
+  OWNER
+  MANAGER
+  STAFF
+}
+
+enum ShiftStatus {
+  DRAFT
+  PUBLISHED
+  COMPLETED
+}
+
+enum AttendanceType {
+  CLOCK_IN
+  CLOCK_OUT
+  BREAK_START
+  BREAK_END
+}
+
+// ============================================================
+// BRANCHES
+// ============================================================
+
+model Branch {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String   @db.VarChar(150)
+  address        String?
+  latitude       Float
+  longitude      Float
+  geofenceRadius Int      @default(50) @map("geofence_radius")
+  managerId      String?  @map("manager_id") @db.Uuid
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  manager  User?  @relation("BranchManager", fields: [managerId], references: [id], onDelete: SetNull)
+  users    User[] @relation("UserPrimaryBranch")
+  shifts   Shift[]
+
+  @@index([managerId], name: "idx_branches_manager")
+  @@map("branches")
+}
+
+// ============================================================
+// USERS
+// ============================================================
+
+model User {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  fullName             String   @map("full_name") @db.VarChar(200)
+  email                String   @unique @db.VarChar(255)
+  passwordHash         String   @map("password_hash")
+  role                 UserRole @default(STAFF)
+  primaryBranchId      String?  @map("primary_branch_id") @db.Uuid
+  phoneNumber          String?  @map("phone_number") @db.VarChar(20)
+  isActive             Boolean  @default(true) @map("is_active")
+
+  // WebAuthn biometric fields
+  webauthnCredentialId String?  @map("webauthn_credential_id")
+  webauthnPublicKey    String?  @map("webauthn_public_key")
+  webauthnSignCount    Int      @default(0) @map("webauthn_sign_count")
+
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  primaryBranch    Branch?          @relation("UserPrimaryBranch", fields: [primaryBranchId], references: [id], onDelete: SetNull)
+  managedBranches  Branch[]         @relation("BranchManager")
+  availability     Availability[]
+  shifts           Shift[]
+  attendanceLogs   AttendanceLog[]
+  payrollProfile   PayrollProfile?
+  monthlyPayslips  MonthlyPayslip[]
+
+  @@index([email], name: "idx_users_email")
+  @@index([role], name: "idx_users_role")
+  @@index([primaryBranchId], name: "idx_users_primary_branch")
+  @@index([isActive], name: "idx_users_active")
+  @@map("users")
+}
+
+// ============================================================
+// AVAILABILITY - Weekly availability per employee
+// ============================================================
+
+model Availability {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  dayOfWeek Int      @map("day_of_week") @db.SmallInt // 0=Sunday, 6=Saturday
+  startTime DateTime @map("start_time") @db.Time
+  endTime   DateTime @map("end_time") @db.Time
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, dayOfWeek])
+  @@index([userId], name: "idx_availability_user")
+  @@index([dayOfWeek], name: "idx_availability_day")
+  @@map("availability")
+}
+
+// ============================================================
+// SHIFTS - Master schedule for all 40 branches
+// ============================================================
+
+model Shift {
+  id             String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String      @map("user_id") @db.Uuid
+  branchId       String      @map("branch_id") @db.Uuid
+  date           DateTime    @db.Date
+  scheduledStart DateTime    @map("scheduled_start") @db.Timestamptz
+  scheduledEnd   DateTime    @map("scheduled_end") @db.Timestamptz
+  status         ShiftStatus @default(DRAFT)
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch         Branch          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  attendanceLogs AttendanceLog[]
+
+  @@index([userId], name: "idx_shifts_user")
+  @@index([branchId], name: "idx_shifts_branch")
+  @@index([date], name: "idx_shifts_date")
+  @@index([status], name: "idx_shifts_status")
+  @@index([branchId, date], name: "idx_shifts_branch_date")
+  @@index([userId, date], name: "idx_shifts_user_date")
+  @@map("shifts")
+}
+
+// ============================================================
+// ATTENDANCE LOGS - High-frequency write-optimized
+// ============================================================
+
+model AttendanceLog {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String         @map("user_id") @db.Uuid
+  shiftId       String?        @map("shift_id") @db.Uuid
+  type          AttendanceType
+  timestamp     DateTime       @default(now()) @db.Timestamptz
+  latitude      Float?
+  longitude     Float?
+  isWithinFence Boolean        @default(false) @map("is_within_fence")
+
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shift Shift? @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+
+  @@index([userId], name: "idx_attendance_user")
+  @@index([shiftId], name: "idx_attendance_shift")
+  @@index([timestamp], name: "idx_attendance_timestamp")
+  @@index([type], name: "idx_attendance_type")
+  @@index([userId, shiftId], name: "idx_attendance_user_shift")
+  @@map("attendance_logs")
+}
+
+// ============================================================
+// PAYROLL PROFILES - Financial settings per employee
+// ============================================================
+
+model PayrollProfile {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId              String   @unique @map("user_id") @db.Uuid
+  baseSalary          Decimal  @default(0.00) @map("base_salary") @db.Decimal(12, 2)
+  hourlyRate          Decimal  @default(0.00) @map("hourly_rate") @db.Decimal(8, 2)
+  overtimeRate        Decimal  @default(0.00) @map("overtime_rate") @db.Decimal(8, 2)
+  latePenaltyPerMinute Decimal @default(0.00) @map("late_penalty_per_minute") @db.Decimal(6, 2)
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_payroll_user")
+  @@map("payroll_profiles")
+}
+
+// ============================================================
+// MONTHLY PAYSLIPS
+// ============================================================
+
+model MonthlyPayslip {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  month              Int      @db.SmallInt
+  year               Int      @db.SmallInt
+  totalHoursWorked   Decimal  @default(0.00) @map("total_hours_worked") @db.Decimal(8, 2)
+  totalOvertimeHours Decimal  @default(0.00) @map("total_overtime_hours") @db.Decimal(8, 2)
+  totalLateMinutes   Decimal  @default(0.00) @map("total_late_minutes") @db.Decimal(8, 2)
+  totalDeductions    Decimal  @default(0.00) @map("total_deductions") @db.Decimal(12, 2)
+  totalBonuses       Decimal  @default(0.00) @map("total_bonuses") @db.Decimal(12, 2)
+  finalNetSalary     Decimal  @default(0.00) @map("final_net_salary") @db.Decimal(12, 2)
+  generatedAt        DateTime @default(now()) @map("generated_at") @db.Timestamptz
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month, year])
+  @@index([userId], name: "idx_payslips_user")
+  @@index([month, year], name: "idx_payslips_month_year")
+  @@index([userId, year, month], name: "idx_payslips_user_period")
+  @@map("monthly_payslips")
+}
