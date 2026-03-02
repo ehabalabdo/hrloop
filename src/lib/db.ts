@@ -1,5 +1,5 @@
 import { PrismaClient } from ".prisma/client";
-import { Pool } from "@neondatabase/serverless";
+import { neon } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
 // Lazy singleton — PrismaClient is NOT created at module-load time.
@@ -17,24 +17,25 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
-  // Parse DATABASE_URL and set PG* env vars as fallback
-  // This fixes PrismaNeon adapter which creates internal Pool/Client
-  // without forwarding the connection string
+  // Parse DATABASE_URL and set PG* env vars.
+  // PrismaNeon adapter internally creates Pool/Client connections
+  // that fall back to these env vars for connection info.
   try {
     const url = new URL(connectionString);
-    if (!process.env.PGHOST) process.env.PGHOST = url.hostname;
-    if (!process.env.PGPORT) process.env.PGPORT = url.port || "5432";
-    if (!process.env.PGDATABASE) process.env.PGDATABASE = url.pathname.slice(1);
-    if (!process.env.PGUSER) process.env.PGUSER = decodeURIComponent(url.username);
-    if (!process.env.PGPASSWORD) process.env.PGPASSWORD = decodeURIComponent(url.password);
-    if (!process.env.PGSSLMODE) process.env.PGSSLMODE = "require";
+    process.env.PGHOST = url.hostname;
+    process.env.PGPORT = url.port || "5432";
+    process.env.PGDATABASE = url.pathname.slice(1);
+    process.env.PGUSER = decodeURIComponent(url.username);
+    process.env.PGPASSWORD = decodeURIComponent(url.password);
+    process.env.PGSSLMODE = "require";
   } catch {
-    // Ignore parse errors — Pool will use connectionString directly
+    // Ignore parse errors
   }
 
-  const pool = new Pool({ connectionString });
+  // Use neon() HTTP function — works reliably on Vercel serverless
+  const sql = neon(connectionString);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const adapter = new PrismaNeon(pool as any);
+  const adapter = new PrismaNeon(sql as any);
   return new PrismaClient({
     adapter,
     log:
