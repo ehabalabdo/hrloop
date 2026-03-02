@@ -1,10 +1,8 @@
 import { PrismaClient } from ".prisma/client";
-import { neon } from "@neondatabase/serverless";
+import { Pool } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
 
 // Lazy singleton — PrismaClient is NOT created at module-load time.
-// This avoids crashes in Vercel serverless where env vars or the
-// adapter aren't ready during static analysis / bundling.
 
 const globalForPrisma = globalThis as unknown as {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,8 +16,8 @@ function createPrismaClient() {
   }
 
   // Parse DATABASE_URL and set PG* env vars.
-  // PrismaNeon adapter internally creates Pool/Client connections
-  // that fall back to these env vars for connection info.
+  // The PrismaNeon adapter internally creates new Client/Pool instances
+  // that read from these env vars instead of the connection string.
   try {
     const url = new URL(connectionString);
     process.env.PGHOST = url.hostname;
@@ -32,10 +30,10 @@ function createPrismaClient() {
     // Ignore parse errors
   }
 
-  // Use neon() HTTP function — works reliably on Vercel serverless
-  const sql = neon(connectionString);
+  // Use Pool (WebSocket) — required for full enum support
+  const pool = new Pool({ connectionString });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const adapter = new PrismaNeon(sql as any);
+  const adapter = new PrismaNeon(pool as any);
   return new PrismaClient({
     adapter,
     log:
