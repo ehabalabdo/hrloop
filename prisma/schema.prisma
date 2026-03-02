@@ -18,12 +18,16 @@ enum UserRole {
   OWNER
   MANAGER
   STAFF
+
+  @@map("user_role")
 }
 
 enum ShiftStatus {
   DRAFT
   PUBLISHED
   COMPLETED
+
+  @@map("shift_status")
 }
 
 enum AttendanceType {
@@ -31,6 +35,8 @@ enum AttendanceType {
   CLOCK_OUT
   BREAK_START
   BREAK_END
+
+  @@map("attendance_type")
 }
 
 enum LeaveType {
@@ -38,6 +44,8 @@ enum LeaveType {
   SICK
   EMERGENCY
   UNPAID
+
+  @@map("leave_type")
 }
 
 enum LeaveStatus {
@@ -45,12 +53,16 @@ enum LeaveStatus {
   APPROVED
   REJECTED
   CANCELLED
+
+  @@map("leave_status")
 }
 
 enum DisputeStatus {
   PENDING
   APPROVED
   REJECTED
+
+  @@map("dispute_status")
 }
 
 // ============================================================
