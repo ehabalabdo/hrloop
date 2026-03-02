@@ -65,14 +65,14 @@ export default function WeeklyGrid({
                 key={dateStr}
                 className={`px-2 py-2.5 text-center ${
                   isToday
-                    ? "bg-emerald-50 dark:bg-emerald-950/30"
+                    ? "bg-brand-magenta/5 dark:bg-brand-magenta/10"
                     : "bg-zinc-100 dark:bg-zinc-800"
                 }`}
               >
                 <div
                   className={`text-xs font-bold uppercase tracking-wide ${
                     isToday
-                      ? "text-emerald-600 dark:text-emerald-400"
+                      ? "text-brand-magenta dark:text-brand-magenta"
                       : "text-zinc-500 dark:text-zinc-400"
                   }`}
                 >
@@ -81,7 +81,7 @@ export default function WeeklyGrid({
                 <div
                   className={`text-sm font-bold mt-0.5 ${
                     isToday
-                      ? "text-emerald-700 dark:text-emerald-300"
+                      ? "text-brand-magenta dark:text-brand-magenta/70"
                       : "text-zinc-700 dark:text-zinc-300"
                   }`}
                 >
@@ -169,7 +169,7 @@ function BranchRow({
           {branch.name}
         </div>
         {branch.managerName && (
-          <div className="text-[10px] text-blue-500 dark:text-blue-400 font-medium truncate mt-0.5">
+          <div className="text-[10px] text-brand-purple dark:text-brand-purple font-medium truncate mt-0.5">
             {branch.managerName}
           </div>
         )}
@@ -244,11 +244,11 @@ function DayCell({
     : "bg-zinc-50 dark:bg-zinc-900/80";
 
   if (isToday) {
-    bgClass = "bg-emerald-50/50 dark:bg-emerald-950/20";
+    bgClass = "bg-brand-magenta/5 dark:bg-brand-magenta/5";
   }
 
   if (isDragOver) {
-    bgClass = "bg-blue-50 dark:bg-blue-950/30 ring-2 ring-blue-400 ring-inset";
+    bgClass = "bg-brand-purple/5 dark:bg-brand-purple/10 ring-2 ring-brand-purple ring-inset";
   }
 
   if (isUnderstaffed && !isDragOver) {
@@ -285,7 +285,7 @@ function DayCell({
               isUnderstaffed
                 ? "text-orange-600 dark:text-orange-400"
                 : isFullyStaffed
-                ? "text-emerald-600 dark:text-emerald-400"
+                ? "text-brand-magenta dark:text-brand-magenta"
                 : "text-zinc-400"
             }`}
           >
@@ -295,7 +295,7 @@ function DayCell({
             <AlertTriangle className="w-3 h-3 text-orange-500" />
           )}
           {isFullyStaffed && (
-            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+            <CheckCircle2 className="w-3 h-3 text-brand-magenta" />
           )}
         </div>
       )}

@@ -108,72 +108,72 @@ export default function DashboardView({
   const kpiCards = [
     {
       icon: Users,
-      label: "Total Staff",
+      label: "إجمالي الموظفين",
       value: metrics.totalStaff.toString(),
-      color: "text-blue-600 dark:text-blue-400",
-      bg: "bg-blue-50 dark:bg-blue-950/30",
-      border: "border-blue-200 dark:border-blue-800",
+      color: "text-brand-purple",
+      bg: "bg-brand-purple/5",
+      border: "border-brand-purple/15",
     },
     {
       icon: Timer,
-      label: "Online Today",
+      label: "متصل اليوم",
       value: metrics.activeToday.toString(),
-      sub: `${metrics.todayAttendancePct}% attendance`,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
-      border: "border-emerald-200 dark:border-emerald-800",
+      sub: `${metrics.todayAttendancePct}% حضور`,
+      color: "text-brand-magenta",
+      bg: "bg-brand-magenta/5",
+      border: "border-brand-magenta/15",
     },
     {
       icon: DollarSign,
-      label: "Monthly Payroll",
+      label: "الرواتب الشهرية",
       value: `$${formatCurrency(metrics.monthlyPayrollCost)}`,
-      color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-950/30",
-      border: "border-amber-200 dark:border-amber-800",
+      color: "text-brand-orange",
+      bg: "bg-brand-orange/5",
+      border: "border-brand-orange/15",
     },
     {
       icon: Building2,
-      label: "Active Branches",
+      label: "الفروع النشطة",
       value: metrics.totalBranches.toString(),
-      color: "text-purple-600 dark:text-purple-400",
-      bg: "bg-purple-50 dark:bg-purple-950/30",
-      border: "border-purple-200 dark:border-purple-800",
+      color: "text-brand-purple-light",
+      bg: "bg-brand-purple-light/5",
+      border: "border-brand-purple-light/15",
     },
     {
       icon: TreePalm,
-      label: "Pending Leaves",
+      label: "إجازات معلقة",
       value: metrics.pendingLeaves.toString(),
-      color: "text-cyan-600 dark:text-cyan-400",
-      bg: "bg-cyan-50 dark:bg-cyan-950/30",
-      border: "border-cyan-200 dark:border-cyan-800",
+      color: "text-brand-orange-dark",
+      bg: "bg-brand-orange-dark/5",
+      border: "border-brand-orange-dark/15",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-white dark:bg-[#0f0a19]">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="bg-white dark:bg-[#0f0a19] border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-              Executive Dashboard
+              لوحة التحكم
             </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              Real-time overview across all branches
+            <p className="text-xs text-brand-purple-light">
+              نظرة شاملة على جميع الفروع
             </p>
           </div>
 
           {/* System Status */}
           <div className="flex items-center gap-2">
             {health.database ? (
-              <span className="flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+              <span className="flex items-center gap-1.5 text-xs text-brand-magenta font-medium">
                 <Wifi className="w-3.5 h-3.5" />
-                System Online
+                متصل
               </span>
             ) : (
               <span className="flex items-center gap-1.5 text-xs text-red-600 font-medium">
                 <WifiOff className="w-3.5 h-3.5" />
-                DB Offline
+                غير متصل
               </span>
             )}
           </div>
@@ -186,7 +186,7 @@ export default function DashboardView({
           {kpiCards.map((card) => (
             <div
               key={card.label}
-              className={`${card.bg} border ${card.border} rounded-xl p-4`}
+              className={`${card.bg} border ${card.border} rounded-2xl p-4`}
             >
               <div className="flex items-center gap-2 mb-2">
                 <card.icon className={`w-4 h-4 ${card.color}`} />
@@ -211,9 +211,9 @@ export default function DashboardView({
           {/* Top Perfect Branches */}
           <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
             <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
+              <TrendingUp className="w-4 h-4 text-brand-magenta" />
               <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                Top Performing Branches
+                أفضل الفروع أداءً
               </h2>
             </div>
             <div className="space-y-3">
@@ -240,8 +240,8 @@ export default function DashboardView({
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                      <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-brand-magenta" />
+                      <span className="text-sm font-bold text-brand-magenta">
                         {branch.score}%
                       </span>
                     </div>
@@ -260,7 +260,7 @@ export default function DashboardView({
           <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5 lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                Lateness Frequency by Branch (Top 15)
+                التأخير حسب الفرع (أعلى 15)
               </h2>
             </div>
             {chartData.length > 0 ? (
@@ -305,10 +305,10 @@ export default function DashboardView({
                           key={`cell-${index}`}
                           fill={
                             index < 3
-                              ? "#ef4444"
+                              ? "#EC008C"
                               : index < 7
-                              ? "#f59e0b"
-                              : "#10b981"
+                              ? "#FA9D27"
+                              : "#6E329F"
                           }
                         />
                       )
@@ -328,7 +328,7 @@ export default function DashboardView({
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
           <div className="px-5 py-3 border-b border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
             <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-              Branch Performance Ranking
+              ترتيب أداء الفروع
             </h2>
             <button
               onClick={handleExportBranches}
@@ -434,7 +434,7 @@ export default function DashboardView({
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${
                               b.attendanceScore >= 80
-                                ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                                ? "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta"
                                 : b.attendanceScore >= 60
                                 ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
                                 : "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400"
@@ -455,9 +455,9 @@ export default function DashboardView({
         {/* Activity Log */}
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4 text-pink-500" />
+            <Activity className="w-4 h-4 text-brand-magenta" />
             <h2 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-              Recent Activity
+              النشاط الأخير
             </h2>
           </div>
           <div className="space-y-2">
@@ -471,7 +471,7 @@ export default function DashboardView({
                   key={a.id}
                   className="flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors"
                 >
-                  <div className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 shrink-0" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-brand-magenta mt-1.5 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-zinc-700 dark:text-zinc-300">
                       <span className="font-semibold">{a.actorName}</span>{" "}

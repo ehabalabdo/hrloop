@@ -62,7 +62,7 @@ export default function PayslipModal({
           <div className="flex items-center gap-2">
             <button
               onClick={onDownloadPDF}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-purple-dark text-white rounded-lg transition-colors"
             >
               <Download className="w-3 h-3" />
               PDF
@@ -80,12 +80,12 @@ export default function PayslipModal({
         <div className="overflow-y-auto flex-1 px-6 py-4 space-y-5">
           {/* Financial Summary Cards */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 text-center">
-              <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mx-auto mb-1" />
+            <div className="bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
+              <DollarSign className="w-5 h-5 text-brand-magenta dark:text-brand-magenta mx-auto mb-1" />
               <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-0.5">
                 Base Salary
               </div>
-              <div className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
+              <div className="text-lg font-bold text-brand-magenta dark:text-brand-magenta">
                 ${formatCurrency(payslip.baseSalary)}
               </div>
             </div>
@@ -100,12 +100,12 @@ export default function PayslipModal({
               </div>
             </div>
 
-            <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl p-3 text-center">
-              <DollarSign className="w-5 h-5 text-blue-600 dark:text-blue-400 mx-auto mb-1" />
+            <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 rounded-xl p-3 text-center">
+              <DollarSign className="w-5 h-5 text-brand-purple mx-auto mb-1" />
               <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-0.5">
                 Net Salary
               </div>
-              <div className="text-lg font-bold text-blue-700 dark:text-blue-400">
+              <div className="text-lg font-bold text-brand-purple dark:text-brand-purple">
                 ${formatCurrency(payslip.finalNetSalary)}
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function PayslipModal({
               <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 Net Salary
               </span>
-              <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-lg font-bold text-brand-magenta dark:text-brand-magenta">
                 ${formatCurrency(payslip.finalNetSalary)}
               </span>
             </div>
@@ -191,13 +191,13 @@ export default function PayslipModal({
               icon={<Calendar className="w-4 h-4" />}
               label="Total Shifts"
               value={payslip.totalShifts.toString()}
-              color="text-blue-600 dark:text-blue-400"
+              color="text-brand-purple"
             />
             <StatBox
               icon={<Clock className="w-4 h-4" />}
               label="Hours Worked"
               value={payslip.totalHoursWorked.toFixed(1)}
-              color="text-emerald-600 dark:text-emerald-400"
+              color="text-brand-magenta dark:text-brand-magenta"
             />
             <StatBox
               icon={<AlertTriangle className="w-4 h-4" />}
@@ -361,7 +361,7 @@ function StatBox({
 function StatusBadge({ status }: { status: string }) {
   const styles = {
     present:
-      "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+      "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
     partial:
       "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
     absent:

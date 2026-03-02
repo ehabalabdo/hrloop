@@ -87,14 +87,14 @@ export default function DeviceManagement({
     <div className="space-y-4">
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl p-3 text-center">
-          <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">
+        <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 rounded-xl p-3 text-center">
+          <div className="text-2xl font-bold text-brand-purple dark:text-brand-purple">
             {employees.length}
           </div>
           <div className="text-xs text-zinc-500">Total Employees</div>
         </div>
-        <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-3 text-center">
-          <div className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">
+        <div className="bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
+          <div className="text-2xl font-bold text-brand-magenta dark:text-brand-magenta">
             {registered}
           </div>
           <div className="text-xs text-zinc-500">Registered</div>
@@ -135,12 +135,12 @@ export default function DeviceManagement({
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                   emp.hasCredential
-                    ? "bg-emerald-100 dark:bg-emerald-900/30"
+                    ? "bg-brand-magenta/10 dark:bg-brand-magenta/10"
                     : "bg-zinc-100 dark:bg-zinc-800"
                 }`}
               >
                 {emp.hasCredential ? (
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <ShieldCheck className="w-4 h-4 text-brand-magenta dark:text-brand-magenta" />
                 ) : (
                   <ShieldOff className="w-4 h-4 text-zinc-400" />
                 )}
@@ -153,7 +153,7 @@ export default function DeviceManagement({
                   {emp.branchName} &middot;{" "}
                   <span className="uppercase">{emp.role}</span>
                   {emp.hasCredential && (
-                    <span className="ml-1 text-emerald-500">
+                    <span className="ml-1 text-brand-magenta">
                       &middot; Sign count: {emp.signCount}
                     </span>
                   )}
@@ -184,7 +184,7 @@ export default function DeviceManagement({
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-emerald-600 text-white"
+              ? "bg-brand-magenta text-white"
               : "bg-red-600 text-white"
           }`}
         >

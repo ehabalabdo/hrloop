@@ -1,9 +1,9 @@
 "use client";
 
 // ============================================================
-// AppSidebar — Global Navigation for HR Loop
-// Connects: Dashboard, Attendance, Schedule, Payroll, Leaves, Settings
-// Shows current user info and logout button
+// AppSidebar — Metro-branded Navigation for HR Loop
+// Desktop: Purple sidebar | Mobile: Glassmorphic bottom nav
+// Role-based filtering for OWNER / MANAGER / STAFF
 // ============================================================
 
 import { useState } from "react";
@@ -17,10 +17,7 @@ import {
   TreePalm,
   Settings,
   Activity,
-  Menu,
-  X,
   Clock,
-  ChevronRight,
   LogOut,
   User,
 } from "lucide-react";
@@ -30,64 +27,58 @@ const NAV_ITEMS = [
   {
     href: "/dashboard",
     label: "لوحة التحكم",
+    shortLabel: "التحكم",
     icon: LayoutDashboard,
-    color: "text-blue-500",
     roles: ["OWNER", "MANAGER"] as string[],
   },
   {
     href: "/attendance",
-    label: "الحضور والانصراف",
+    label: "الحضور",
+    shortLabel: "الحضور",
     icon: Fingerprint,
-    color: "text-emerald-500",
     roles: ["OWNER", "MANAGER", "STAFF"] as string[],
   },
   {
     href: "/schedule",
-    label: "جدول الورديات",
+    label: "الورديات",
+    shortLabel: "الورديات",
     icon: CalendarDays,
-    color: "text-purple-500",
     roles: ["OWNER", "MANAGER"] as string[],
   },
   {
     href: "/payroll",
     label: "الرواتب",
+    shortLabel: "الرواتب",
     icon: Wallet,
-    color: "text-amber-500",
     roles: ["OWNER"] as string[],
   },
   {
     href: "/leaves",
     label: "الإجازات",
+    shortLabel: "إجازات",
     icon: TreePalm,
-    color: "text-cyan-500",
     roles: ["OWNER", "MANAGER", "STAFF"] as string[],
   },
   {
     href: "/activity",
-    label: "سجل النشاط",
+    label: "النشاط",
+    shortLabel: "النشاط",
     icon: Activity,
-    color: "text-pink-500",
     roles: ["OWNER"] as string[],
   },
   {
     href: "/settings",
     label: "الإعدادات",
+    shortLabel: "إعدادات",
     icon: Settings,
-    color: "text-zinc-400",
     roles: ["OWNER"] as string[],
   },
 ];
 
 const ROLE_LABELS: Record<string, string> = {
-  OWNER: "مالك",
+  OWNER: "مالك النظام",
   MANAGER: "مدير فرع",
   STAFF: "موظف",
-};
-
-const ROLE_COLORS: Record<string, string> = {
-  OWNER: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  MANAGER: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  STAFF: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
 };
 
 type UserInfo = {
@@ -103,7 +94,7 @@ export default function AppSidebar({
   children: React.ReactNode;
   user: UserInfo;
 }) {
-  const [open, setOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const pathname = usePathname();
 
   const isActive = (href: string) => pathname.startsWith(href);
@@ -113,59 +104,61 @@ export default function AppSidebar({
     item.roles.includes(user.role)
   );
 
+  // Mobile bottom nav: max 5 items
+  const mobileItems = visibleItems.slice(0, 5);
+
   return (
-    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-56 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 shrink-0">
+    <div className="flex min-h-screen bg-white dark:bg-[#0f0a19]">
+      {/* ===== Desktop Sidebar ===== */}
+      <aside className="hidden lg:flex flex-col w-60 bg-brand-purple-dark shrink-0 min-h-screen">
         {/* Logo */}
         <Link
-          href="/"
-          className="flex items-center gap-2 px-5 py-4 border-b border-zinc-100 dark:border-zinc-800"
+          href="/dashboard"
+          className="flex items-center gap-3 px-6 py-5 border-b border-white/10"
         >
-          <div className="w-7 h-7 bg-emerald-600 rounded-lg flex items-center justify-center">
-            <Clock className="w-3.5 h-3.5 text-white" />
+          <div className="w-9 h-9 bg-brand-magenta rounded-xl flex items-center justify-center shadow-lg shadow-brand-magenta/30">
+            <Clock className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-            HR Loop
-          </span>
+          <div>
+            <span className="text-base font-bold text-white tracking-tight">
+              HR Loop
+            </span>
+            <p className="text-[10px] text-white/50 font-medium">Metro by T-Mobile</p>
+          </div>
         </Link>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {visibleItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive(item.href)
-                  ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
-                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 hover:text-zinc-700 dark:hover:text-zinc-300"
-              }`}
-            >
-              <item.icon
-                className={`w-4 h-4 ${
-                  isActive(item.href) ? item.color : ""
+        <nav className="flex-1 px-3 py-5 space-y-1">
+          {visibleItems.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? "bg-white/15 text-white shadow-sm"
+                    : "text-white/60 hover:text-white hover:bg-white/[0.08]"
                 }`}
-              />
-              {item.label}
-              {isActive(item.href) && (
-                <ChevronRight className="w-3 h-3 ml-auto opacity-40" />
-              )}
-            </Link>
-          ))}
+              >
+                <item.icon className={`w-[18px] h-[18px] ${active ? "text-brand-magenta" : ""}`} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* User Info & Logout */}
-        <div className="px-3 py-3 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center gap-2.5 px-2 mb-2">
-            <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0">
-              <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+        <div className="px-4 py-4 border-t border-white/10">
+          <div className="flex items-center gap-3 px-2 mb-3">
+            <div className="w-9 h-9 bg-brand-magenta/20 rounded-xl flex items-center justify-center shrink-0">
+              <User className="w-4 h-4 text-brand-magenta" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">
+              <p className="text-xs font-semibold text-white truncate">
                 {user.fullName}
               </p>
-              <span className={`inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-md mt-0.5 ${ROLE_COLORS[user.role]}`}>
+              <span className="text-[10px] text-white/50 font-medium">
                 {ROLE_LABELS[user.role]}
               </span>
             </div>
@@ -173,7 +166,7 @@ export default function AppSidebar({
           <form action={logoutAction}>
             <button
               type="submit"
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white/60 hover:text-white hover:bg-white/[0.08] rounded-xl transition-colors"
             >
               <LogOut className="w-3.5 h-3.5" />
               تسجيل الخروج
@@ -182,114 +175,92 @@ export default function AppSidebar({
         </div>
       </aside>
 
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-emerald-600 rounded-lg flex items-center justify-center">
-            <Clock className="w-3.5 h-3.5 text-white" />
+      {/* ===== Mobile Top Bar ===== */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-brand-purple-dark px-4 py-3 flex items-center justify-between">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-brand-magenta rounded-lg flex items-center justify-center">
+            <Clock className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+          <span className="text-sm font-bold text-white tracking-tight">
             HR Loop
           </span>
         </Link>
+
+        {/* Profile Toggle */}
         <button
-          onClick={() => setOpen(!open)}
-          className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          onClick={() => setShowProfile(!showProfile)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 text-white"
         >
-          {open ? (
-            <X className="w-5 h-5 text-zinc-600" />
-          ) : (
-            <Menu className="w-5 h-5 text-zinc-600" />
-          )}
+          <User className="w-4 h-4" />
+          <span className="text-xs font-medium max-w-[80px] truncate">{user.fullName}</span>
         </button>
       </div>
 
-      {/* Mobile Overlay */}
-      {open && (
-        <div
-          className="lg:hidden fixed inset-0 z-30 bg-black/50 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        />
-      )}
-
-      {/* Mobile Slide-out */}
-      <div
-        className={`lg:hidden fixed top-0 left-0 bottom-0 z-40 w-64 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 transform transition-transform duration-200 flex flex-col ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100 dark:border-zinc-800">
-          <Link
-            href="/"
-            className="flex items-center gap-2"
-            onClick={() => setOpen(false)}
-          >
-            <div className="w-7 h-7 bg-emerald-600 rounded-lg flex items-center justify-center">
-              <Clock className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-              HR Loop
-            </span>
-          </Link>
-          <button
-            onClick={() => setOpen(false)}
-            className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
-          >
-            <X className="w-4 h-4 text-zinc-500" />
-          </button>
-        </div>
-
-        <nav className="px-3 py-4 space-y-1 flex-1">
-          {visibleItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive(item.href)
-                  ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
-                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-              }`}
-            >
-              <item.icon
-                className={`w-4 h-4 ${
-                  isActive(item.href) ? item.color : ""
-                }`}
-              />
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Mobile User Info & Logout */}
-        <div className="px-3 py-3 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center gap-2.5 px-2 mb-2">
-            <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0">
-              <User className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">
+      {/* Mobile Profile Dropdown */}
+      {showProfile && (
+        <>
+          <div
+            className="lg:hidden fixed inset-0 z-40 bg-black/40"
+            onClick={() => setShowProfile(false)}
+          />
+          <div className="lg:hidden fixed top-14 right-3 z-50 w-56 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+            <div className="p-4 border-b border-zinc-100 dark:border-zinc-800">
+              <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 {user.fullName}
               </p>
-              <span className={`inline-block text-[10px] font-medium px-1.5 py-0.5 rounded-md mt-0.5 ${ROLE_COLORS[user.role]}`}>
+              <p className="text-[11px] text-zinc-500 mt-0.5">{user.email}</p>
+              <span className="inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-purple/10 text-brand-purple">
                 {ROLE_LABELS[user.role]}
               </span>
             </div>
+            <form action={logoutAction} className="p-2">
+              <button
+                type="submit"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                تسجيل الخروج
+              </button>
+            </form>
           </div>
-          <form action={logoutAction}>
-            <button
-              type="submit"
-              className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-              تسجيل الخروج
-            </button>
-          </form>
-        </div>
-      </div>
+        </>
+      )}
 
-      {/* Main Content */}
-      <main className="flex-1 min-w-0 lg:pt-0 pt-14">{children}</main>
+      {/* ===== Main Content ===== */}
+      <main className="flex-1 min-w-0 lg:pt-0 pt-14 pb-20 lg:pb-0">
+        {children}
+      </main>
+
+      {/* ===== Mobile Bottom Nav (Glassmorphic) ===== */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass border-t border-zinc-200/50 dark:border-white/5">
+        <div className="flex items-center justify-around px-2 py-2">
+          {mobileItems.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[56px] ${
+                  active
+                    ? "text-brand-purple"
+                    : "text-zinc-400 dark:text-zinc-500"
+                }`}
+              >
+                <div
+                  className={`p-1.5 rounded-xl transition-all ${
+                    active ? "bg-brand-purple/10" : ""
+                  }`}
+                >
+                  <item.icon className={`w-5 h-5 ${active ? "text-brand-purple" : ""}`} />
+                </div>
+                <span className={`text-[10px] font-semibold ${active ? "text-brand-purple" : ""}`}>
+                  {item.shortLabel}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }

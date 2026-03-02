@@ -209,7 +209,7 @@ export default function SettingsPanel({ initialSettings }: SettingsPanelProps) {
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-emerald-600 text-white"
+              ? "bg-brand-magenta text-white"
               : "bg-red-600 text-white"
           }`}
         >

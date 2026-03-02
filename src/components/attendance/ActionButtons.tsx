@@ -41,8 +41,8 @@ export default function ActionButtons({
           className={cn(
             "w-full max-w-xs flex items-center justify-center gap-3",
             "px-8 py-5 rounded-2xl text-lg font-semibold",
-            "bg-blue-600 hover:bg-blue-700 text-white",
-            "shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40",
+            "bg-brand-purple hover:bg-brand-purple-dark text-white",
+            "shadow-lg shadow-brand-purple/25 hover:shadow-brand-purple/40",
             "transition-all duration-200 active:scale-95",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
           )}
@@ -68,8 +68,8 @@ export default function ActionButtons({
           className={cn(
             "w-full max-w-xs flex items-center justify-center gap-3",
             "px-8 py-6 rounded-2xl text-xl font-bold",
-            "bg-emerald-600 hover:bg-emerald-700 text-white",
-            "shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/50",
+            "bg-brand-magenta hover:bg-brand-magenta/90 text-white",
+            "shadow-lg shadow-brand-magenta/30 hover:shadow-brand-magenta/50",
             "transition-all duration-200 active:scale-95",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
           )}
@@ -100,8 +100,8 @@ export default function ActionButtons({
           className={cn(
             "w-full max-w-xs flex items-center justify-center gap-3",
             "px-8 py-5 rounded-2xl text-lg font-semibold",
-            "bg-amber-500 hover:bg-amber-600 text-white",
-            "shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40",
+            "bg-brand-orange hover:bg-brand-orange-dark text-white",
+            "shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40",
             "transition-all duration-200 active:scale-95",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
           )}
@@ -141,7 +141,7 @@ export default function ActionButtons({
   if (status === "on_break") {
     return (
       <div className="flex flex-col items-center gap-4 w-full">
-        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 animate-pulse">
+        <div className="flex items-center gap-2 text-brand-orange animate-pulse">
           <Coffee className="w-5 h-5" />
           <span className="text-sm font-medium">On Break</span>
         </div>
@@ -152,8 +152,8 @@ export default function ActionButtons({
           className={cn(
             "w-full max-w-xs flex items-center justify-center gap-3",
             "px-8 py-6 rounded-2xl text-xl font-bold",
-            "bg-blue-600 hover:bg-blue-700 text-white",
-            "shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50",
+            "bg-brand-purple-light hover:bg-brand-purple text-white",
+            "shadow-lg shadow-brand-purple-light/30 hover:shadow-brand-purple/50",
             "transition-all duration-200 active:scale-95",
             "disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
           )}

@@ -56,7 +56,7 @@ export default function LiveTimer({ startTime, isActive }: LiveTimerProps) {
   }
 
   return (
-    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+    <div className="flex items-center gap-2 text-brand-magenta dark:text-brand-magenta">
       <Clock className="w-5 h-5 animate-pulse" />
       <span className="text-2xl font-mono font-bold tracking-wider">
         {formatDuration(elapsed)}

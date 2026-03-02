@@ -23,12 +23,12 @@ export default function EmployeeChip({
   const isManager = entry.userRole === "MANAGER";
 
   const roleStyles = isManager
-    ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300"
-    : "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300";
+    ? "bg-brand-purple/5 dark:bg-brand-purple/10 border-brand-purple/15 text-brand-purple dark:text-brand-purple/70"
+    : "bg-brand-magenta/5 dark:bg-brand-magenta/10 border-brand-magenta/15 dark:border-brand-magenta/20 text-brand-magenta dark:text-brand-magenta/70";
 
   const statusDot = entry.status === "DRAFT"
     ? "bg-amber-400"
-    : "bg-emerald-400";
+    : "bg-brand-magenta";
 
   return (
     <div

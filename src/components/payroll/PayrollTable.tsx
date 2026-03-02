@@ -129,7 +129,7 @@ export default function PayrollTable({
                         <span
                           className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${
                             item.userRole === "MANAGER"
-                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                              ? "bg-brand-purple/10 text-brand-purple"
                               : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
                           }`}
                         >
@@ -189,7 +189,7 @@ export default function PayrollTable({
 
                   {/* Net Salary */}
                   <td className="px-4 py-3 text-right">
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold text-base">
+                    <span className="text-brand-magenta dark:text-brand-magenta font-bold text-base">
                       ${formatCurrency(item.finalNetSalary)}
                     </span>
                   </td>
@@ -197,7 +197,7 @@ export default function PayrollTable({
                   {/* Lock Status */}
                   <td className="px-4 py-3 text-center">
                     {item.isLocked ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-medium">
+                      <span className="inline-flex items-center gap-1 text-brand-magenta dark:text-brand-magenta text-xs font-medium">
                         <Lock className="w-3 h-3" />
                         Locked
                       </span>
@@ -218,7 +218,7 @@ export default function PayrollTable({
                   <td className="px-4 py-3">
                     <button
                       onClick={() => onViewPayslip(item.userId)}
-                      className="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 text-blue-600 dark:text-blue-400 transition-colors"
+                      className="p-1.5 rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-purple/10 text-brand-purple transition-colors"
                       title="View payslip details"
                     >
                       <Eye className="w-4 h-4" />

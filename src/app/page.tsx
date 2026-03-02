@@ -16,7 +16,7 @@ export default async function Home() {
       <header className="px-6 py-5 border-b border-zinc-100 dark:border-zinc-800">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-brand-magenta rounded-lg flex items-center justify-center">
               <Clock className="w-4 h-4 text-white" />
             </div>
             <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
@@ -26,7 +26,7 @@ export default async function Home() {
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+              className="text-sm font-semibold text-brand-magenta hover:text-brand-magenta dark:text-brand-magenta dark:hover:text-brand-magenta/70 transition-colors"
             >
               تسجيل الدخول →
             </Link>
@@ -37,9 +37,9 @@ export default async function Home() {
       {/* Hero */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-16">
         <div className="max-w-2xl text-center">
-          <div className="inline-flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-full px-4 py-1.5 mb-6">
-            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">
+          <div className="inline-flex items-center gap-2 bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-full px-4 py-1.5 mb-6">
+            <div className="w-2 h-2 bg-brand-magenta/50 rounded-full animate-pulse" />
+            <span className="text-xs font-medium text-brand-magenta dark:text-brand-magenta">
               System Active — 40 Branches
             </span>
           </div>
@@ -47,7 +47,7 @@ export default async function Home() {
           <h1 className="text-4xl sm:text-5xl font-bold text-zinc-900 dark:text-zinc-100 tracking-tight leading-tight mb-4">
             Smart HR for Modern
             <br />
-            <span className="text-emerald-600 dark:text-emerald-400">
+            <span className="text-brand-magenta dark:text-brand-magenta">
               Retail Chains
             </span>
           </h1>
@@ -59,7 +59,7 @@ export default async function Home() {
 
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-200 active:scale-95 text-lg"
+            className="inline-flex items-center gap-2 bg-brand-magenta hover:bg-brand-magenta/90 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-brand-magenta/25 hover:shadow-brand-magenta/40 transition-all duration-200 active:scale-95 text-lg"
           >
             <LayoutDashboard className="w-5 h-5" />
             تسجيل الدخول
@@ -69,8 +69,8 @@ export default async function Home() {
         {/* Features */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mt-16 w-full">
           <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 text-center">
-            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Fingerprint className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div className="w-10 h-10 bg-brand-purple/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Fingerprint className="w-5 h-5 text-brand-purple" />
             </div>
             <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">
               Biometric Auth
@@ -81,8 +81,8 @@ export default async function Home() {
           </div>
 
           <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 text-center">
-            <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="w-10 h-10 bg-brand-magenta/10 dark:bg-brand-magenta/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <MapPin className="w-5 h-5 text-brand-magenta dark:text-brand-magenta" />
             </div>
             <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">
               GPS Geofencing

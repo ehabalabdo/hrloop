@@ -157,7 +157,7 @@ export default function BranchManagement({
       {toast && (
         <div
           className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium text-white ${
-            toast.type === "success" ? "bg-emerald-600" : "bg-red-600"
+            toast.type === "success" ? "bg-brand-magenta" : "bg-red-600"
           }`}
         >
           {toast.message}
@@ -389,7 +389,7 @@ export default function BranchManagement({
                   title={branch.isActive ? "تعطيل" : "تفعيل"}
                 >
                   {branch.isActive ? (
-                    <ToggleRight className="w-5 h-5 text-emerald-500" />
+                    <ToggleRight className="w-5 h-5 text-brand-magenta" />
                   ) : (
                     <ToggleLeft className="w-5 h-5 text-zinc-400" />
                   )}

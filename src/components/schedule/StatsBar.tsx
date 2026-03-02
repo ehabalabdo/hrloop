@@ -24,8 +24,8 @@ export default function StatsBar({ stats }: StatsBarProps) {
       icon: CalendarDays,
       label: "Total Shifts",
       value: stats.totalShifts,
-      color: "text-blue-600 dark:text-blue-400",
-      bg: "bg-blue-50 dark:bg-blue-950/30",
+      color: "text-brand-purple",
+      bg: "bg-brand-purple/5 dark:bg-brand-purple/10",
     },
     {
       icon: FileText,
@@ -38,8 +38,8 @@ export default function StatsBar({ stats }: StatsBarProps) {
       icon: CheckCircle2,
       label: "Published",
       value: stats.publishedShifts,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-50 dark:bg-emerald-950/30",
+      color: "text-brand-magenta dark:text-brand-magenta",
+      bg: "bg-brand-magenta/5 dark:bg-brand-magenta/10",
     },
     {
       icon: AlertTriangle,

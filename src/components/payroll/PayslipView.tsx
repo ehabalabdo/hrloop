@@ -102,7 +102,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors print:hidden"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-purple-dark text-white rounded-lg transition-colors print:hidden"
           >
             <Printer className="w-3 h-3" />
             Print
@@ -114,10 +114,10 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Financial Summary */}
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-xl p-4 text-center">
-            <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-1" />
+          <div className="bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-4 text-center">
+            <DollarSign className="w-6 h-6 text-brand-magenta dark:text-brand-magenta mx-auto mb-1" />
             <div className="text-xs text-zinc-500 mb-1">Base Salary</div>
-            <div className="text-xl font-bold text-emerald-700 dark:text-emerald-400">
+            <div className="text-xl font-bold text-brand-magenta dark:text-brand-magenta">
               ${formatCurrency(p.baseSalary)}
             </div>
           </div>
@@ -130,10 +130,10 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             </div>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-center">
-            <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400 mx-auto mb-1" />
+          <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 rounded-xl p-4 text-center">
+            <DollarSign className="w-6 h-6 text-brand-purple mx-auto mb-1" />
             <div className="text-xs text-zinc-500 mb-1">Net Salary</div>
-            <div className="text-xl font-bold text-blue-700 dark:text-blue-400">
+            <div className="text-xl font-bold text-brand-purple dark:text-brand-purple">
               ${formatCurrency(p.finalNetSalary)}
             </div>
           </div>
@@ -211,7 +211,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
               Net Salary
             </span>
-            <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="text-xl font-bold text-brand-magenta dark:text-brand-magenta">
               ${formatCurrency(p.finalNetSalary)}
             </span>
           </div>
@@ -223,13 +223,13 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             icon={<Calendar className="w-5 h-5" />}
             label="Total Shifts"
             value={p.totalShifts.toString()}
-            color="text-blue-600 dark:text-blue-400"
+            color="text-brand-purple"
           />
           <StatBox
             icon={<Clock className="w-5 h-5" />}
             label="Hours Worked"
             value={p.totalHoursWorked.toFixed(1)}
-            color="text-emerald-600 dark:text-emerald-400"
+            color="text-brand-magenta dark:text-brand-magenta"
           />
           <StatBox
             icon={<AlertTriangle className="w-5 h-5" />}
@@ -407,7 +407,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium print:hidden ${
             toast.type === "success"
-              ? "bg-emerald-600 text-white"
+              ? "bg-brand-magenta text-white"
               : "bg-red-600 text-white"
           }`}
         >
@@ -471,7 +471,7 @@ function StatBox({
 function StatusBadge({ status }: { status: string }) {
   const styles = {
     present:
-      "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+      "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
     partial:
       "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
     absent:

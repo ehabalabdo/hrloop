@@ -47,8 +47,8 @@ export const LEAVE_STATUS_COLORS: Record<
     text: "text-amber-700 dark:text-amber-400",
   },
   APPROVED: {
-    bg: "bg-emerald-100 dark:bg-emerald-900/30",
-    text: "text-emerald-700 dark:text-emerald-400",
+    bg: "bg-brand-magenta/10 dark:bg-brand-magenta/10",
+    text: "text-brand-magenta dark:text-brand-magenta",
   },
   REJECTED: {
     bg: "bg-red-100 dark:bg-red-900/30",

@@ -45,7 +45,7 @@ export default function WeekPicker({
       </button>
 
       <div className="flex items-center gap-2 min-w-[220px] justify-center">
-        <Calendar className="w-4 h-4 text-emerald-500" />
+        <Calendar className="w-4 h-4 text-brand-magenta" />
         <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           {weekLabel}
         </span>
@@ -61,7 +61,7 @@ export default function WeekPicker({
 
       <button
         onClick={goToCurrentWeek}
-        className="ml-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-950/50 transition-colors"
+        className="ml-2 px-3 py-1.5 text-xs font-medium rounded-lg bg-brand-magenta/5 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta border border-brand-magenta/15 dark:border-brand-magenta/20 hover:bg-brand-magenta/10 dark:hover:bg-brand-magenta/10 transition-colors"
       >
         Today
       </button>

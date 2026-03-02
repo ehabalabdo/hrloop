@@ -234,8 +234,8 @@ export default function PayrollDashboard({
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center">
-              <Wallet className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="w-9 h-9 bg-brand-magenta/10 dark:bg-brand-magenta/10 rounded-xl flex items-center justify-center">
+              <Wallet className="w-5 h-5 text-brand-magenta dark:text-brand-magenta" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
@@ -270,7 +270,7 @@ export default function PayrollDashboard({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setBranchId(e.target.value)
               }
-              className="text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-1.5 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+              className="text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-1.5 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
             >
               <option value="">All Branches</option>
               {branches.map((b: Branch) => (
@@ -286,7 +286,7 @@ export default function PayrollDashboard({
             <button
               onClick={handleGenerate}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-brand-magenta hover:bg-brand-magenta/90 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -300,7 +300,7 @@ export default function PayrollDashboard({
               <button
                 onClick={handleLock}
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-brand-purple hover:bg-brand-purple-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Lock className="w-3.5 h-3.5" />
                 Approve &amp; Lock
@@ -336,7 +336,7 @@ export default function PayrollDashboard({
       {loadingPayslip && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <div className="bg-white dark:bg-zinc-900 rounded-2xl p-8 flex items-center gap-3">
-            <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
+            <Loader2 className="w-6 h-6 animate-spin text-brand-magenta" />
             <span className="text-sm text-zinc-600 dark:text-zinc-400">
               Loading payslip...
             </span>
@@ -357,7 +357,7 @@ export default function PayrollDashboard({
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-emerald-600 text-white"
+              ? "bg-brand-magenta text-white"
               : "bg-red-600 text-white"
           } animate-in slide-in-from-bottom-4`}
         >

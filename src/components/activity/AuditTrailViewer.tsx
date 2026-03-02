@@ -83,10 +83,10 @@ export default function AuditTrailViewer({
   const actionColors: Record<string, string> = {
     DEVICE_RESET: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
     MANUAL_OVERRIDE_REQUEST: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
-    MANUAL_OVERRIDE_APPROVED: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+    MANUAL_OVERRIDE_APPROVED: "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
     MANUAL_OVERRIDE_REJECTED: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
-    DISPUTE_SUBMITTED: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
-    DISPUTE_APPROVED: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+    DISPUTE_SUBMITTED: "bg-brand-purple/10 text-brand-purple dark:text-brand-purple",
+    DISPUTE_APPROVED: "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
     DISPUTE_REJECTED: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
     OFFLINE_SYNC: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
     SETTING_UPDATE: "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400",

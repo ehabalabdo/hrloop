@@ -129,7 +129,7 @@ export default function ScheduleSidebar({
                 branchCity: e.target.value || undefined,
               })
             }
-            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
             <option value="">All Cities</option>
             {cities.map((city) => (
@@ -154,7 +154,7 @@ export default function ScheduleSidebar({
                 managerName: e.target.value || undefined,
               })
             }
-            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
             <option value="">All Managers</option>
             {managers.map((mgr) => (
@@ -269,7 +269,7 @@ export default function ScheduleSidebar({
                               };
                               setEditReqs(updated);
                             }}
-                            className="w-full px-1 py-1 text-xs text-center rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                            className="w-full px-1 py-1 text-xs text-center rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-brand-purple"
                           />
                         </div>
                       ))}
@@ -277,7 +277,7 @@ export default function ScheduleSidebar({
                     <button
                       onClick={saveRequirements}
                       disabled={saving}
-                      className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg disabled:opacity-50 transition-colors"
+                      className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium bg-brand-magenta hover:bg-brand-magenta/90 text-white rounded-lg disabled:opacity-50 transition-colors"
                     >
                       <Save className="w-3 h-3" />
                       {saving ? "Saving..." : "Save"}

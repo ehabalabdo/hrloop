@@ -65,7 +65,7 @@ export default function GeofenceStatus({
       )}
 
       {status === "within" && (
-        <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl px-4 py-3 border border-emerald-200 dark:border-emerald-800">
+        <div className="flex items-center gap-2 text-brand-magenta dark:text-brand-magenta bg-brand-magenta/5 dark:bg-brand-magenta/10 rounded-xl px-4 py-3 border border-brand-magenta/15 dark:border-brand-magenta/20">
           <MapPin className="w-5 h-5" />
           <div className="flex-1">
             <span className="text-sm font-medium">You are at the branch</span>

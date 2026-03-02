@@ -301,18 +301,18 @@ export default function AttendanceDashboard({
   const getStatusLabel = () => {
     switch (state.status) {
       case "clocked_in":
-        return { text: "On Shift", color: "bg-emerald-500" };
+        return { text: "في الوردية", color: "bg-brand-magenta" };
       case "on_break":
-        return { text: "On Break", color: "bg-amber-500" };
+        return { text: "في استراحة", color: "bg-brand-orange" };
       default:
-        return { text: "Off Duty", color: "bg-zinc-400" };
+        return { text: "غير متصل", color: "bg-zinc-400" };
     }
   };
 
   const statusInfo = getStatusLabel();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-[#0f0a19] flex flex-col">
       {/* Offline Banner */}
       {!isOnline && (
         <div className="bg-red-600 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
@@ -329,7 +329,7 @@ export default function AttendanceDashboard({
         </div>
       )}
       {!syncing && pendingOffline > 0 && isOnline && (
-        <div className="bg-blue-500 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
+        <div className="bg-brand-purple text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
           <Upload className="w-4 h-4" />
           <span>{pendingOffline} pending action{pendingOffline > 1 ? "s" : ""} to sync</span>
         </div>
@@ -339,7 +339,7 @@ export default function AttendanceDashboard({
       <header className="px-5 pt-6 pb-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-zinc-400 dark:text-zinc-500">
+            <p className="text-sm text-brand-purple-light">
               {getGreeting()}
             </p>
             <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
@@ -350,7 +350,7 @@ export default function AttendanceDashboard({
             {/* Online indicator */}
             <div className="flex items-center gap-1.5">
               {isOnline ? (
-                <Wifi className="w-4 h-4 text-emerald-500" />
+                <Wifi className="w-4 h-4 text-brand-magenta" />
               ) : (
                 <WifiOff className="w-4 h-4 text-red-500" />
               )}
@@ -369,9 +369,9 @@ export default function AttendanceDashboard({
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center px-5 pb-8 gap-6">
         {/* Live Timer */}
-        <div className="w-full flex flex-col items-center py-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl">
-          <span className="text-xs text-zinc-400 dark:text-zinc-500 uppercase tracking-wider font-medium mb-2">
-            Shift Duration
+        <div className="w-full flex flex-col items-center py-8 bg-gradient-to-b from-brand-purple/5 to-transparent dark:from-brand-purple/10 rounded-3xl border border-brand-purple/10">
+          <span className="text-xs text-brand-purple uppercase tracking-wider font-semibold mb-2">
+            مدة الوردية
           </span>
           <LiveTimer
             startTime={state.clockInTime}
@@ -418,7 +418,7 @@ export default function AttendanceDashboard({
           <div
             className={`w-full rounded-xl px-4 py-3 text-sm font-medium ${
               message.type === "success"
-                ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                ? "bg-brand-magenta/5 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta border border-brand-magenta/15 dark:border-brand-magenta/20"
                 : "bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
             }`}
           >
@@ -459,8 +459,8 @@ export default function AttendanceDashboard({
           <div className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
               <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <Camera className="w-5 h-5 text-blue-500" />
-                Manual Override Request
+                <Camera className="w-5 h-5 text-brand-purple" />
+                طلب تجاوز يدوي
               </h2>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                 You appear to be outside the geofence. Take a live photo to verify your location.
@@ -502,7 +502,7 @@ export default function AttendanceDashboard({
                     {!streamRef.current ? (
                       <button
                         onClick={startCamera}
-                        className="flex-1 bg-blue-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-blue-600 transition flex items-center justify-center gap-2"
+                        className="flex-1 bg-brand-purple text-white rounded-xl py-2.5 text-sm font-medium hover:bg-brand-purple transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
                         Start Camera
@@ -510,7 +510,7 @@ export default function AttendanceDashboard({
                     ) : (
                       <button
                         onClick={capturePhoto}
-                        className="flex-1 bg-emerald-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-emerald-600 transition flex items-center justify-center gap-2"
+                        className="flex-1 bg-brand-magenta/50 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-brand-magenta transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
                         Capture Photo
@@ -540,7 +540,7 @@ export default function AttendanceDashboard({
                   onChange={(e) => setOverrideReason(e.target.value)}
                   rows={3}
                   placeholder="E.g. GPS drift, building entrance not in range..."
-                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
                 />
               </div>
 
@@ -555,7 +555,7 @@ export default function AttendanceDashboard({
                 <button
                   onClick={submitOverride}
                   disabled={!overridePhoto || !overrideReason.trim() || isLoading}
-                  className="flex-1 bg-blue-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                  className="flex-1 bg-brand-purple text-white rounded-xl py-2.5 text-sm font-medium hover:bg-brand-purple disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -577,10 +577,10 @@ export default function AttendanceDashboard({
             key={toast.id}
             className={`px-4 py-3 rounded-xl text-sm font-medium shadow-lg animate-in slide-in-from-right-5 fade-in duration-300 ${
               toast.type === "success"
-                ? "bg-emerald-600 text-white"
+                ? "bg-brand-magenta text-white"
                 : toast.type === "error"
                   ? "bg-red-600 text-white"
-                  : "bg-blue-600 text-white"
+                  : "bg-brand-purple text-white"
             }`}
           >
             {toast.text}

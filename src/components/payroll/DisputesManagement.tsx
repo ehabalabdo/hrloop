@@ -103,7 +103,7 @@ export default function DisputesManagement({
     PENDING:
       "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
     APPROVED:
-      "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+      "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
     REJECTED:
       "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
   };
@@ -130,7 +130,7 @@ export default function DisputesManagement({
 
       {filtered.length === 0 ? (
         <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-8 text-center">
-          <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" />
+          <CheckCircle2 className="w-10 h-10 text-brand-magenta mx-auto mb-2" />
           <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
             No {filter.toLowerCase()} disputes
           </p>
@@ -224,7 +224,7 @@ export default function DisputesManagement({
                     <button
                       onClick={() => handleResolve(d.id, "APPROVED")}
                       disabled={isPending && processing === d.id}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-sm font-medium bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 disabled:opacity-50 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 text-sm font-medium bg-brand-magenta/50 text-white rounded-lg hover:bg-brand-magenta disabled:opacity-50 transition-colors"
                     >
                       {isPending && processing === d.id ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -258,7 +258,7 @@ export default function DisputesManagement({
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-emerald-600 text-white"
+              ? "bg-brand-magenta text-white"
               : "bg-red-600 text-white"
           }`}
         >

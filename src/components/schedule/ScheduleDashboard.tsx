@@ -200,7 +200,7 @@ export default function ScheduleDashboard({
                 href="/"
                 className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               >
-                <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-brand-magenta rounded-lg flex items-center justify-center">
                   <Clock className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100 hidden sm:inline">
@@ -244,7 +244,7 @@ export default function ScheduleDashboard({
             {/* Loading indicator */}
             {isPending && (
               <div className="flex items-center gap-2 text-xs text-zinc-400">
-                <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-3 h-3 border-2 border-brand-magenta border-t-transparent rounded-full animate-spin" />
                 Refreshing...
               </div>
             )}
@@ -264,11 +264,11 @@ export default function ScheduleDashboard({
           {/* Legend */}
           <div className="mt-4 flex items-center gap-6 flex-wrap text-xs text-zinc-500 dark:text-zinc-400">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-2 rounded bg-blue-200 dark:bg-blue-800 border border-blue-300 dark:border-blue-700" />
+              <div className="w-4 h-2 rounded bg-brand-purple/15 dark:bg-brand-purple/20 border border-brand-purple/20 dark:border-brand-purple/30" />
               <span>Manager</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-2 rounded bg-emerald-200 dark:bg-emerald-800 border border-emerald-300 dark:border-emerald-700" />
+              <div className="w-4 h-2 rounded bg-brand-magenta/15 dark:bg-brand-magenta/15 border border-brand-magenta/20 dark:border-brand-magenta/30" />
               <span>Staff</span>
             </div>
             <div className="flex items-center gap-2">
@@ -276,7 +276,7 @@ export default function ScheduleDashboard({
               <span>Draft</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-400" />
+              <div className="w-2 h-2 rounded-full bg-brand-magenta" />
               <span>Published</span>
             </div>
             <div className="flex items-center gap-2">

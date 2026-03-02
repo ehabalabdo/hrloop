@@ -54,7 +54,7 @@ export default function ActivityLogView({
 
   const actionColor = (action: string): string => {
     if (action.includes("CREATE") || action.includes("SUBMIT"))
-      return "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30";
+      return "text-brand-magenta dark:text-brand-magenta bg-brand-magenta/5 dark:bg-brand-magenta/10";
     if (action.includes("DELETE") || action.includes("REJECT") || action.includes("CANCEL"))
       return "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30";
     if (action.includes("UPDATE") || action.includes("REVIEW") || action.includes("APPROVE"))

@@ -80,7 +80,7 @@ export default function BatchActions({
         <button
           onClick={() => handleAction("publish", onPublish)}
           disabled={loading !== null || !hasDrafts}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-brand-magenta hover:bg-brand-magenta/90 text-white rounded-xl shadow-lg shadow-brand-magenta/25 hover:shadow-brand-magenta/40 disabled:opacity-50 disabled:shadow-none transition-all active:scale-95"
         >
           {loading === "publish" ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -118,7 +118,7 @@ export default function BatchActions({
         <div
           className={`absolute top-full mt-3 left-0 right-0 sm:left-auto sm:right-0 sm:w-96 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border ${
             toast.type === "success"
-              ? "bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+              ? "bg-brand-magenta/5 dark:bg-brand-magenta/10 border-brand-magenta/15 dark:border-brand-magenta/20 text-brand-magenta dark:text-brand-magenta/70"
               : "bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300"
           }`}
         >

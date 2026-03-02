@@ -274,7 +274,7 @@ export default function LeavesDashboard({
               <button
                 onClick={handleSubmit}
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-brand-magenta hover:bg-brand-magenta/90 text-white disabled:opacity-50 transition-colors"
               >
                 {isPending ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -419,7 +419,7 @@ export default function LeavesDashboard({
                       </td>
                       <td className="px-4 py-3 text-center text-xs">
                         {r.isPaid ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                          <span className="text-brand-magenta dark:text-brand-magenta font-medium">
                             Paid
                           </span>
                         ) : (
@@ -437,7 +437,7 @@ export default function LeavesDashboard({
                                   setReviewingId(r.id);
                                   setReviewNote("");
                                 }}
-                                className="p-1.5 rounded-lg hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 transition-colors"
+                                className="p-1.5 rounded-lg hover:bg-brand-magenta/5 dark:hover:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta transition-colors"
                                 title="Review"
                               >
                                 <Check className="w-4 h-4" />
@@ -485,7 +485,7 @@ export default function LeavesDashboard({
               <button
                 onClick={() => handleReview("APPROVED")}
                 disabled={isPending}
-                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-brand-magenta hover:bg-brand-magenta/90 text-white disabled:opacity-50 transition-colors"
               >
                 <Check className="w-3.5 h-3.5" />
                 Approve
@@ -514,7 +514,7 @@ export default function LeavesDashboard({
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-emerald-600 text-white"
+              ? "bg-brand-magenta text-white"
               : "bg-red-600 text-white"
           }`}
         >

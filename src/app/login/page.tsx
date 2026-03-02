@@ -21,23 +21,23 @@ export default async function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-50 via-emerald-50/30 to-zinc-100 dark:from-zinc-950 dark:via-emerald-950/20 dark:to-zinc-900 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-purple-light px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 bg-emerald-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-emerald-600/20">
+          <div className="w-14 h-14 bg-brand-magenta rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-brand-magenta/30">
             <Clock className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+          <h1 className="text-2xl font-bold text-white">
             HR Loop
           </h1>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-sm text-white/60 mt-1">
             نظام إدارة الموارد البشرية
           </p>
         </div>
 
         {/* Login Card */}
-        <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-zinc-900/50 p-6">
+        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-white/20 shadow-2xl shadow-black/20 p-6">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 text-center mb-6">
             تسجيل الدخول
           </h2>
@@ -45,7 +45,7 @@ export default async function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-center text-[11px] text-zinc-400 mt-6">
+        <p className="text-center text-[11px] text-white/40 mt-6">
           HR Loop v1.0 — {new Date().getFullYear()}
         </p>
       </div>

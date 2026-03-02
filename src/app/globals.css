@@ -2,19 +2,31 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a2e;
+  --brand-purple: #6E329F;
+  --brand-purple-light: #9546C3;
+  --brand-purple-dark: #46176D;
+  --brand-magenta: #EC008C;
+  --brand-orange: #FA9D27;
+  --brand-orange-dark: #E27600;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-purple-light: var(--brand-purple-light);
+  --color-brand-purple-dark: var(--brand-purple-dark);
+  --color-brand-magenta: var(--brand-magenta);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #09090b;
+    --background: #0f0a19;
     --foreground: #ededed;
   }
 }
@@ -44,5 +56,18 @@ body {
 /* Smooth button press animation */
 button:active {
   transform: scale(0.97);
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .glass {
+    background: rgba(15, 10, 25, 0.85);
+  }
 }
 
