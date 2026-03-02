@@ -222,7 +222,27 @@ export default function ScheduleDashboard({
                 </p>
               </div>
             </div>
-            {isPending && <Loader2 className="w-5 h-5 animate-spin text-brand-purple" />}
+            <div className="flex items-center gap-2">
+              {isPending && <Loader2 className="w-5 h-5 animate-spin text-brand-purple" />}
+              {hasShifts && !hasDrafts && (
+                <button
+                  onClick={() => {
+                    if (window.confirm("سيتم إعادة توليد الورديات للأماكن غير المغطاة. هل تريد الاستمرار؟")) {
+                      handleAction("generate", () => generateWeeklySchedule(weekStart));
+                    }
+                  }}
+                  disabled={actionLoading !== null}
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-xl text-[12px] font-bold shadow-sm disabled:opacity-50 transition-all active:scale-95 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                >
+                  {actionLoading === "generate" ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Wand2 className="w-3.5 h-3.5" />
+                  )}
+                  إعادة التوليد
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Week Selector */}
@@ -428,6 +448,7 @@ export default function ScheduleDashboard({
       </div>
 
       {/* ── FLOATING ACTION BAR ── */}
+      {(!hasShifts || hasDrafts) && (
       <div className="fixed bottom-6 left-0 right-0 z-40 px-5 pointer-events-none">
         <div className="max-w-2xl mx-auto flex gap-3 pointer-events-auto bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl p-3 rounded-[28px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.2)] border border-white/60 dark:border-zinc-700/60 ring-1 ring-black/5 dark:ring-white/5">
           
@@ -481,28 +502,9 @@ export default function ScheduleDashboard({
             </>
           )}
 
-          {/* Regenerate Button (When Has Shifts but No Drafts) */}
-          {hasShifts && !hasDrafts && (
-            <button
-              onClick={() => {
-                 if (window.confirm("سيتم إعادة توليد الورديات للأماكن غير المغطاة. هل تريد الاستمرار؟")) {
-                     handleAction("generate", () => generateWeeklySchedule(weekStart));
-                 }
-              }}
-              disabled={actionLoading !== null}
-              className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-[20px] text-[15px] font-bold shadow-sm disabled:opacity-50 transition-all active:scale-95 border border-zinc-200 dark:border-zinc-700"
-            >
-              {actionLoading === "generate" ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Wand2 className="w-5 h-5" />
-              )}
-              إعادة التوليد والتعديل
-            </button>
-          )}
-
         </div>
       </div>
+      )}
 
       {/* ── TOAST MESSAGES ── */}
       {toast && (
