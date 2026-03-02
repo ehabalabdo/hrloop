@@ -63,6 +63,23 @@ export async function GET() {
     results.clientDirect = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 300) };
   }
 
+  // Step 6: Test Prisma with @prisma/adapter-pg + neon Pool
+  try {
+    const { PrismaClient } = await import(".prisma/client");
+    const { Pool } = await import("@neondatabase/serverless");
+    const { PrismaPg } = await import("@prisma/adapter-pg");
+
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+    const adapter = new PrismaPg(pool as any);
+    const prisma = new PrismaClient({ adapter } as any);
+
+    const count = await prisma.user.count();
+    results.prismaPg = { ok: true, count };
+    await prisma.$disconnect();
+  } catch (e) {
+    results.prismaPg = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 300) };
+  }
+
   // Step 4: Test Prisma with neon() HTTP adapter
   try {
     const { PrismaClient } = await import(".prisma/client");
