@@ -42,18 +42,22 @@ export async function loginAction(
     const user = users[0];
 
     if (!user) {
-      return { error: "بيانات الدخول غير صحيحة" };
+      return { error: "المستخدم غير موجود — تأكد من البريد الإلكتروني" };
     }
 
     if (!user.is_active) {
       return { error: "هذا الحساب معطل. تواصل مع المدير" };
     }
 
+    if (!user.password_hash) {
+      return { error: "لم يتم تعيين كلمة مرور — تواصل مع المدير" };
+    }
+
     // Verify password
     const passwordValid = await bcrypt.compare(password, user.password_hash as string);
 
     if (!passwordValid) {
-      return { error: "بيانات الدخول غير صحيحة" };
+      return { error: "كلمة المرور خاطئة — حاول مرة أخرى" };
     }
 
     // Create session
