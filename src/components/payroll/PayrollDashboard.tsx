@@ -35,7 +35,7 @@ import {
   lockPayroll,
   unlockPayroll,
   getEmployeePayslip,
-} from "@/app/payroll/actions";
+} from "@/app/(app)/payroll/actions";
 
 // ============================================================
 

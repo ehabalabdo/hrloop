@@ -13,7 +13,7 @@ import GeofenceStatus from "./GeofenceStatus";
 import ActionButtons from "./ActionButtons";
 import ShiftInfo from "./ShiftInfo";
 import { authenticateBiometric, registerBiometric, isWebAuthnSupported } from "@/lib/webauthn-client";
-import { handleAttendance, getAttendanceState } from "@/app/attendance/actions";
+import { handleAttendance, getAttendanceState } from "@/app/(app)/attendance/actions";
 import { getCurrentPosition } from "@/lib/geofence";
 import type { AttendanceState, AttendanceAction } from "@/lib/types";
 import type { GeofenceResult } from "@/lib/geofence";

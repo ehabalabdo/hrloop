@@ -4,7 +4,7 @@
 // URL: /payslip/[userId]?month=6&year=2025
 // ============================================================
 
-import { getEmployeePayslip } from "@/app/payroll/actions";
+import { getEmployeePayslip } from "@/app/(app)/payroll/actions";
 import PayslipView from "@/components/payroll/PayslipView";
 
 export const metadata = {

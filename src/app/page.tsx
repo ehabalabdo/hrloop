@@ -1,4 +1,4 @@
-import { Clock, MapPin, Fingerprint, Building2, Users, Shield, Wallet } from "lucide-react";
+import { Clock, MapPin, Fingerprint, Building2, Users, Shield, Wallet, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -17,20 +17,20 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <Link
+              href="/dashboard"
+              className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+            >
+              Dashboard →
+            </Link>
+            <Link
               href="/payroll"
-              className="text-sm font-medium text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
+              className="text-sm font-medium text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors hidden sm:inline"
             >
               Payroll →
             </Link>
             <Link
-              href="/schedule"
-              className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
-            >
-              Schedule →
-            </Link>
-            <Link
               href="/attendance"
-              className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+              className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors hidden sm:inline"
             >
               Attendance →
             </Link>
@@ -62,11 +62,11 @@ export default function Home() {
           </p>
 
           <Link
-            href="/attendance"
-            className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition-all duration-200 active:scale-95 text-lg"
+            href="/dashboard"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all duration-200 active:scale-95 text-lg"
           >
-            <Fingerprint className="w-5 h-5" />
-            Open Attendance
+            <LayoutDashboard className="w-5 h-5" />
+            Open Command Center
           </Link>
         </div>
 

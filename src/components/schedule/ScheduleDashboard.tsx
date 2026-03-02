@@ -35,7 +35,7 @@ import {
   deleteShift,
   updateBranchRequirements,
   getAllBranches,
-} from "@/app/schedule/actions";
+} from "@/app/(app)/schedule/actions";
 
 interface ScheduleDashboardProps {
   initialData: WeeklyScheduleData;
