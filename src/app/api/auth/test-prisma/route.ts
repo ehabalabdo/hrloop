@@ -19,21 +19,29 @@ export async function GET() {
     results.neonDirect = { ok: false, error: String(e) };
   }
 
-  // Step 3: Test Prisma
+  // Step 3: Test Prisma with parsed URL params
   try {
     const { PrismaClient } = await import(".prisma/client");
     const { Pool } = await import("@neondatabase/serverless");
     const { PrismaNeon } = await import("@prisma/adapter-neon");
 
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL! });
+    const dbUrl = new URL(process.env.DATABASE_URL!);
+    const pool = new Pool({
+      host: dbUrl.hostname,
+      port: parseInt(dbUrl.port || "5432"),
+      database: dbUrl.pathname.slice(1),
+      user: decodeURIComponent(dbUrl.username),
+      password: decodeURIComponent(dbUrl.password),
+      ssl: true,
+    });
     const adapter = new PrismaNeon(pool as any);
     const prisma = new PrismaClient({ adapter } as any);
 
     const count = await prisma.user.count();
-    results.prismaPool = { ok: true, count };
+    results.prismaPoolParsed = { ok: true, count };
     await prisma.$disconnect();
   } catch (e) {
-    results.prismaPool = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 500) };
+    results.prismaPoolParsed = { ok: false, error: String(e), stack: (e as Error).stack?.substring(0, 500) };
   }
 
   // Step 4: Test Prisma with neon() HTTP adapter
