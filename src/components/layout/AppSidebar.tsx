@@ -29,45 +29,52 @@ import { logoutAction } from "@/app/login/actions";
 const NAV_ITEMS = [
   {
     href: "/dashboard",
-    label: "Dashboard",
+    label: "لوحة التحكم",
     icon: LayoutDashboard,
     color: "text-blue-500",
+    roles: ["OWNER", "MANAGER"] as string[],
   },
   {
     href: "/attendance",
-    label: "Attendance",
+    label: "الحضور والانصراف",
     icon: Fingerprint,
     color: "text-emerald-500",
+    roles: ["OWNER", "MANAGER", "STAFF"] as string[],
   },
   {
     href: "/schedule",
-    label: "Schedule",
+    label: "جدول الورديات",
     icon: CalendarDays,
     color: "text-purple-500",
+    roles: ["OWNER", "MANAGER"] as string[],
   },
   {
     href: "/payroll",
-    label: "Payroll",
+    label: "الرواتب",
     icon: Wallet,
     color: "text-amber-500",
+    roles: ["OWNER"] as string[],
   },
   {
     href: "/leaves",
-    label: "Leaves",
+    label: "الإجازات",
     icon: TreePalm,
     color: "text-cyan-500",
+    roles: ["OWNER", "MANAGER", "STAFF"] as string[],
   },
   {
     href: "/activity",
-    label: "Activity Log",
+    label: "سجل النشاط",
     icon: Activity,
     color: "text-pink-500",
+    roles: ["OWNER"] as string[],
   },
   {
     href: "/settings",
-    label: "Settings",
+    label: "الإعدادات",
     icon: Settings,
     color: "text-zinc-400",
+    roles: ["OWNER"] as string[],
   },
 ];
 
@@ -101,6 +108,11 @@ export default function AppSidebar({
 
   const isActive = (href: string) => pathname.startsWith(href);
 
+  // Filter nav items based on user role
+  const visibleItems = NAV_ITEMS.filter((item) =>
+    item.roles.includes(user.role)
+  );
+
   return (
     <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Desktop Sidebar */}
@@ -120,7 +132,7 @@ export default function AppSidebar({
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-1">
-          {NAV_ITEMS.map((item) => (
+          {visibleItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -228,7 +240,7 @@ export default function AppSidebar({
         </div>
 
         <nav className="px-3 py-4 space-y-1 flex-1">
-          {NAV_ITEMS.map((item) => (
+          {visibleItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
