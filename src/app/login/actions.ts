@@ -1,13 +1,15 @@
 // ============================================================
 // Login Server Actions
 // Handles authentication: login and logout
+// Uses @neondatabase/serverless directly to avoid Prisma init
+// issues in serverless environments
 // ============================================================
 
 "use server";
 
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
-import prisma from "@/lib/db";
+import { neon } from "@neondatabase/serverless";
 import { createSession, deleteSession } from "@/lib/auth";
 
 export type LoginState = {
@@ -26,41 +28,45 @@ export async function loginAction(
     return { error: "البريد الإلكتروني وكلمة المرور مطلوبان" };
   }
 
-  // Find user by email
-  const user = await prisma.user.findUnique({
-    where: { email: email.toLowerCase().trim() },
-    select: {
-      id: true,
-      email: true,
-      fullName: true,
-      role: true,
-      passwordHash: true,
-      isActive: true,
-    },
-  });
+  try {
+    const sql = neon(process.env.DATABASE_URL!);
 
-  if (!user) {
-    return { error: "بيانات الدخول غير صحيحة" };
+    // Find user by email
+    const users = await sql`
+      SELECT id, email, full_name, role, password_hash, is_active
+      FROM users
+      WHERE email = ${email.toLowerCase().trim()}
+      LIMIT 1
+    `;
+
+    const user = users[0];
+
+    if (!user) {
+      return { error: "بيانات الدخول غير صحيحة" };
+    }
+
+    if (!user.is_active) {
+      return { error: "هذا الحساب معطل. تواصل مع المدير" };
+    }
+
+    // Verify password
+    const passwordValid = await bcrypt.compare(password, user.password_hash as string);
+
+    if (!passwordValid) {
+      return { error: "بيانات الدخول غير صحيحة" };
+    }
+
+    // Create session
+    await createSession({
+      userId: user.id as string,
+      email: user.email as string,
+      fullName: user.full_name as string,
+      role: user.role as "OWNER" | "MANAGER" | "STAFF",
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    return { error: "حدث خطأ في النظام. حاول مرة أخرى" };
   }
-
-  if (!user.isActive) {
-    return { error: "هذا الحساب معطل. تواصل مع المدير" };
-  }
-
-  // Verify password
-  const passwordValid = await bcrypt.compare(password, user.passwordHash);
-
-  if (!passwordValid) {
-    return { error: "بيانات الدخول غير صحيحة" };
-  }
-
-  // Create session
-  await createSession({
-    userId: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    role: user.role,
-  });
 
   redirect("/dashboard");
 }
