@@ -7,8 +7,8 @@
 // falls back to network. Never caches API/server-action calls.
 // ============================================================
 
-const CACHE_NAME = "hrloop-v1";
-const STATIC_ASSETS = ["/", "/attendance", "/dashboard"];
+const CACHE_NAME = "hrloop-v2";
+const STATIC_ASSETS = ["/", "/login"];
 
 declare const self: ServiceWorkerGlobalScope;
 
