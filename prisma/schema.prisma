@@ -47,6 +47,12 @@ enum LeaveStatus {
   CANCELLED
 }
 
+enum DisputeStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 // ============================================================
 // BRANCHES
 // ============================================================
@@ -103,10 +109,14 @@ model User {
   attendanceLogs   AttendanceLog[]
   payrollProfile   PayrollProfile?
   monthlyPayslips  MonthlyPayslip[]
-  leaveRequests    LeaveRequest[]   @relation("LeaveRequester")
-  reviewedLeaves   LeaveRequest[]   @relation("LeaveReviewer")
-  notifications    Notification[]
-  activityLogs     ActivityLog[]
+  leaveRequests        LeaveRequest[]   @relation("LeaveRequester")
+  reviewedLeaves       LeaveRequest[]   @relation("LeaveReviewer")
+  notifications        Notification[]
+  activityLogs         ActivityLog[]
+  disputes             Dispute[]        @relation("DisputeUser")
+  reviewedDisputes     Dispute[]        @relation("DisputeReviewer")
+  systemLogs           SystemLog[]
+  reviewedAttendance   AttendanceLog[]  @relation("AttendanceReviewer")
 
   @@index([email], name: "idx_users_email")
   @@index([role], name: "idx_users_role")
@@ -178,6 +188,7 @@ model Shift {
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   branch         Branch          @relation(fields: [branchId], references: [id], onDelete: Cascade)
   attendanceLogs AttendanceLog[]
+  disputes       Dispute[]
 
   @@index([userId], name: "idx_shifts_user")
   @@index([branchId], name: "idx_shifts_branch")
@@ -197,14 +208,22 @@ model AttendanceLog {
   userId        String         @map("user_id") @db.Uuid
   shiftId       String?        @map("shift_id") @db.Uuid
   type          AttendanceType
-  timestamp     DateTime       @default(now()) @db.Timestamptz
-  latitude      Float?
-  longitude     Float?
-  isWithinFence Boolean        @default(false) @map("is_within_fence")
+  timestamp       DateTime       @default(now()) @db.Timestamptz
+  latitude        Float?
+  longitude       Float?
+  isWithinFence   Boolean        @default(false) @map("is_within_fence")
+
+  // Manual override fields (GPS drift helper)
+  overrideStatus  String?        @map("override_status") @db.VarChar(20)
+  overridePhotoUrl String?       @map("override_photo_url")
+  overrideReason  String?        @map("override_reason")
+  reviewedById    String?        @map("reviewed_by") @db.Uuid
+  reviewedAt      DateTime?      @map("reviewed_at") @db.Timestamptz
 
   // Relations
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  shift Shift? @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+  user       User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shift      Shift? @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+  reviewedBy User?  @relation("AttendanceReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
 
   @@index([userId], name: "idx_attendance_user")
   @@index([shiftId], name: "idx_attendance_shift")
@@ -258,7 +277,8 @@ model MonthlyPayslip {
   generatedAt           DateTime @default(now()) @map("generated_at") @db.Timestamptz
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  disputes Dispute[]
 
   @@unique([userId, month, year])
   @@index([userId], name: "idx_payslips_user")
@@ -362,4 +382,63 @@ model Notification {
   @@index([userId], name: "idx_notifications_user")
   @@index([userId, isRead], name: "idx_notifications_unread")
   @@map("notifications")
+}
+
+// ============================================================
+// DISPUTES - Penalty dispute system
+// ============================================================
+
+model Dispute {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String        @map("user_id") @db.Uuid
+  payslipId      String        @map("payslip_id") @db.Uuid
+  shiftId        String?       @map("shift_id") @db.Uuid
+  disputeType    String        @default("LATE_DEDUCTION") @map("dispute_type") @db.VarChar(50)
+  originalAmount Decimal       @default(0.00) @map("original_amount") @db.Decimal(12, 2)
+  reason         String
+  status         DisputeStatus @default(PENDING)
+  adminComment   String?       @map("admin_comment")
+  reviewedBy     String?       @map("reviewed_by") @db.Uuid
+  reviewedAt     DateTime?     @map("reviewed_at") @db.Timestamptz
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  user     User           @relation("DisputeUser", fields: [userId], references: [id], onDelete: Cascade)
+  payslip  MonthlyPayslip @relation(fields: [payslipId], references: [id], onDelete: Cascade)
+  shift    Shift?         @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+  reviewer User?          @relation("DisputeReviewer", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
+  @@index([userId], name: "idx_disputes_user")
+  @@index([payslipId], name: "idx_disputes_payslip")
+  @@index([status], name: "idx_disputes_status")
+  @@index([createdAt(sort: Desc)], name: "idx_disputes_created")
+  @@map("disputes")
+}
+
+// ============================================================
+// SYSTEM LOGS - Immutable audit trail for critical actions
+// ============================================================
+
+model SystemLog {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actorId     String?  @map("actor_id") @db.Uuid
+  actionType  String   @map("action_type") @db.VarChar(100)
+  targetType  String   @map("target_type") @db.VarChar(50)
+  targetId    String?  @map("target_id") @db.VarChar(100)
+  oldValue    Json?    @map("old_value")
+  newValue    Json?    @map("new_value")
+  ipAddress   String?  @map("ip_address") @db.VarChar(45)
+  userAgent   String?  @map("user_agent")
+  description String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId], name: "idx_system_logs_actor")
+  @@index([actionType], name: "idx_system_logs_action")
+  @@index([targetType, targetId], name: "idx_system_logs_target")
+  @@index([createdAt(sort: Desc)], name: "idx_system_logs_created")
+  @@map("system_logs")
 }

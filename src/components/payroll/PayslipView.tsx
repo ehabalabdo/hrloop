@@ -3,8 +3,10 @@
 // ============================================================
 // PayslipView — Standalone Employee Payslip Page
 // Full-page version of the payslip (not modal)
+// Enhanced with dispute buttons on deductions
 // ============================================================
 
+import { useState, useTransition } from "react";
 import {
   DollarSign,
   Clock,
@@ -15,9 +17,12 @@ import {
   Printer,
   ArrowLeft,
   Ban,
+  MessageSquare,
+  Loader2,
 } from "lucide-react";
 import type { PayslipData, ShiftReconciliation } from "@/lib/payroll-types";
 import Link from "next/link";
+import { submitDispute } from "@/app/(app)/attendance/resilience-actions";
 
 function formatCurrency(n: number): string {
   return n.toLocaleString("en-US", {
@@ -36,6 +41,41 @@ function formatTime(iso: string): string {
 
 export default function PayslipView({ payslip }: { payslip: PayslipData }) {
   const p = payslip;
+  const [disputeForm, setDisputeForm] = useState<{
+    type: string;
+    amount: number;
+  } | null>(null);
+  const [disputeReason, setDisputeReason] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4000);
+  };
+
+  const handleDispute = () => {
+    if (!disputeForm || !disputeReason.trim() || !p.payslipId) return;
+    startTransition(async () => {
+      const result = await submitDispute({
+        userId: p.userId,
+        payslipId: p.payslipId!,
+        disputeType: disputeForm.type,
+        originalAmount: disputeForm.amount,
+        reason: disputeReason,
+      });
+      if (result.success) {
+        showToast(result.message, "success");
+        setDisputeForm(null);
+        setDisputeReason("");
+      } else {
+        showToast(result.message, "error");
+      }
+    });
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -123,24 +163,39 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
           <div className="space-y-2">
             {p.latePenalties > 0 && (
-              <Row
+              <DeductionRow
                 label={`Late Arrivals (${p.totalLateMinutes.toFixed(0)} min)`}
                 value={p.latePenalties}
-                type="deduction"
+                canDispute={!!p.payslipId}
+                onDispute={() =>
+                  setDisputeForm({ type: "LATE_PENALTY", amount: p.latePenalties })
+                }
               />
             )}
             {p.earlyLeavePenalties > 0 && (
-              <Row
+              <DeductionRow
                 label={`Early Leave (${p.totalEarlyLeaveMinutes.toFixed(0)} min)`}
                 value={p.earlyLeavePenalties}
-                type="deduction"
+                canDispute={!!p.payslipId}
+                onDispute={() =>
+                  setDisputeForm({
+                    type: "EARLY_LEAVE_PENALTY",
+                    amount: p.earlyLeavePenalties,
+                  })
+                }
               />
             )}
             {p.absenceDeductions > 0 && (
-              <Row
+              <DeductionRow
                 label={`Absences (${p.totalAbsentDays} days)`}
                 value={p.absenceDeductions}
-                type="deduction"
+                canDispute={!!p.payslipId}
+                onDispute={() =>
+                  setDisputeForm({
+                    type: "ABSENCE_DEDUCTION",
+                    amount: p.absenceDeductions,
+                  })
+                }
               />
             )}
             {p.totalDeductions === 0 && (
@@ -288,6 +343,77 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
           payslip
         </div>
       </div>
+
+      {/* Dispute Form Modal */}
+      {disputeForm && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 print:hidden">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-amber-500" />
+                Dispute Deduction
+              </h2>
+              <p className="text-sm text-zinc-500 mt-1">
+                Disputing{" "}
+                <span className="font-semibold uppercase">
+                  {disputeForm.type.replace(/_/g, " ")}
+                </span>{" "}
+                — {disputeForm.amount.toFixed(2)} SAR
+              </p>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Why are you disputing this deduction?
+                </label>
+                <textarea
+                  value={disputeReason}
+                  onChange={(e) => setDisputeReason(e.target.value)}
+                  rows={4}
+                  placeholder="Explain why you believe this deduction is incorrect..."
+                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none resize-none"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setDisputeForm(null);
+                    setDisputeReason("");
+                  }}
+                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl py-2.5 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDispute}
+                  disabled={!disputeReason.trim() || isPending}
+                  className="flex-1 bg-amber-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                >
+                  {isPending ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <MessageSquare className="w-4 h-4" />
+                  )}
+                  Submit Dispute
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium print:hidden ${
+            toast.type === "success"
+              ? "bg-emerald-600 text-white"
+              : "bg-red-600 text-white"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
@@ -369,5 +495,37 @@ function StatusBadge({ status }: { status: string }) {
       {icons[s] ?? icons.absent}
       {status}
     </span>
+  );
+}
+
+function DeductionRow({
+  label,
+  value,
+  canDispute,
+  onDispute,
+}: {
+  label: string;
+  value: number;
+  canDispute: boolean;
+  onDispute: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between text-sm gap-2">
+      <span className="text-zinc-600 dark:text-zinc-400">{label}</span>
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-red-600 dark:text-red-400">
+          -${formatCurrency(value)}
+        </span>
+        {canDispute && (
+          <button
+            onClick={onDispute}
+            className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 font-medium transition-colors print:hidden"
+            title="Dispute this deduction"
+          >
+            Dispute
+          </button>
+        )}
+      </div>
+    </div>
   );
 }

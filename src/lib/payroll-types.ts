@@ -33,6 +33,7 @@ export interface ShiftReconciliation {
 }
 
 export interface PayslipData {
+  payslipId: string | null; // null if not yet generated/saved
   userId: string;
   userName: string;
   userRole: string;

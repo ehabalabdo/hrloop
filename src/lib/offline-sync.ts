@@ -1,0 +1,96 @@
+// ============================================================
+// Offline Sync Queue — IndexedDB-based
+// Stores attendance payloads when offline, replays on reconnect.
+// Original timestamp is always preserved.
+// ============================================================
+
+const DB_NAME = "hrloop_offline";
+const DB_VERSION = 1;
+const STORE_NAME = "pending_actions";
+
+export interface OfflinePayload {
+  id?: number;
+  userId: string;
+  shiftId: string;
+  action: string;
+  latitude: number;
+  longitude: number;
+  isWithinFence: boolean;
+  timestamp: string; // Original local timestamp (ISO)
+  createdAt: string; // When queued
+}
+
+function openDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/**
+ * Queue an attendance payload for later sync.
+ */
+export async function queueOfflineAction(
+  payload: Omit<OfflinePayload, "id" | "createdAt">
+): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  tx.objectStore(STORE_NAME).add({
+    ...payload,
+    createdAt: new Date().toISOString(),
+  });
+  return new Promise((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
+ * Get all pending offline actions.
+ */
+export async function getPendingActions(): Promise<OfflinePayload[]> {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readonly");
+  const store = tx.objectStore(STORE_NAME);
+  const req = store.getAll();
+  return new Promise((resolve, reject) => {
+    req.onsuccess = () => resolve(req.result as OfflinePayload[]);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/**
+ * Remove a synced action from the queue.
+ */
+export async function removeAction(id: number): Promise<void> {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readwrite");
+  tx.objectStore(STORE_NAME).delete(id);
+  return new Promise((resolve, reject) => {
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+/**
+ * Count pending actions.
+ */
+export async function pendingCount(): Promise<number> {
+  const db = await openDB();
+  const tx = db.transaction(STORE_NAME, "readonly");
+  const req = tx.objectStore(STORE_NAME).count();
+  return new Promise((resolve, reject) => {
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}

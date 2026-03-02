@@ -1,22 +1,25 @@
 "use client";
 
 // ============================================================
-// Attendance Dashboard
-// The main component that an employee sees daily.
-// Combines geofencing, biometric auth, and attendance actions.
+// Attendance Dashboard (Enhanced with Task 6 Resilience)
+// Offline sync, manual override with camera, toast feedback
 // ============================================================
 
-import { useState, useCallback, useEffect } from "react";
-import { Fingerprint, Wifi, WifiOff } from "lucide-react";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { Fingerprint, Wifi, WifiOff, Camera, Upload, Loader2 } from "lucide-react";
 import LiveTimer from "./LiveTimer";
 import GeofenceStatus from "./GeofenceStatus";
 import ActionButtons from "./ActionButtons";
 import ShiftInfo from "./ShiftInfo";
 import { authenticateBiometric, registerBiometric, isWebAuthnSupported } from "@/lib/webauthn-client";
 import { handleAttendance, getAttendanceState } from "@/app/(app)/attendance/actions";
+import { requestManualOverride, syncOfflineAttendance } from "@/app/(app)/attendance/resilience-actions";
 import { getCurrentPosition } from "@/lib/geofence";
+import { queueOfflineAction } from "@/lib/offline-sync";
+import { useServiceWorker, useOfflineSync } from "@/hooks/useOfflineSync";
 import type { AttendanceState, AttendanceAction } from "@/lib/types";
 import type { GeofenceResult } from "@/lib/geofence";
+import type { OfflinePayload } from "@/lib/offline-sync";
 
 interface AttendanceDashboardProps {
   userId: string;
@@ -36,20 +39,52 @@ export default function AttendanceDashboard({
   const [isLoading, setIsLoading] = useState(false);
   const [geofenceResult, setGeofenceResult] = useState<GeofenceResult | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [isOnline, setIsOnline] = useState(true);
 
-  // Track online/offline status
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    setIsOnline(navigator.onLine);
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, []);
+  // Manual override state
+  const [showOverrideForm, setShowOverrideForm] = useState(false);
+  const [overrideReason, setOverrideReason] = useState("");
+  const [overridePhoto, setOverridePhoto] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<AttendanceAction | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // Toast state
+  const [toasts, setToasts] = useState<
+    { id: number; text: string; type: "success" | "error" | "info" }[]
+  >([]);
+  const toastIdRef = useRef(0);
+
+  // Register Service Worker
+  useServiceWorker();
+
+  // Offline sync
+  const handleOfflineSync = useCallback(
+    async (payload: OfflinePayload) => {
+      return syncOfflineAttendance({
+        userId: payload.userId,
+        shiftId: payload.shiftId,
+        action: payload.action,
+        latitude: payload.latitude,
+        longitude: payload.longitude,
+        isWithinFence: payload.isWithinFence,
+        originalTimestamp: payload.timestamp,
+      });
+    },
+    []
+  );
+
+  const { isOnline, pending: pendingOffline, syncing } = useOfflineSync(handleOfflineSync);
+
+  const addToast = useCallback(
+    (text: string, type: "success" | "error" | "info") => {
+      const id = ++toastIdRef.current;
+      setToasts((prev) => [...prev, { id, text, type }]);
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, 4000);
+    },
+    []
+  );
 
   // Refresh state periodically
   useEffect(() => {
@@ -94,7 +129,7 @@ export default function AttendanceDashboard({
   // Handle attendance action (check in/out, break start/end)
   const handleAction = async (action: AttendanceAction) => {
     if (!state.currentShift) {
-      setMessage({ type: "error", text: "No shift assigned for today." });
+      addToast("No shift assigned for today.", "error");
       return;
     }
 
@@ -105,7 +140,7 @@ export default function AttendanceDashboard({
       // Step 1: Biometric verification
       const bioResult = await authenticateBiometric(userId);
       if (!bioResult.success) {
-        setMessage({ type: "error", text: bioResult.error || "Biometric verification failed." });
+        addToast(bioResult.error || "Biometric verification failed.", "error");
         setIsLoading(false);
         return;
       }
@@ -121,12 +156,36 @@ export default function AttendanceDashboard({
         longitude = position.coords.longitude;
         isWithinFence = geofenceResult?.isWithinFence ?? false;
       } catch {
-        setMessage({ type: "error", text: "Could not get your location. Please enable GPS." });
+        addToast("Could not get your location. Please enable GPS.", "error");
         setIsLoading(false);
         return;
       }
 
-      // Step 3: Record attendance via server action
+      // Step 2.5: If outside geofence, offer Manual Override
+      if (!isWithinFence) {
+        setPendingAction(action);
+        setShowOverrideForm(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Step 3: If offline, queue for later sync
+      if (!navigator.onLine) {
+        await queueOfflineAction({
+          userId,
+          shiftId: state.currentShift.id,
+          action,
+          latitude,
+          longitude,
+          isWithinFence,
+          timestamp: new Date().toISOString(),
+        });
+        addToast("You're offline. Action queued and will sync automatically.", "info");
+        setIsLoading(false);
+        return;
+      }
+
+      // Step 4: Record attendance via server action
       const result = await handleAttendance({
         userId,
         shiftId: state.currentShift.id,
@@ -137,18 +196,97 @@ export default function AttendanceDashboard({
       });
 
       if (result.success) {
-        setMessage({ type: "success", text: result.message });
-        // Refresh state
+        addToast(result.message, "success");
         const fresh = await getAttendanceState(userId);
         setState(fresh);
       } else {
-        setMessage({ type: "error", text: result.message });
+        addToast(result.message, "error");
       }
     } catch {
-      setMessage({ type: "error", text: "An unexpected error occurred. Please try again." });
+      addToast("An unexpected error occurred. Please try again.", "error");
     }
 
     setIsLoading(false);
+  };
+
+  // Camera for manual override
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: 640, height: 480 },
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch {
+      addToast("Camera access denied. Please enable camera permissions.", "error");
+    }
+  };
+
+  const capturePhoto = () => {
+    if (!videoRef.current) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(videoRef.current, 0, 0);
+      setOverridePhoto(canvas.toDataURL("image/jpeg", 0.7));
+    }
+    // Stop camera
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  };
+
+  const submitOverride = async () => {
+    if (!overridePhoto || !overrideReason.trim() || !pendingAction || !state.currentShift) {
+      addToast("Please capture a photo and provide a reason.", "error");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      let latitude = 0;
+      let longitude = 0;
+      try {
+        const position = await getCurrentPosition();
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+      } catch {
+        // Continue with 0,0 — the override request is what matters
+      }
+
+      const result = await requestManualOverride({
+        userId,
+        shiftId: state.currentShift.id,
+        action: pendingAction,
+        latitude,
+        longitude,
+        photoDataUrl: overridePhoto,
+        reason: overrideReason,
+      });
+
+      addToast(result.message, result.success ? "success" : "error");
+      if (result.success) {
+        setShowOverrideForm(false);
+        setOverridePhoto(null);
+        setOverrideReason("");
+        setPendingAction(null);
+      }
+    } catch {
+      addToast("Failed to submit override request.", "error");
+    }
+    setIsLoading(false);
+  };
+
+  const cancelOverride = () => {
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+    setShowOverrideForm(false);
+    setOverridePhoto(null);
+    setOverrideReason("");
+    setPendingAction(null);
   };
 
   // Get greeting based on time of day
@@ -179,7 +317,21 @@ export default function AttendanceDashboard({
       {!isOnline && (
         <div className="bg-red-600 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
           <WifiOff className="w-4 h-4" />
-          <span>You are offline. Attendance actions require an internet connection.</span>
+          <span>You are offline. Actions will be queued and synced later.</span>
+        </div>
+      )}
+
+      {/* Syncing / Pending Banner */}
+      {syncing && (
+        <div className="bg-amber-500 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin" />
+          <span>Syncing offline actions...</span>
+        </div>
+      )}
+      {!syncing && pendingOffline > 0 && isOnline && (
+        <div className="bg-blue-500 text-white text-center py-2 px-4 text-sm flex items-center justify-center gap-2">
+          <Upload className="w-4 h-4" />
+          <span>{pendingOffline} pending action{pendingOffline > 1 ? "s" : ""} to sync</span>
         </div>
       )}
 
@@ -280,7 +432,7 @@ export default function AttendanceDashboard({
             <ActionButtons
               status={state.status}
               isWithinFence={geofenceResult?.isWithinFence ?? false}
-              isLoading={isLoading || !isOnline}
+              isLoading={isLoading}
               hasBiometric={hasBiometric}
               onAction={handleAction}
               onRegisterBiometric={handleRegisterBiometric}
@@ -300,6 +452,141 @@ export default function AttendanceDashboard({
           </div>
         </div>
       </main>
+
+      {/* Manual Override Form Modal */}
+      {showOverrideForm && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-end sm:items-center justify-center p-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <Camera className="w-5 h-5 text-blue-500" />
+                Manual Override Request
+              </h2>
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+                You appear to be outside the geofence. Take a live photo to verify your location.
+              </p>
+            </div>
+
+            <div className="p-5 space-y-4">
+              {/* Camera Preview / Captured Photo */}
+              <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-hidden">
+                {overridePhoto ? (
+                  <img
+                    src={overridePhoto}
+                    alt="Captured"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <>
+                    <video
+                      ref={videoRef}
+                      autoPlay
+                      playsInline
+                      muted
+                      className="w-full h-full object-cover"
+                    />
+                    {!streamRef.current && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500">
+                        <Camera className="w-10 h-10 mb-2" />
+                        <span className="text-sm">Camera not started</span>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {/* Camera Controls */}
+              <div className="flex gap-3">
+                {!overridePhoto ? (
+                  <>
+                    {!streamRef.current ? (
+                      <button
+                        onClick={startCamera}
+                        className="flex-1 bg-blue-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-blue-600 transition flex items-center justify-center gap-2"
+                      >
+                        <Camera className="w-4 h-4" />
+                        Start Camera
+                      </button>
+                    ) : (
+                      <button
+                        onClick={capturePhoto}
+                        className="flex-1 bg-emerald-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-emerald-600 transition flex items-center justify-center gap-2"
+                      >
+                        <Camera className="w-4 h-4" />
+                        Capture Photo
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setOverridePhoto(null);
+                      startCamera();
+                    }}
+                    className="flex-1 bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 rounded-xl py-2.5 text-sm font-medium hover:bg-zinc-300 dark:hover:bg-zinc-600 transition"
+                  >
+                    Retake Photo
+                  </button>
+                )}
+              </div>
+
+              {/* Reason */}
+              <div>
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                  Reason for override
+                </label>
+                <textarea
+                  value={overrideReason}
+                  onChange={(e) => setOverrideReason(e.target.value)}
+                  rows={3}
+                  placeholder="E.g. GPS drift, building entrance not in range..."
+                  className="w-full rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-none"
+                />
+              </div>
+
+              {/* Submit / Cancel */}
+              <div className="flex gap-3">
+                <button
+                  onClick={cancelOverride}
+                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl py-2.5 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={submitOverride}
+                  disabled={!overridePhoto || !overrideReason.trim() || isLoading}
+                  className="flex-1 bg-blue-500 text-white rounded-xl py-2.5 text-sm font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                >
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  Submit Override
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notifications */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`px-4 py-3 rounded-xl text-sm font-medium shadow-lg animate-in slide-in-from-right-5 fade-in duration-300 ${
+              toast.type === "success"
+                ? "bg-emerald-600 text-white"
+                : toast.type === "error"
+                  ? "bg-red-600 text-white"
+                  : "bg-blue-600 text-white"
+            }`}
+          >
+            {toast.text}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

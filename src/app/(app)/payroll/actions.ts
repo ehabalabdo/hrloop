@@ -255,7 +255,14 @@ export async function calculateMonthlyPayroll(
     baseSalary + totalOvertimePay + totalBonuses - totalDeductions
   );
 
+  // Look up existing payslip ID (if already generated)
+  const existingPayslip = await prisma.monthlyPayslip.findUnique({
+    where: { userId_month_year: { userId, month, year } },
+    select: { id: true, isLocked: true },
+  });
+
   return {
+    payslipId: existingPayslip?.id ?? null,
     userId,
     userName: user.fullName,
     userRole: user.role,
@@ -280,7 +287,7 @@ export async function calculateMonthlyPayroll(
     absenceDeductions: round2(totalAbsenceDeductions),
     totalDeductions,
     finalNetSalary,
-    isLocked: false,
+    isLocked: existingPayslip?.isLocked ?? false,
     generatedAt: new Date().toISOString(),
     shifts: shiftReconciliations,
   };

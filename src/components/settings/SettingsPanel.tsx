@@ -116,25 +116,8 @@ export default function SettingsPanel({ initialSettings }: SettingsPanelProps) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-3">
-          <div className="w-9 h-9 bg-violet-100 dark:bg-violet-900/30 rounded-xl flex items-center justify-center">
-            <Settings className="w-5 h-5 text-violet-600 dark:text-violet-400" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
-              Global Settings
-            </h1>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              System-wide configuration for all branches
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+    <>
+      <div className="space-y-6">
         {SETTING_GROUPS.map(
           (group: { label: string; keys: string[] }) => (
             <div
@@ -233,6 +216,6 @@ export default function SettingsPanel({ initialSettings }: SettingsPanelProps) {
           {toast.message}
         </div>
       )}
-    </div>
+    </>
   );
 }
