@@ -10,31 +10,28 @@ import prisma from "@/lib/db";
 
 const DEFAULT_PASSWORD = "HRLoop2024!";
 
+export const dynamic = "force-dynamic";
+
 export async function POST() {
   try {
     const hash = await bcrypt.hash(DEFAULT_PASSWORD, 12);
 
-    // Update users with empty/placeholder passwords
+    // Get all active users
     const users = await prisma.user.findMany({
-      where: {
-        OR: [
-          { passwordHash: "" },
-          { passwordHash: "NOT_SET" },
-        ],
-      },
+      where: { isActive: true },
       select: { id: true, fullName: true, email: true, role: true },
     });
 
     if (users.length === 0) {
       return NextResponse.json({
-        message: "All users already have passwords set",
+        message: "No active users found",
         updated: 0,
       });
     }
 
     type UserRow = (typeof users)[number];
 
-    // Update each user
+    // Set default password for all users
     await prisma.user.updateMany({
       where: {
         id: { in: users.map((u: UserRow) => u.id) },
