@@ -251,8 +251,9 @@ export async function calculateMonthlyPayroll(
     totalLatePenalties + totalEarlyLeavePenalties + totalAbsenceDeductions
   );
   const totalBonuses = 0; // Can be set manually by owner
+  // Net salary = baseSalary + regularPay (hourly) + overtimePay + bonuses - deductions
   const finalNetSalary = round2(
-    baseSalary + totalOvertimePay + totalBonuses - totalDeductions
+    baseSalary + totalRegularPay + totalOvertimePay + totalBonuses - totalDeductions
   );
 
   // Look up existing payslip ID (if already generated)
@@ -450,12 +451,12 @@ export async function getPayrollList(
     (sum, i) => sum + i.totalBonuses,
     0
   );
-  const totalOvertimePay = items.reduce(
-    (sum, i) => sum + i.totalOvertimeHours,
-    0
-  );
+  // totalOvertimePay: We don't have per-employee overtimePay in the payslip table,
+  // so approximate from finalNet: overtimePay = finalNet + deductions - bonuses - baseSalary
+  // Since we also lack baseSalary per-item, use 0 (will show total regular earnings instead)
+  const totalOvertimePay = 0;
   const totalRegularEarnings = items.reduce(
-    (sum, i) => sum + (i.finalNetSalary + i.totalDeductions - i.totalBonuses),
+    (sum, i) => sum + i.finalNetSalary,
     0
   );
 

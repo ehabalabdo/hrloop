@@ -36,11 +36,15 @@ import { downloadCSV } from "@/lib/csv-export";
 interface LeavesDashboardProps {
   initialRequests: LeaveRequestItem[];
   employees: { id: string; name: string; role: string }[];
+  currentUserId: string;
+  currentUserRole: "OWNER" | "MANAGER" | "STAFF";
 }
 
 export default function LeavesDashboard({
   initialRequests,
   employees,
+  currentUserId,
+  currentUserRole,
 }: LeavesDashboardProps) {
   const [requests, setRequests] = useState<LeaveRequestItem[]>(initialRequests);
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -52,7 +56,8 @@ export default function LeavesDashboard({
   const [isPending, startTransition] = useTransition();
 
   // Form state
-  const [formUserId, setFormUserId] = useState(employees[0]?.id ?? "");
+  const [formUserId, setFormUserId] = useState(currentUserId);
+  const isAdmin = currentUserRole === "OWNER" || currentUserRole === "MANAGER";
   const [formType, setFormType] = useState("ANNUAL");
   const [formStart, setFormStart] = useState("");
   const [formEnd, setFormEnd] = useState("");
@@ -102,7 +107,7 @@ export default function LeavesDashboard({
 
   const handleReview = (action: "APPROVED" | "REJECTED") => {
     if (!reviewingId) return;
-    const reviewerId = employees[0]?.id ?? "";
+    const reviewerId = currentUserId;
     startTransition(async () => {
       const result = await reviewLeaveRequest({
         leaveId: reviewingId,
@@ -210,22 +215,30 @@ export default function LeavesDashboard({
                   الموظف
                 </label>
                 <div className="relative">
-                  <select
-                    value={formUserId}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                      setFormUserId(e.target.value)
-                    }
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
-                  >
-                    {employees.map(
-                      (emp: { id: string; name: string; role: string }) => (
-                        <option key={emp.id} value={emp.id}>
-                          {emp.name}
-                        </option>
-                      )
-                    )}
-                  </select>
-                  <ChevronDown className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                  {isAdmin ? (
+                    <>
+                      <select
+                        value={formUserId}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                          setFormUserId(e.target.value)
+                        }
+                        className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                      >
+                        {employees.map(
+                          (emp: { id: string; name: string; role: string }) => (
+                            <option key={emp.id} value={emp.id}>
+                              {emp.name}
+                            </option>
+                          )
+                        )}
+                      </select>
+                      <ChevronDown className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
+                    </>
+                  ) : (
+                    <div className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                      {employees.find(e => e.id === currentUserId)?.name ?? "—"}
+                    </div>
+                  )}
                 </div>
               </div>
 

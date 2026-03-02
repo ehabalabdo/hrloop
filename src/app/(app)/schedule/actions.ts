@@ -274,6 +274,28 @@ export async function generateWeeklySchedule(
       select: { userId: true, date: true },
     });
 
+    // 4b. Fetch approved leaves that overlap this week
+    const approvedLeaves = await prisma.leaveRequest.findMany({
+      where: {
+        status: "APPROVED",
+        startDate: { lte: sunday },
+        endDate: { gte: monday },
+      },
+      select: { userId: true, startDate: true, endDate: true },
+    });
+
+    // Build set of "userId:dateStr" for employees on leave
+    const leaveSet = new Set<string>();
+    for (const leave of approvedLeaves) {
+      const leaveStart = new Date(leave.startDate);
+      const leaveEnd = new Date(leave.endDate);
+      for (const date of weekDates) {
+        if (date >= leaveStart && date <= leaveEnd) {
+          leaveSet.add(`${leave.userId}:${toDateStr(date)}`);
+        }
+      }
+    }
+
     // Build a set of "userId:dateStr" for published shifts
     type PublishedShift = (typeof existingPublished)[number];
     const publishedSet = new Set(
@@ -361,6 +383,9 @@ export async function generateWeeklySchedule(
 
             // Not already published for this day
             if (publishedSet.has(`${emp.id}:${dateStr}`)) return false;
+
+            // Not on approved leave this day
+            if (leaveSet.has(`${emp.id}:${dateStr}`)) return false;
 
             // Not exceeding max weekly hours
             const currentHours = employeeHours.get(emp.id) ?? 0;

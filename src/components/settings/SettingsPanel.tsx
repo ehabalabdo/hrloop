@@ -12,6 +12,8 @@ import { updateGlobalSetting } from "@/app/(app)/dashboard/actions";
 
 interface SettingsPanelProps {
   initialSettings: SettingItem[];
+  actorId: string;
+  actorName: string;
 }
 
 const SETTING_LABELS: Record<string, string> = {
@@ -58,7 +60,7 @@ const SETTING_GROUPS: { label: string; keys: string[] }[] = [
   },
 ];
 
-export default function SettingsPanel({ initialSettings }: SettingsPanelProps) {
+export default function SettingsPanel({ initialSettings, actorId, actorName }: SettingsPanelProps) {
   const [settings, setSettings] = useState<SettingItem[]>(initialSettings);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
@@ -88,8 +90,7 @@ export default function SettingsPanel({ initialSettings }: SettingsPanelProps) {
     if (value === undefined) return;
     setSavingKey(key);
     startTransition(async () => {
-      // Use system as actor for now
-      const result = await updateGlobalSetting(key, value, "system", "Admin");
+      const result = await updateGlobalSetting(key, value, actorId, actorName);
       if (result.success) {
         setSettings((prev: SettingItem[]) =>
           prev.map((s: SettingItem) =>

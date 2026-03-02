@@ -41,7 +41,7 @@ export default async function SettingsPage() {
 
   return (
     <SettingsTabs
-      settingsPanel={<SettingsPanel initialSettings={settings} />}
+      settingsPanel={<SettingsPanel initialSettings={settings} actorId={actorId} actorName={actorName} />}
       employeeManagement={
         <EmployeeManagement
           initialEmployees={allEmployees}

@@ -97,7 +97,7 @@ export async function createEmployee(
 
     const passwordHash = await bcrypt.hash(data.password, 12);
 
-    await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         fullName: data.fullName.trim(),
         email: data.email.toLowerCase().trim(),
@@ -105,6 +105,16 @@ export async function createEmployee(
         role: data.role,
         primaryBranchId: data.primaryBranchId || null,
         phoneNumber: data.phoneNumber?.trim() || null,
+      },
+    });
+
+    // Create default PayrollProfile so payroll works for this employee
+    await prisma.payrollProfile.create({
+      data: {
+        userId: newUser.id,
+        baseSalary: 0,
+        hourlyRate: 0,
+        overtimeRate: 0,
       },
     });
 
