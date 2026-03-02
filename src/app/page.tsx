@@ -15,12 +15,20 @@ export default function Home() {
               HR Loop
             </span>
           </div>
-          <Link
-            href="/attendance"
-            className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
-          >
-            Employee Portal →
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/schedule"
+              className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+            >
+              Schedule Engine →
+            </Link>
+            <Link
+              href="/attendance"
+              className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+            >
+              Employee Portal →
+            </Link>
+          </div>
         </div>
       </header>
 

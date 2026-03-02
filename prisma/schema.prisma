@@ -50,9 +50,10 @@ model Branch {
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  manager  User?  @relation("BranchManager", fields: [managerId], references: [id], onDelete: SetNull)
-  users    User[] @relation("UserPrimaryBranch")
-  shifts   Shift[]
+  manager      User?              @relation("BranchManager", fields: [managerId], references: [id], onDelete: SetNull)
+  users        User[]             @relation("UserPrimaryBranch")
+  shifts       Shift[]
+  requirements BranchRequirement[]
 
   @@index([managerId], name: "idx_branches_manager")
   @@map("branches")
@@ -94,6 +95,28 @@ model User {
   @@index([primaryBranchId], name: "idx_users_primary_branch")
   @@index([isActive], name: "idx_users_active")
   @@map("users")
+}
+
+// ============================================================
+// BRANCH REQUIREMENTS - Staffing needs per branch per day
+// ============================================================
+
+model BranchRequirement {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  branchId      String   @map("branch_id") @db.Uuid
+  dayOfWeek     Int      @map("day_of_week") @db.SmallInt // 0=Sunday, 6=Saturday
+  requiredStaff Int      @default(1) @map("required_staff")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, dayOfWeek])
+  @@index([branchId], name: "idx_branch_req_branch")
+  @@index([dayOfWeek], name: "idx_branch_req_day")
+  @@index([branchId, dayOfWeek], name: "idx_branch_req_branch_day")
+  @@map("branch_requirements")
 }
 
 // ============================================================

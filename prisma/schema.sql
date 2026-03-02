@@ -77,6 +77,21 @@ CREATE TABLE availability (
 );
 
 -- ============================================================
+-- 3.5. BRANCH_REQUIREMENTS TABLE
+-- Staffing requirements per branch per day of week
+-- ============================================================
+CREATE TABLE branch_requirements (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    branch_id       UUID NOT NULL REFERENCES branches(id) ON DELETE CASCADE,
+    day_of_week     SMALLINT NOT NULL CHECK (day_of_week BETWEEN 0 AND 6),  -- 0=Sunday, 6=Saturday
+    required_staff  INTEGER NOT NULL DEFAULT 1 CHECK (required_staff >= 0),
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    UNIQUE (branch_id, day_of_week)
+);
+
+-- ============================================================
 -- 4. SHIFTS TABLE
 -- Master schedule for all 40 branches
 -- ============================================================
@@ -162,6 +177,11 @@ CREATE INDEX idx_branches_manager ON branches(manager_id);
 CREATE INDEX idx_availability_user ON availability(user_id);
 CREATE INDEX idx_availability_day ON availability(day_of_week);
 
+-- Branch Requirements indexes
+CREATE INDEX idx_branch_req_branch ON branch_requirements(branch_id);
+CREATE INDEX idx_branch_req_day ON branch_requirements(day_of_week);
+CREATE INDEX idx_branch_req_branch_day ON branch_requirements(branch_id, day_of_week);
+
 -- Shifts indexes (critical for scheduling across 40 branches)
 CREATE INDEX idx_shifts_user ON shifts(user_id);
 CREATE INDEX idx_shifts_branch ON shifts(branch_id);
@@ -208,6 +228,10 @@ CREATE TRIGGER trg_users_updated_at
 
 CREATE TRIGGER trg_availability_updated_at
     BEFORE UPDATE ON availability
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER trg_branch_requirements_updated_at
+    BEFORE UPDATE ON branch_requirements
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER trg_shifts_updated_at
