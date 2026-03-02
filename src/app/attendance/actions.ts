@@ -55,7 +55,7 @@ export async function getAttendanceState(userId: string) {
   });
 
   const lastLog = logs[0] || null;
-  const clockInLog = logs.find((l) => l.type === "CLOCK_IN");
+  const clockInLog = logs.find((l: { type: string }) => l.type === "CLOCK_IN");
 
   // Determine current status
   let status: "not_clocked_in" | "clocked_in" | "on_break" = "not_clocked_in";
