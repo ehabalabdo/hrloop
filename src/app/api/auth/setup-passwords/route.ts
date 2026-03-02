@@ -50,9 +50,11 @@ export async function POST() {
       })),
     });
   } catch (error) {
-    console.error("Setup passwords error:", error);
+    const message = error instanceof Error ? error.message : String(error);
+    const stack = error instanceof Error ? error.stack : undefined;
+    console.error("Setup passwords error:", message, stack);
     return NextResponse.json(
-      { error: "Failed to setup passwords" },
+      { error: "Failed to setup passwords", details: message },
       { status: 500 }
     );
   }
