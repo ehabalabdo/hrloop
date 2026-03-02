@@ -136,6 +136,7 @@ CREATE TABLE payroll_profiles (
     hourly_rate             DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
     overtime_rate           DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
     late_penalty_per_minute DECIMAL(6, 2) NOT NULL DEFAULT 0.00,
+    grace_period_minutes    INTEGER NOT NULL DEFAULT 5,
     created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -144,17 +145,21 @@ CREATE TABLE payroll_profiles (
 -- 7. MONTHLY_PAYSLIPS TABLE
 -- ============================================================
 CREATE TABLE monthly_payslips (
-    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id             UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    month               SMALLINT NOT NULL CHECK (month BETWEEN 1 AND 12),
-    year                SMALLINT NOT NULL CHECK (year BETWEEN 2020 AND 2100),
-    total_hours_worked  DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
-    total_overtime_hours DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
-    total_late_minutes  DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
-    total_deductions    DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    total_bonuses       DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    final_net_salary    DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    generated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    id                       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id                  UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    month                    SMALLINT NOT NULL CHECK (month BETWEEN 1 AND 12),
+    year                     SMALLINT NOT NULL CHECK (year BETWEEN 2020 AND 2100),
+    total_shifts             INTEGER NOT NULL DEFAULT 0,
+    total_hours_worked       DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+    total_overtime_hours     DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+    total_late_minutes       DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+    total_early_leave_minutes DECIMAL(8, 2) NOT NULL DEFAULT 0.00,
+    total_absent_days        INTEGER NOT NULL DEFAULT 0,
+    total_deductions         DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+    total_bonuses            DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+    final_net_salary         DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+    is_locked                BOOLEAN NOT NULL DEFAULT FALSE,
+    generated_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
     -- One payslip per user per month
     UNIQUE (user_id, month, year)

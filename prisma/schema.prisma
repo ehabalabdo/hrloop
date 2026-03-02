@@ -201,14 +201,15 @@ model AttendanceLog {
 // ============================================================
 
 model PayrollProfile {
-  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId              String   @unique @map("user_id") @db.Uuid
-  baseSalary          Decimal  @default(0.00) @map("base_salary") @db.Decimal(12, 2)
-  hourlyRate          Decimal  @default(0.00) @map("hourly_rate") @db.Decimal(8, 2)
-  overtimeRate        Decimal  @default(0.00) @map("overtime_rate") @db.Decimal(8, 2)
-  latePenaltyPerMinute Decimal @default(0.00) @map("late_penalty_per_minute") @db.Decimal(6, 2)
-  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String   @unique @map("user_id") @db.Uuid
+  baseSalary           Decimal  @default(0.00) @map("base_salary") @db.Decimal(12, 2)
+  hourlyRate           Decimal  @default(0.00) @map("hourly_rate") @db.Decimal(8, 2)
+  overtimeRate         Decimal  @default(0.00) @map("overtime_rate") @db.Decimal(8, 2)
+  latePenaltyPerMinute Decimal  @default(0.00) @map("late_penalty_per_minute") @db.Decimal(6, 2)
+  gracePeriodMinutes   Int      @default(5) @map("grace_period_minutes")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -222,17 +223,21 @@ model PayrollProfile {
 // ============================================================
 
 model MonthlyPayslip {
-  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId             String   @map("user_id") @db.Uuid
-  month              Int      @db.SmallInt
-  year               Int      @db.SmallInt
-  totalHoursWorked   Decimal  @default(0.00) @map("total_hours_worked") @db.Decimal(8, 2)
-  totalOvertimeHours Decimal  @default(0.00) @map("total_overtime_hours") @db.Decimal(8, 2)
-  totalLateMinutes   Decimal  @default(0.00) @map("total_late_minutes") @db.Decimal(8, 2)
-  totalDeductions    Decimal  @default(0.00) @map("total_deductions") @db.Decimal(12, 2)
-  totalBonuses       Decimal  @default(0.00) @map("total_bonuses") @db.Decimal(12, 2)
-  finalNetSalary     Decimal  @default(0.00) @map("final_net_salary") @db.Decimal(12, 2)
-  generatedAt        DateTime @default(now()) @map("generated_at") @db.Timestamptz
+  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId                String   @map("user_id") @db.Uuid
+  month                 Int      @db.SmallInt
+  year                  Int      @db.SmallInt
+  totalShifts           Int      @default(0) @map("total_shifts")
+  totalHoursWorked      Decimal  @default(0.00) @map("total_hours_worked") @db.Decimal(8, 2)
+  totalOvertimeHours    Decimal  @default(0.00) @map("total_overtime_hours") @db.Decimal(8, 2)
+  totalLateMinutes      Decimal  @default(0.00) @map("total_late_minutes") @db.Decimal(8, 2)
+  totalEarlyLeaveMinutes Decimal @default(0.00) @map("total_early_leave_minutes") @db.Decimal(8, 2)
+  totalAbsentDays       Int      @default(0) @map("total_absent_days")
+  totalDeductions       Decimal  @default(0.00) @map("total_deductions") @db.Decimal(12, 2)
+  totalBonuses          Decimal  @default(0.00) @map("total_bonuses") @db.Decimal(12, 2)
+  finalNetSalary        Decimal  @default(0.00) @map("final_net_salary") @db.Decimal(12, 2)
+  isLocked              Boolean  @default(false) @map("is_locked")
+  generatedAt           DateTime @default(now()) @map("generated_at") @db.Timestamptz
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

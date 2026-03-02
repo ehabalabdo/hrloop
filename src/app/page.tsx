@@ -1,4 +1,4 @@
-import { Clock, MapPin, Fingerprint, Building2, Users, Shield } from "lucide-react";
+import { Clock, MapPin, Fingerprint, Building2, Users, Shield, Wallet } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
@@ -17,16 +17,22 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <Link
+              href="/payroll"
+              className="text-sm font-medium text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300 transition-colors"
+            >
+              Payroll →
+            </Link>
+            <Link
               href="/schedule"
               className="text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
             >
-              Schedule Engine →
+              Schedule →
             </Link>
             <Link
               href="/attendance"
               className="text-sm font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
             >
-              Employee Portal →
+              Attendance →
             </Link>
           </div>
         </div>
@@ -65,7 +71,7 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mt-16 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mt-16 w-full">
           <div className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 text-center">
             <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
               <Fingerprint className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -101,6 +107,18 @@ export default function Home() {
               Automated shifts based on employee availability
             </p>
           </div>
+
+          <Link href="/payroll" className="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-5 text-center hover:ring-2 hover:ring-amber-300 dark:hover:ring-amber-700 transition-all">
+            <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Wallet className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <h3 className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm mb-1">
+              Payroll Engine
+            </h3>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Automated salary reconciliation with deductions & overtime
+            </p>
+          </Link>
         </div>
 
         {/* Stats */}
