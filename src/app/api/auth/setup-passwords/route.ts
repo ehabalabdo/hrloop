@@ -2,11 +2,12 @@
 // Setup Passwords API — One-time setup for existing users
 // POST /api/auth/setup-passwords
 // Sets a default password for all users without one
+// Uses @neondatabase/serverless directly to avoid Prisma init issues
 // ============================================================
 
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import prisma from "@/lib/db";
+import { neon } from "@neondatabase/serverless";
 
 const DEFAULT_PASSWORD = "HRLoop2024!";
 
@@ -14,13 +15,21 @@ export const dynamic = "force-dynamic";
 
 export async function POST() {
   try {
+    const dbUrl = process.env.DATABASE_URL;
+    if (!dbUrl) {
+      return NextResponse.json(
+        { error: "DATABASE_URL not set" },
+        { status: 500 }
+      );
+    }
+
+    const sql = neon(dbUrl);
     const hash = await bcrypt.hash(DEFAULT_PASSWORD, 12);
 
     // Get all active users
-    const users = await prisma.user.findMany({
-      where: { isActive: true },
-      select: { id: true, fullName: true, email: true, role: true },
-    });
+    const users = await sql`
+      SELECT id, full_name, email, role FROM users WHERE is_active = true
+    `;
 
     if (users.length === 0) {
       return NextResponse.json({
@@ -29,30 +38,24 @@ export async function POST() {
       });
     }
 
-    type UserRow = (typeof users)[number];
-
-    // Set default password for all users
-    await prisma.user.updateMany({
-      where: {
-        id: { in: users.map((u: UserRow) => u.id) },
-      },
-      data: { passwordHash: hash },
-    });
+    // Set default password for all active users
+    await sql`
+      UPDATE users SET password_hash = ${hash} WHERE is_active = true
+    `;
 
     return NextResponse.json({
       message: `Updated ${users.length} users with default password`,
       defaultPassword: DEFAULT_PASSWORD,
       updated: users.length,
-      users: users.map((u: UserRow) => ({
-        name: u.fullName,
+      users: users.map((u: Record<string, unknown>) => ({
+        name: u.full_name,
         email: u.email,
         role: u.role,
       })),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    const stack = error instanceof Error ? error.stack : undefined;
-    console.error("Setup passwords error:", message, stack);
+    console.error("Setup passwords error:", message);
     return NextResponse.json(
       { error: "Failed to setup passwords", details: message },
       { status: 500 }

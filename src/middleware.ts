@@ -14,7 +14,7 @@ const SECRET = new TextEncoder().encode(
 );
 
 // Routes that don't require authentication
-const PUBLIC_PATHS = ["/login", "/api/auth"];
+const PUBLIC_PATHS = ["/login", "/api/"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
