@@ -5,18 +5,20 @@
 // ============================================================
 
 import { useState, type ReactNode } from "react";
-import { Settings, Fingerprint, Shield } from "lucide-react";
+import { Settings, Fingerprint, Shield, Building2 } from "lucide-react";
 
 interface SettingsTabsProps {
   settingsPanel: ReactNode;
   deviceManagement: ReactNode;
   auditTrail: ReactNode;
+  branchManagement: ReactNode;
 }
 
 const TABS = [
-  { key: "settings", label: "Global Settings", icon: Settings },
-  { key: "devices", label: "Device Management", icon: Fingerprint },
-  { key: "audit", label: "Audit Trail", icon: Shield },
+  { key: "settings", label: "الإعدادات", icon: Settings },
+  { key: "branches", label: "الفروع", icon: Building2 },
+  { key: "devices", label: "الأجهزة", icon: Fingerprint },
+  { key: "audit", label: "سجل النظام", icon: Shield },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -25,6 +27,7 @@ export default function SettingsTabs({
   settingsPanel,
   deviceManagement,
   auditTrail,
+  branchManagement,
 }: SettingsTabsProps) {
   const [tab, setTab] = useState<TabKey>("settings");
 
@@ -73,6 +76,7 @@ export default function SettingsTabs({
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6">
         {tab === "settings" && settingsPanel}
+        {tab === "branches" && branchManagement}
         {tab === "devices" && deviceManagement}
         {tab === "audit" && auditTrail}
       </div>
