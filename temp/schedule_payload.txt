@@ -1,0 +1,151 @@
+﻿"use client";
+import React, { useState } from 'react';
+import { Calendar, Clock, Users, ArrowRight, Sun, Moon, Coffee, AlertCircle } from 'lucide-react';
+
+export default function ScheduleDashboard() {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const upcomingShifts = [
+    { id: 1, role: 'Front Desk', time: '09:00 AM - 05:00 PM', type: 'Morning', icon: Sun, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { id: 2, role: 'Support Team', time: '02:00 PM - 10:00 PM', type: 'Evening', icon: Moon, color: 'text-indigo-500', bg: 'bg-indigo-50' },
+    { id: 3, role: 'On-call', time: 'Flexible', type: 'Standby', icon: AlertCircle, color: 'text-rose-500', bg: 'bg-rose-50' },
+  ];
+
+  const teamMembers = [
+    { id: 1, name: 'Alex Johnson', role: 'Support Specialist', status: 'On Shift', avatar: 'AJ' },
+    { id: 2, name: 'Sarah Miller', role: 'Team Lead', status: 'Break', avatar: 'SM' },
+    { id: 3, name: 'Michael Chen', role: 'Developer', status: 'Off', avatar: 'MC' },
+  ];
+
+  return (
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+            Schedule Overview
+          </h1>
+          <p className="text-gray-500 mt-1">Manage your team's shifts and coverage</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button className="px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm flex items-center gap-2 shadow-sm">
+            <Calendar className="w-4 h-4" />
+            Select Date
+          </button>
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm shadow-sm">
+            Publish Schedule
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative overflow-hidden group">
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="p-3 bg-blue-50 text-blue-600 rounded-lg">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Currently Working</p>
+              <p className="text-2xl font-bold text-gray-900">24 / 32</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative overflow-hidden group">
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+              <Clock className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Hours</p>
+              <p className="text-2xl font-bold text-gray-900">164h</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm relative overflow-hidden group">
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="p-3 bg-purple-50 text-purple-600 rounded-lg">
+              <Coffee className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">On Break</p>
+              <p className="text-2xl font-bold text-gray-900">3</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-gray-100 flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-gray-900">Your Upcoming Shifts</h2>
+              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                View all <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {upcomingShifts.map((shift) => {
+                const Icon = shift.icon;
+                return (
+                  <div key={shift.id} className="p-4 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-lg ${shift.bg} ${shift.color}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{shift.role}</h3>
+                        <p className="text-sm text-gray-500 flex items-center gap-2 mt-0.5">
+                          <Clock className="w-3.5 h-3.5" />
+                          {shift.time}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`text-xs font-medium px-2.5 py-1 rounded-full border border-transparent group-hover:border-current/10 py-1 transition-colors ${shift.bg} ${shift.color}`}>
+                      {shift.type}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="p-5 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-900">Team Coverage</h2>
+            </div>
+            <div className="p-5 space-y-4">
+              {teamMembers.map((member) => (
+                <div key={member.id} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-sm font-medium text-gray-600 border border-gray-200">
+                      {member.avatar}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 text-sm">{member.name}</p>
+                      <p className="text-xs text-gray-500">{member.role}</p>
+                    </div>
+                  </div>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    member.status === 'On Shift' ? 'bg-emerald-50 text-emerald-600' :
+                    member.status === 'Break' ? 'bg-amber-50 text-amber-600' :
+                    'bg-gray-50 text-gray-600'
+                  }`}>
+                    {member.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="p-4 bg-gray-50 border-t border-gray-100">
+              <button className="w-full py-2 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm shadow-sm">
+                View Coverage Map
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
