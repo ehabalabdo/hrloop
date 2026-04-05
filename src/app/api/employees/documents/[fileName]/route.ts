@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile } from "fs/promises";
-import path from "path";
 import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
@@ -16,9 +14,14 @@ export async function GET(
 
     const { fileName } = await params;
 
-    // Look up document record
+    // Look up document record by fileName (which is now a blob URL)
     const doc = await prisma.employeeDocument.findFirst({
-      where: { fileName },
+      where: {
+        OR: [
+          { fileName },
+          { fileName: { contains: fileName } },
+        ],
+      },
     });
     if (!doc) {
       return NextResponse.json({ error: "الملف غير موجود" }, { status: 404 });
@@ -29,16 +32,8 @@ export async function GET(
       return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
     }
 
-    const filePath = path.join(process.cwd(), "uploads", "employees", fileName);
-    const fileBuffer = await readFile(filePath);
-
-    return new NextResponse(fileBuffer, {
-      headers: {
-        "Content-Type": doc.mimeType,
-        "Content-Disposition": `inline; filename="${encodeURIComponent(doc.originalName)}"`,
-        "Content-Length": String(doc.fileSize),
-      },
-    });
+    // Redirect to Vercel Blob URL
+    return NextResponse.redirect(doc.fileName);
   } catch {
     return NextResponse.json({ error: "فشل في تحميل الملف" }, { status: 500 });
   }

@@ -19,6 +19,9 @@ import {
   Megaphone,
   MoreVertical,
   Shield,
+  Paperclip,
+  FileText,
+  Download,
 } from "lucide-react";
 import type { AnnouncementItem } from "@/app/(app)/news/actions";
 import {
@@ -215,8 +218,13 @@ export default function NewsFeed({
                 <div className="relative mt-3 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                   {mediaType === "image" ? (
                     <img src={mediaUrl} alt="مرفق" className="w-full max-h-64 object-cover" />
-                  ) : (
+                  ) : mediaType === "video" ? (
                     <video src={mediaUrl} controls className="w-full max-h-64" />
+                  ) : (
+                    <div className="flex items-center gap-3 p-4" dir="rtl">
+                      <FileText className="w-8 h-8 text-brand-purple" />
+                      <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">ملف مرفق</span>
+                    </div>
                   )}
                   <button
                     onClick={() => { setMediaUrl(null); setMediaType(null); }}
@@ -242,7 +250,7 @@ export default function NewsFeed({
                 <input
                   ref={fileRef}
                   type="file"
-                  accept="image/*,video/*"
+                  accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar"
                   onChange={handleUpload}
                   className="hidden"
                 />
@@ -261,6 +269,14 @@ export default function NewsFeed({
                 >
                   <Video className="w-4 h-4" />
                   فيديو
+                </button>
+                <button
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition disabled:opacity-50"
+                >
+                  <Paperclip className="w-4 h-4" />
+                  ملف
                 </button>
               </div>
 
@@ -401,6 +417,19 @@ export default function NewsFeed({
                       controls
                       className="w-full rounded-2xl max-h-96"
                     />
+                  ) : item.mediaType === "document" ? (
+                    <a
+                      href={item.mediaUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" dir="rtl"
+                    >
+                      <FileText className="w-8 h-8 text-brand-purple shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">ملف مرفق</span>
+                      </div>
+                      <Download className="w-5 h-5 text-zinc-400" />
+                    </a>
                   ) : null}
                 </div>
               )}

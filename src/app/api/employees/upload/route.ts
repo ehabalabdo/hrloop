@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import crypto from "crypto";
 
 // Max 10MB per file
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -15,6 +13,9 @@ const ALLOWED_TYPES = [
   "image/webp",
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "text/plain",
 ];
 
 export async function POST(request: NextRequest) {
@@ -35,7 +36,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
         { error: "حجم الملف يتجاوز الحد المسموح (10MB)" },
@@ -43,38 +43,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: "نوع الملف غير مدعوم. يُسمح بـ PDF, صور, و Word فقط" },
+        { error: "نوع الملف غير مدعوم" },
         { status: 400 }
       );
     }
 
-    // Verify user exists
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       return NextResponse.json({ error: "الموظف غير موجود" }, { status: 404 });
     }
 
-    // Generate safe filename
-    const ext = path.extname(file.name).toLowerCase();
-    const safeFileName = `${userId}_${crypto.randomUUID()}${ext}`;
+    const blob = await put(`employees/${userId}/${file.name}`, file, {
+      access: "public",
+      addRandomSuffix: true,
+    });
 
-    // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), "uploads", "employees");
-    await mkdir(uploadDir, { recursive: true });
-
-    // Write file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(path.join(uploadDir, safeFileName), buffer);
-
-    // Save record in database
     const doc = await prisma.employeeDocument.create({
       data: {
         userId,
-        fileName: safeFileName,
+        fileName: blob.url,
         originalName: file.name,
         fileSize: file.size,
         mimeType: file.type,
