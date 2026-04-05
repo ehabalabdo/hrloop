@@ -18,6 +18,8 @@ import {
   Settings,
   Activity,
   Clock,
+  Megaphone,
+  ArrowLeftRight,
   LogOut,
   User,
 } from "lucide-react";
@@ -39,6 +41,13 @@ const NAV_ITEMS = [
     roles: ["OWNER", "MANAGER", "STAFF"] as string[],
   },
   {
+    href: "/availability",
+    label: "ساعاتي",
+    shortLabel: "ساعاتي",
+    icon: Clock,
+    roles: ["STAFF"] as string[],
+  },
+  {
     href: "/schedule",
     label: "الورديات",
     shortLabel: "الورديات",
@@ -57,6 +66,20 @@ const NAV_ITEMS = [
     label: "الإجازات",
     shortLabel: "إجازات",
     icon: TreePalm,
+    roles: ["OWNER", "MANAGER", "STAFF"] as string[],
+  },
+  {
+    href: "/swap",
+    label: "تبديل الورديات",
+    shortLabel: "تبديل",
+    icon: ArrowLeftRight,
+    roles: ["OWNER", "MANAGER", "STAFF"] as string[],
+  },
+  {
+    href: "/news",
+    label: "الأخبار",
+    shortLabel: "أخبار",
+    icon: Megaphone,
     roles: ["OWNER", "MANAGER", "STAFF"] as string[],
   },
   {

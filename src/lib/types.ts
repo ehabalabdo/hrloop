@@ -16,6 +16,8 @@ export interface AttendanceState {
     branchLatitude: number;
     branchLongitude: number;
     geofenceRadius: number;
+    branchOpenTime: string | null;
+    branchCloseTime: string | null;
   } | null;
   lastAction: {
     type: AttendanceAction;

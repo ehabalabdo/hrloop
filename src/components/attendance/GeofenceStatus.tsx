@@ -48,7 +48,7 @@ export default function GeofenceStatus({
 
   useEffect(() => {
     checkLocation();
-    const interval = setInterval(checkLocation, 30000);
+    const interval = setInterval(checkLocation, 15000); // Poll every 15 seconds for continuous tracking
     return () => clearInterval(interval);
   }, [checkLocation]);
 

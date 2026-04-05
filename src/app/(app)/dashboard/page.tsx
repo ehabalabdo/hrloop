@@ -7,6 +7,7 @@ import {
   getBranchPerformance,
   getActivityLogs,
   getSystemHealth,
+  getOvertimeAlerts,
 } from "./actions";
 import DashboardView from "@/components/dashboard/DashboardView";
 
@@ -18,11 +19,12 @@ export const metadata = {
 };
 
 export default async function DashboardPage() {
-  const [metrics, branches, activities, health] = await Promise.all([
+  const [metrics, branches, activities, health, overtimeAlerts] = await Promise.all([
     getDashboardMetrics(),
     getBranchPerformance(),
     getActivityLogs(20),
     getSystemHealth(),
+    getOvertimeAlerts(),
   ]);
 
   return (
@@ -31,6 +33,7 @@ export default async function DashboardPage() {
       branches={branches}
       activities={activities}
       health={health}
+      overtimeAlerts={overtimeAlerts}
     />
   );
 }

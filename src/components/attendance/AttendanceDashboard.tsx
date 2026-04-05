@@ -6,13 +6,14 @@
 // ============================================================
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { Fingerprint, Wifi, WifiOff, Camera, Upload, Loader2 } from "lucide-react";
+import { Fingerprint, Wifi, WifiOff, Camera, Upload, Loader2, Store, Clock } from "lucide-react";
 import LiveTimer from "./LiveTimer";
 import GeofenceStatus from "./GeofenceStatus";
 import ActionButtons from "./ActionButtons";
 import ShiftInfo from "./ShiftInfo";
+import CheckoutChecklist from "./CheckoutChecklist";
 import { authenticateBiometric, registerBiometric, isWebAuthnSupported } from "@/lib/webauthn-client";
-import { handleAttendance, getAttendanceState } from "@/app/(app)/attendance/actions";
+import { handleAttendance, getAttendanceState, getCheckoutChecklist, sendShiftReminder } from "@/app/(app)/attendance/actions";
 import { requestManualOverride, syncOfflineAttendance } from "@/app/(app)/attendance/resilience-actions";
 import { getCurrentPosition } from "@/lib/geofence";
 import { queueOfflineAction } from "@/lib/offline-sync";
@@ -26,6 +27,8 @@ interface AttendanceDashboardProps {
   userName: string;
   hasBiometricRegistered: boolean;
   initialState: AttendanceState;
+  branchOpenTime?: string | null;
+  branchCloseTime?: string | null;
 }
 
 export default function AttendanceDashboard({
@@ -33,6 +36,8 @@ export default function AttendanceDashboard({
   userName,
   hasBiometricRegistered,
   initialState,
+  branchOpenTime,
+  branchCloseTime,
 }: AttendanceDashboardProps) {
   const [state, setState] = useState<AttendanceState>(initialState);
   const [hasBiometric, setHasBiometric] = useState(hasBiometricRegistered);
@@ -47,6 +52,16 @@ export default function AttendanceDashboard({
   const [pendingAction, setPendingAction] = useState<AttendanceAction | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  // Checkout checklist state
+  const [checklistData, setChecklistData] = useState<{
+    inventoryCount: boolean;
+    newMerchandise: boolean | null;
+    insurancePhones: boolean;
+    completedAt: string | null;
+  } | null>(null);
+  const [checklistLoaded, setChecklistLoaded] = useState(false);
+  const [checklistComplete, setChecklistComplete] = useState(false);
 
   // Toast state
   const [toasts, setToasts] = useState<
@@ -99,6 +114,31 @@ export default function AttendanceDashboard({
 
     return () => clearInterval(interval);
   }, [userId]);
+
+  // Load checklist when clocked in
+  useEffect(() => {
+    if (state.status !== "not_clocked_in" && state.currentShift && !checklistLoaded) {
+      getCheckoutChecklist(state.currentShift.id, userId).then((data) => {
+        if (data) {
+          setChecklistData({
+            inventoryCount: data.inventoryCount,
+            newMerchandise: data.newMerchandise,
+            insurancePhones: data.insurancePhones,
+            completedAt: data.completedAt?.toISOString() ?? null,
+          });
+          setChecklistComplete(!!data.completedAt);
+        }
+        setChecklistLoaded(true);
+      });
+    }
+  }, [state.status, state.currentShift, userId, checklistLoaded]);
+
+  // Send shift reminder on page load
+  useEffect(() => {
+    if (state.currentShift) {
+      sendShiftReminder(userId).catch(() => {});
+    }
+  }, [userId, state.currentShift]);
 
   const handleGeofenceChange = useCallback((result: GeofenceResult | null) => {
     setGeofenceResult(result);
@@ -199,6 +239,8 @@ export default function AttendanceDashboard({
         addToast(result.message, "success");
         const fresh = await getAttendanceState(userId);
         setState(fresh);
+      } else if (result.error === "CHECKLIST_INCOMPLETE" || result.message === "CHECKLIST_INCOMPLETE") {
+        addToast("يجب إكمال لائحة المهام قبل تسجيل الانصراف", "error");
       } else {
         addToast(result.message, "error");
       }
@@ -383,6 +425,22 @@ export default function AttendanceDashboard({
           />
         )}
 
+        {/* Branch Operating Hours */}
+        {state.currentShift && (branchOpenTime || state.currentShift.branchOpenTime) && (
+          <div className="w-full bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm px-5 py-4">
+            <div className="flex items-center gap-2.5 mb-2">
+              <Store className="w-5 h-5 text-brand-purple/60" />
+              <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">ساعات دوام الفرع</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400" dir="ltr">
+              <Clock className="w-4 h-4 text-brand-purple/50" />
+              <span>
+                {branchOpenTime || state.currentShift.branchOpenTime} – {branchCloseTime || state.currentShift.branchCloseTime}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* No Shift Message */}
         {!state.currentShift && (
           <div className="w-full text-center py-12 bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm">
@@ -419,6 +477,16 @@ export default function AttendanceDashboard({
           </div>
         )}
 
+        {/* ─── Checkout Checklist (when clocked in) ─── */}
+        {state.currentShift && state.status !== "not_clocked_in" && checklistLoaded && (
+          <CheckoutChecklist
+            shiftId={state.currentShift.id}
+            userId={userId}
+            initialData={checklistData}
+            onComplete={() => setChecklistComplete(true)}
+          />
+        )}
+
         {/* ─── Action Buttons (the hero CTA) ─── */}
         {state.currentShift && (
           <div className="w-full bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm px-6 py-8">
@@ -429,6 +497,7 @@ export default function AttendanceDashboard({
               hasBiometric={hasBiometric}
               onAction={handleAction}
               onRegisterBiometric={handleRegisterBiometric}
+              checklistComplete={checklistComplete}
             />
           </div>
         )}

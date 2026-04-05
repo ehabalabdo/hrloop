@@ -24,6 +24,7 @@ import {
   ChevronDown,
   ChevronUp,
   BarChart3,
+  AlertTriangle,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -41,6 +42,7 @@ import type {
   DashboardMetrics,
   BranchPerformance,
   ActivityLogItem,
+  OvertimeAlert,
 } from "@/lib/dashboard-types";
 import { downloadCSV } from "@/lib/csv-export";
 
@@ -48,6 +50,7 @@ interface DashboardViewProps {
   metrics: DashboardMetrics;
   branches: BranchPerformance[];
   activities: ActivityLogItem[];
+  overtimeAlerts: OvertimeAlert[];
   health: {
     database: boolean;
     timestamp: string;
@@ -76,6 +79,7 @@ export default function DashboardView({
   branches,
   activities,
   health,
+  overtimeAlerts,
 }: DashboardViewProps) {
   const [showAllBranches, setShowAllBranches] = useState(false);
   const [showChart, setShowChart] = useState(false);
@@ -154,6 +158,41 @@ export default function DashboardView({
             <KpiCell icon={TreePalm} value={metrics.pendingLeaves} label="إجازات" color="text-orange-600" bg="bg-orange-50 dark:bg-orange-500/10" />
           </div>
         </div>
+
+        {/* ─── Overtime Alerts ─── */}
+        {overtimeAlerts.length > 0 && (
+          <div className="bg-amber-50 dark:bg-amber-500/5 rounded-[22px] border border-amber-200/70 dark:border-amber-500/20 shadow-sm overflow-hidden">
+            <div className="px-4 py-3 border-b border-amber-200/50 dark:border-amber-500/15 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="text-[13px] font-extrabold text-amber-800 dark:text-amber-300">
+                تنبيه: تجاوز ٤٠ ساعة أسبوعياً
+              </span>
+              <span className="mr-auto text-[11px] font-bold text-amber-600/70 dark:text-amber-400/60 bg-amber-100 dark:bg-amber-500/10 px-2 py-0.5 rounded-full">
+                {overtimeAlerts.length}
+              </span>
+            </div>
+            <div className="divide-y divide-amber-200/40 dark:divide-amber-500/10">
+              {overtimeAlerts.map((alert: OvertimeAlert) => (
+                <div key={alert.userId} className="flex items-center gap-3 px-4 py-3">
+                  <div className="w-8 h-8 rounded-full bg-amber-200/60 dark:bg-amber-500/15 flex items-center justify-center shrink-0">
+                    <Clock className="w-4 h-4 text-amber-700 dark:text-amber-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-bold text-amber-900 dark:text-amber-200 truncate">
+                      {alert.fullName}
+                    </p>
+                    <p className="text-[11px] text-amber-700/70 dark:text-amber-400/60">
+                      {alert.branchName}
+                    </p>
+                  </div>
+                  <span className="text-[14px] font-black text-amber-700 dark:text-amber-300 shrink-0">
+                    {alert.weeklyHours}<span className="text-[10px] font-bold mr-0.5">س</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* ─── Top Branches Podium (mini) ─── */}
         {metrics.topPerfectBranches.length > 0 && (

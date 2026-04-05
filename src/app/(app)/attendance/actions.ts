@@ -29,7 +29,17 @@ export async function getAttendanceState(userId: string) {
       status: { in: ["PUBLISHED", "COMPLETED"] },
     },
     include: {
-      branch: true,
+      branch: {
+        select: {
+          id: true,
+          name: true,
+          latitude: true,
+          longitude: true,
+          geofenceRadius: true,
+          openTime: true,
+          closeTime: true,
+        },
+      },
     },
     orderBy: { scheduledStart: "asc" },
   });
@@ -101,6 +111,8 @@ export async function getAttendanceState(userId: string) {
       branchLatitude: shift.branch.latitude,
       branchLongitude: shift.branch.longitude,
       geofenceRadius: shift.branch.geofenceRadius,
+      branchOpenTime: shift.branch.openTime,
+      branchCloseTime: shift.branch.closeTime,
     },
     lastAction: lastLog
       ? {
@@ -169,6 +181,16 @@ export async function handleAttendance(params: {
       }
       if (action === "BREAK_END" && lastType !== "BREAK_START") {
         throw new Error("You are not on a break.");
+      }
+
+      // Block CLOCK_OUT if checklist is not completed
+      if (action === "CLOCK_OUT") {
+        const checklist = await tx.checkoutChecklist.findUnique({
+          where: { shiftId_userId: { shiftId, userId } },
+        });
+        if (!checklist || !checklist.completedAt) {
+          throw new Error("CHECKLIST_INCOMPLETE");
+        }
       }
 
       // Insert the attendance log
@@ -240,6 +262,7 @@ export async function getUserForAttendance(userId: string) {
       email: true,
       role: true,
       isActive: true,
+      employmentType: true,
       webauthnCredentialId: true,
       primaryBranch: {
         select: {
@@ -248,9 +271,120 @@ export async function getUserForAttendance(userId: string) {
           latitude: true,
           longitude: true,
           geofenceRadius: true,
+          openTime: true,
+          closeTime: true,
         },
       },
     },
   });
   return user;
+}
+
+// ============================================================
+// CHECKOUT CHECKLIST ACTIONS
+// ============================================================
+
+/**
+ * Get checklist status for a shift.
+ */
+export async function getCheckoutChecklist(shiftId: string, userId: string) {
+  const checklist = await prisma.checkoutChecklist.findUnique({
+    where: { shiftId_userId: { shiftId, userId } },
+  });
+  return checklist;
+}
+
+/**
+ * Save/update checkout checklist items.
+ */
+export async function saveCheckoutChecklist(params: {
+  shiftId: string;
+  userId: string;
+  inventoryCount: boolean;
+  newMerchandise: boolean | null;
+  insurancePhones: boolean;
+}) {
+  const { shiftId, userId, inventoryCount, newMerchandise, insurancePhones } = params;
+
+  const allDone = inventoryCount && newMerchandise !== null && insurancePhones;
+
+  const checklist = await prisma.checkoutChecklist.upsert({
+    where: { shiftId_userId: { shiftId, userId } },
+    update: {
+      inventoryCount,
+      newMerchandise,
+      insurancePhones,
+      completedAt: allDone ? new Date() : null,
+    },
+    create: {
+      shiftId,
+      userId,
+      inventoryCount,
+      newMerchandise,
+      insurancePhones,
+      completedAt: allDone ? new Date() : null,
+    },
+  });
+
+  return { success: true, completed: !!checklist.completedAt };
+}
+
+// ============================================================
+// SHIFT REMINDER — creates a notification for the employee
+// ============================================================
+
+/**
+ * Send shift reminder notification to a user.
+ * Called when page loads or by a scheduled job.
+ */
+export async function sendShiftReminder(userId: string) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const shift = await prisma.shift.findFirst({
+    where: {
+      userId,
+      date: { gte: today, lt: tomorrow },
+      status: "PUBLISHED",
+    },
+    include: { branch: true },
+  });
+
+  if (!shift) return { sent: false };
+
+  // Check if already reminded today
+  const existingReminder = await prisma.notification.findFirst({
+    where: {
+      userId,
+      type: "shift_reminder",
+      createdAt: { gte: today },
+    },
+  });
+
+  if (existingReminder) return { sent: false, alreadySent: true };
+
+  const startTime = shift.scheduledStart.toLocaleTimeString("ar-SA", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+  const endTime = shift.scheduledEnd.toLocaleTimeString("ar-SA", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  await prisma.notification.create({
+    data: {
+      userId,
+      title: "تذكير بالوردية",
+      message: `ورديتك اليوم في فرع ${shift.branch.name} من ${startTime} إلى ${endTime}`,
+      type: "shift_reminder",
+      link: "/attendance",
+    },
+  });
+
+  return { sent: true };
 }

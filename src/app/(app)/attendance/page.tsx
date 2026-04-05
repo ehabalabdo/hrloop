@@ -33,6 +33,8 @@ export default async function AttendancePage() {
       userName={user.fullName}
       hasBiometricRegistered={!!user.webauthnCredentialId}
       initialState={attendanceState}
+      branchOpenTime={user.primaryBranch?.openTime}
+      branchCloseTime={user.primaryBranch?.closeTime}
     />
   );
 }

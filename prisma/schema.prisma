@@ -22,6 +22,13 @@ enum UserRole {
   @@map("user_role")
 }
 
+enum EmploymentType {
+  FULL_TIME
+  HOURLY
+
+  @@map("employment_type")
+}
+
 enum ShiftStatus {
   DRAFT
   PUBLISHED
@@ -65,6 +72,17 @@ enum DisputeStatus {
   @@map("dispute_status")
 }
 
+enum SwapStatus {
+  PENDING_REPLACEMENT    // Waiting for replacement employee to accept
+  PENDING_MANAGER        // Replacement accepted, waiting for manager approval
+  APPROVED               // Manager approved — swap confirmed
+  REJECTED_REPLACEMENT   // Replacement declined
+  REJECTED_MANAGER       // Manager rejected
+  CANCELLED              // Requester cancelled
+
+  @@map("swap_status")
+}
+
 // ============================================================
 // BRANCHES
 // ============================================================
@@ -77,15 +95,25 @@ model Branch {
   longitude      Float
   geofenceRadius Int      @default(50) @map("geofence_radius")
   managerId      String?  @map("manager_id") @db.Uuid
+
+  // Branch operating hours (open/close)
+  openTime       String?  @map("open_time") @db.VarChar(5)   // e.g. "09:00"
+  closeTime      String?  @map("close_time") @db.VarChar(5)  // e.g. "22:00"
+
+  // Employee shift hours
+  shiftStartTime String?  @map("shift_start_time") @db.VarChar(5) // e.g. "09:00"
+  shiftEndTime   String?  @map("shift_end_time") @db.VarChar(5)   // e.g. "17:00"
+
   isActive       Boolean  @default(true) @map("is_active")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
   // Relations
-  manager      User?              @relation("BranchManager", fields: [managerId], references: [id], onDelete: SetNull)
-  users        User[]             @relation("UserPrimaryBranch")
-  shifts       Shift[]
-  requirements BranchRequirement[]
+  manager        User?              @relation("BranchManager", fields: [managerId], references: [id], onDelete: SetNull)
+  users          User[]             @relation("UserPrimaryBranch")
+  assignedUsers  UserBranch[]
+  shifts         Shift[]
+  requirements   BranchRequirement[]
 
   @@index([managerId], name: "idx_branches_manager")
   @@map("branches")
@@ -103,6 +131,8 @@ model User {
   role                 UserRole @default(STAFF)
   primaryBranchId      String?  @map("primary_branch_id") @db.Uuid
   phoneNumber          String?  @map("phone_number") @db.VarChar(20)
+  socialSecurityNumber  String?  @map("social_security_number") @db.VarChar(20)
+  employmentType       EmploymentType @default(FULL_TIME) @map("employment_type")
   isActive             Boolean  @default(true) @map("is_active")
 
   // WebAuthn biometric fields
@@ -116,6 +146,8 @@ model User {
   // Relations
   primaryBranch    Branch?          @relation("UserPrimaryBranch", fields: [primaryBranchId], references: [id], onDelete: SetNull)
   managedBranches  Branch[]         @relation("BranchManager")
+  assignedBranches UserBranch[]
+  documents        EmployeeDocument[]
   availability     Availability[]
   shifts           Shift[]
   attendanceLogs   AttendanceLog[]
@@ -129,12 +161,55 @@ model User {
   reviewedDisputes     Dispute[]        @relation("DisputeReviewer")
   systemLogs           SystemLog[]
   reviewedAttendance   AttendanceLog[]  @relation("AttendanceReviewer")
+  checkoutChecklists   CheckoutChecklist[]
+  announcements        Announcement[]
+  swapRequests         ShiftSwap[]      @relation("SwapRequester")
+  swapReplacements     ShiftSwap[]      @relation("SwapReplacement")
+  swapManagerReviews   ShiftSwap[]      @relation("SwapManager")
 
   @@index([email], name: "idx_users_email")
   @@index([role], name: "idx_users_role")
   @@index([primaryBranchId], name: "idx_users_primary_branch")
   @@index([isActive], name: "idx_users_active")
   @@map("users")
+}
+
+// ============================================================
+// USER-BRANCH ASSIGNMENT — Many-to-many: branches an employee can work at
+// ============================================================
+
+model UserBranch {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  branchId  String   @map("branch_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, branchId])
+  @@index([userId], name: "idx_user_branch_user")
+  @@index([branchId], name: "idx_user_branch_branch")
+  @@map("user_branches")
+}
+
+// ============================================================
+// EMPLOYEE DOCUMENTS — Hiring paperwork file uploads
+// ============================================================
+
+model EmployeeDocument {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  fileName     String   @map("file_name") @db.VarChar(255)
+  originalName String   @map("original_name") @db.VarChar(255)
+  fileSize     Int      @map("file_size")
+  mimeType     String   @map("mime_type") @db.VarChar(100)
+  uploadedAt   DateTime @default(now()) @map("uploaded_at") @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], name: "idx_employee_docs_user")
+  @@map("employee_documents")
 }
 
 // ============================================================
@@ -160,15 +235,16 @@ model BranchRequirement {
 }
 
 // ============================================================
-// AVAILABILITY - Weekly availability per employee
+// AVAILABILITY - Weekly availability per hourly employee
 // ============================================================
 
 model Availability {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId    String   @map("user_id") @db.Uuid
   dayOfWeek Int      @map("day_of_week") @db.SmallInt // 0=Sunday, 6=Saturday
-  startTime DateTime @map("start_time") @db.Time
-  endTime   DateTime @map("end_time") @db.Time
+  startTime String   @map("start_time") @db.VarChar(5) // "09:00"
+  endTime   String   @map("end_time") @db.VarChar(5)   // "17:00"
+  lockedUntil DateTime? @map("locked_until") @db.Timestamptz
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
 
@@ -199,8 +275,10 @@ model Shift {
   // Relations
   user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   branch         Branch          @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  attendanceLogs AttendanceLog[]
-  disputes       Dispute[]
+  attendanceLogs      AttendanceLog[]
+  disputes            Dispute[]
+  checkoutChecklists  CheckoutChecklist[]
+  shiftSwaps          ShiftSwap[]
 
   @@index([userId], name: "idx_shifts_user")
   @@index([branchId], name: "idx_shifts_branch")
@@ -246,16 +324,40 @@ model AttendanceLog {
 }
 
 // ============================================================
+// CHECKOUT CHECKLIST - Must complete before clock-out
+// ============================================================
+
+model CheckoutChecklist {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  shiftId           String   @map("shift_id") @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  inventoryCount    Boolean  @default(false) @map("inventory_count")
+  newMerchandise    Boolean? @map("new_merchandise")         // true=yes, false=no, null=not answered
+  insurancePhones   Boolean  @default(false) @map("insurance_phones")
+  completedAt       DateTime? @map("completed_at") @db.Timestamptz
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  // Relations
+  shift Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, userId])
+  @@index([userId], name: "idx_checkout_checklist_user")
+  @@map("checkout_checklists")
+}
+
+// ============================================================
 // PAYROLL PROFILES - Financial settings per employee
 // ============================================================
 
 model PayrollProfile {
   id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   userId               String   @unique @map("user_id") @db.Uuid
-  baseSalary           Decimal  @default(0.00) @map("base_salary") @db.Decimal(12, 2)
-  hourlyRate           Decimal  @default(0.00) @map("hourly_rate") @db.Decimal(8, 2)
-  overtimeRate         Decimal  @default(0.00) @map("overtime_rate") @db.Decimal(8, 2)
-  latePenaltyPerMinute Decimal  @default(0.00) @map("late_penalty_per_minute") @db.Decimal(6, 2)
+  baseSalary               Decimal  @default(0.00) @map("base_salary") @db.Decimal(12, 2)
+  hourlyRate               Decimal  @default(0.00) @map("hourly_rate") @db.Decimal(8, 2)
+  overtimeRate             Decimal  @default(0.00) @map("overtime_rate") @db.Decimal(8, 2)
+  transportationAllowance  Decimal  @default(0.00) @map("transportation_allowance") @db.Decimal(10, 2)
+  latePenaltyPerMinute     Decimal  @default(0.00) @map("late_penalty_per_minute") @db.Decimal(6, 2)
   gracePeriodMinutes   Int      @default(5) @map("grace_period_minutes")
   createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt            DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -453,4 +555,59 @@ model SystemLog {
   @@index([targetType, targetId], name: "idx_system_logs_target")
   @@index([createdAt(sort: Desc)], name: "idx_system_logs_created")
   @@map("system_logs")
+}
+
+// ============================================================
+// ANNOUNCEMENTS — News feed posts by managers/owners
+// ============================================================
+
+model Announcement {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  authorId    String   @map("author_id") @db.Uuid
+  content     String
+  mediaUrl    String?  @map("media_url") @db.VarChar(500)
+  mediaType   String?  @map("media_type") @db.VarChar(20) // "image" | "video"
+  isPinned    Boolean  @default(false) @map("is_pinned")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt(sort: Desc)], name: "idx_announcements_created")
+  @@index([authorId], name: "idx_announcements_author")
+  @@map("announcements")
+}
+
+// ============================================================
+// SHIFT SWAPS - Two-step approval: replacement → manager
+// ============================================================
+
+model ShiftSwap {
+  id               String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  requesterId      String     @map("requester_id") @db.Uuid
+  replacementId    String     @map("replacement_id") @db.Uuid
+  shiftId          String     @map("shift_id") @db.Uuid
+  status           SwapStatus @default(PENDING_REPLACEMENT)
+  reason           String?
+  replacementNote  String?    @map("replacement_note")
+  managerNote      String?    @map("manager_note")
+  managerId        String?    @map("manager_id") @db.Uuid
+  replacementRespondedAt DateTime? @map("replacement_responded_at") @db.Timestamptz
+  managerRespondedAt     DateTime? @map("manager_responded_at") @db.Timestamptz
+  createdAt        DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+
+  // Relations
+  requester   User  @relation("SwapRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  replacement User  @relation("SwapReplacement", fields: [replacementId], references: [id], onDelete: Cascade)
+  shift       Shift @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  manager     User? @relation("SwapManager", fields: [managerId], references: [id], onDelete: SetNull)
+
+  @@index([requesterId], name: "idx_swap_requester")
+  @@index([replacementId], name: "idx_swap_replacement")
+  @@index([shiftId], name: "idx_swap_shift")
+  @@index([status], name: "idx_swap_status")
+  @@index([createdAt(sort: Desc)], name: "idx_swap_created")
+  @@map("shift_swaps")
 }

@@ -7,6 +7,8 @@
 
 import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { unlink } from "fs/promises";
+import path from "path";
 
 // ============================================================
 // Types
@@ -19,6 +21,21 @@ export interface EmployeeFormData {
   role: "OWNER" | "MANAGER" | "STAFF";
   primaryBranchId?: string;
   phoneNumber?: string;
+  socialSecurityNumber?: string;
+  employmentType: "FULL_TIME" | "HOURLY";
+  assignedBranchIds?: string[];
+  hourlyRate?: number;
+  baseSalary?: number;
+  transportationAllowance?: number;
+}
+
+export interface EmployeeDocument {
+  id: string;
+  fileName: string;
+  originalName: string;
+  fileSize: number;
+  mimeType: string;
+  uploadedAt: Date;
 }
 
 export interface EmployeeWithBranch {
@@ -27,11 +44,16 @@ export interface EmployeeWithBranch {
   email: string;
   role: "OWNER" | "MANAGER" | "STAFF";
   phoneNumber: string | null;
+  socialSecurityNumber: string | null;
+  employmentType: "FULL_TIME" | "HOURLY";
   primaryBranchId: string | null;
   isActive: boolean;
   createdAt: Date;
   primaryBranch: { id: string; name: string } | null;
   managedBranches: { id: string; name: string }[];
+  assignedBranches: { branch: { id: string; name: string } }[];
+  documents: EmployeeDocument[];
+  payrollProfile: { baseSalary: number; hourlyRate: number; transportationAllowance: number } | null;
   _count: { shifts: number; attendanceLogs: number };
 }
 
@@ -46,6 +68,25 @@ export async function getEmployees(): Promise<EmployeeWithBranch[]> {
       },
       managedBranches: {
         select: { id: true, name: true },
+      },
+      assignedBranches: {
+        include: {
+          branch: { select: { id: true, name: true } },
+        },
+      },
+      documents: {
+        select: {
+          id: true,
+          fileName: true,
+          originalName: true,
+          fileSize: true,
+          mimeType: true,
+          uploadedAt: true,
+        },
+        orderBy: { uploadedAt: "desc" },
+      },
+      payrollProfile: {
+        select: { baseSalary: true, hourlyRate: true, transportationAllowance: true },
       },
       _count: {
         select: { shifts: true, attendanceLogs: true },
@@ -105,15 +146,28 @@ export async function createEmployee(
         role: data.role,
         primaryBranchId: data.primaryBranchId || null,
         phoneNumber: data.phoneNumber?.trim() || null,
+        socialSecurityNumber: data.socialSecurityNumber?.trim() || null,
+        employmentType: data.employmentType || "FULL_TIME",
       },
     });
 
-    // Create default PayrollProfile so payroll works for this employee
+    // Create assigned branches
+    if (data.assignedBranchIds && data.assignedBranchIds.length > 0) {
+      await prisma.userBranch.createMany({
+        data: data.assignedBranchIds.map((branchId) => ({
+          userId: newUser.id,
+          branchId,
+        })),
+      });
+    }
+
+    // Create PayrollProfile with salary/rate info
     await prisma.payrollProfile.create({
       data: {
         userId: newUser.id,
-        baseSalary: 0,
-        hourlyRate: 0,
+        baseSalary: data.baseSalary ?? 0,
+        hourlyRate: data.hourlyRate ?? 0,
+        transportationAllowance: data.transportationAllowance ?? 0,
         overtimeRate: 0,
       },
     });
@@ -154,6 +208,8 @@ export async function updateEmployee(
       role: data.role,
       primaryBranchId: data.primaryBranchId || null,
       phoneNumber: data.phoneNumber?.trim() || null,
+      socialSecurityNumber: data.socialSecurityNumber?.trim() || null,
+      employmentType: data.employmentType || "FULL_TIME",
     };
 
     // Only update password if provided
@@ -165,6 +221,36 @@ export async function updateEmployee(
       where: { id },
       data: updateData,
     });
+
+    // Update PayrollProfile salary/rate
+    await prisma.payrollProfile.upsert({
+      where: { userId: id },
+      update: {
+        baseSalary: data.baseSalary ?? 0,
+        hourlyRate: data.hourlyRate ?? 0,
+        transportationAllowance: data.transportationAllowance ?? 0,
+      },
+      create: {
+        userId: id,
+        baseSalary: data.baseSalary ?? 0,
+        hourlyRate: data.hourlyRate ?? 0,
+        transportationAllowance: data.transportationAllowance ?? 0,
+        overtimeRate: 0,
+      },
+    });
+
+    // Update assigned branches: delete old and create new
+    if (data.assignedBranchIds !== undefined) {
+      await prisma.userBranch.deleteMany({ where: { userId: id } });
+      if (data.assignedBranchIds.length > 0) {
+        await prisma.userBranch.createMany({
+          data: data.assignedBranchIds.map((branchId) => ({
+            userId: id,
+            branchId,
+          })),
+        });
+      }
+    }
 
     return { success: true };
   } catch (e) {
@@ -229,5 +315,48 @@ export async function deleteEmployee(
   } catch (e) {
     console.error("Failed to delete employee:", e);
     return { success: false, error: "فشل في حذف الموظف" };
+  }
+}
+
+// ============================================================
+// GET EMPLOYEE DOCUMENTS
+// ============================================================
+export async function getEmployeeDocuments(
+  userId: string
+): Promise<EmployeeDocument[]> {
+  const docs = await prisma.employeeDocument.findMany({
+    where: { userId },
+    orderBy: { uploadedAt: "desc" },
+  });
+  return docs as unknown as EmployeeDocument[];
+}
+
+// ============================================================
+// DELETE EMPLOYEE DOCUMENT
+// ============================================================
+export async function deleteEmployeeDocument(
+  docId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const doc = await prisma.employeeDocument.findUnique({
+      where: { id: docId },
+    });
+    if (!doc) {
+      return { success: false, error: "الملف غير موجود" };
+    }
+
+    // Delete file from filesystem
+    const filePath = path.join(process.cwd(), "uploads", "employees", doc.fileName);
+    try {
+      await unlink(filePath);
+    } catch {
+      // File may already be deleted — continue
+    }
+
+    await prisma.employeeDocument.delete({ where: { id: docId } });
+    return { success: true };
+  } catch (e) {
+    console.error("Failed to delete document:", e);
+    return { success: false, error: "فشل في حذف الملف" };
   }
 }

@@ -14,6 +14,10 @@ export interface BranchFormData {
   longitude: number;
   geofenceRadius: number;
   managerId?: string;
+  openTime?: string;
+  closeTime?: string;
+  shiftStartTime?: string;
+  shiftEndTime?: string;
 }
 
 export interface BranchWithManager {
@@ -24,6 +28,10 @@ export interface BranchWithManager {
   longitude: number;
   geofenceRadius: number;
   managerId: string | null;
+  openTime: string | null;
+  closeTime: string | null;
+  shiftStartTime: string | null;
+  shiftEndTime: string | null;
   isActive: boolean;
   createdAt: Date;
   manager: { id: string; fullName: string } | null;
@@ -90,6 +98,10 @@ export async function createBranch(
         longitude: data.longitude,
         geofenceRadius: data.geofenceRadius,
         managerId: data.managerId || null,
+        openTime: data.openTime || null,
+        closeTime: data.closeTime || null,
+        shiftStartTime: data.shiftStartTime || null,
+        shiftEndTime: data.shiftEndTime || null,
       },
     });
 
@@ -125,6 +137,10 @@ export async function updateBranch(
         longitude: data.longitude,
         geofenceRadius: data.geofenceRadius,
         managerId: data.managerId || null,
+        openTime: data.openTime || null,
+        closeTime: data.closeTime || null,
+        shiftStartTime: data.shiftStartTime || null,
+        shiftEndTime: data.shiftEndTime || null,
       },
     });
 

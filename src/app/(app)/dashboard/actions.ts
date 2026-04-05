@@ -12,6 +12,7 @@ import type {
   ActivityLogItem,
   NotificationItem,
   SettingItem,
+  OvertimeAlert,
 } from "@/lib/dashboard-types";
 
 // ============================================================
@@ -357,6 +358,87 @@ export async function updateGlobalSetting(
     console.error("Update setting failed:", error);
     return { success: false, message: "Failed to update setting." };
   }
+}
+
+// ============================================================
+// OVERTIME ALERTS — Employees exceeding 40 hours/week
+// ============================================================
+
+export async function getOvertimeAlerts(): Promise<OvertimeAlert[]> {
+  const now = new Date();
+  // Get Monday of current week
+  const day = now.getDay(); // 0=Sun
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - day + (day === 0 ? -6 : 1));
+  monday.setHours(0, 0, 0, 0);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  sunday.setHours(23, 59, 59, 999);
+
+  // Get all attendance logs for this week
+  const logs = await prisma.attendanceLog.findMany({
+    where: {
+      timestamp: { gte: monday, lte: sunday },
+      type: { in: ["CLOCK_IN", "CLOCK_OUT"] },
+    },
+    include: {
+      user: {
+        select: {
+          id: true,
+          fullName: true,
+          isActive: true,
+          primaryBranch: { select: { name: true } },
+        },
+      },
+    },
+    orderBy: { timestamp: "asc" },
+  });
+
+  type LogEntry = (typeof logs)[number];
+
+  // Group logs by user
+  const userLogs = new Map<string, LogEntry[]>();
+  for (const log of logs) {
+    if (!log.user.isActive) continue;
+    const existing = userLogs.get(log.userId) ?? [];
+    existing.push(log);
+    userLogs.set(log.userId, existing);
+  }
+
+  const alerts: OvertimeAlert[] = [];
+
+  for (const [, entries] of userLogs) {
+    let totalMinutes = 0;
+    let lastClockIn: Date | null = null;
+
+    for (const entry of entries) {
+      if (entry.type === "CLOCK_IN") {
+        lastClockIn = new Date(entry.timestamp);
+      } else if (entry.type === "CLOCK_OUT" && lastClockIn) {
+        const diff = (new Date(entry.timestamp).getTime() - lastClockIn.getTime()) / (1000 * 60);
+        if (diff > 0 && diff < 1440) { // sanity: max 24h per session
+          totalMinutes += diff;
+        }
+        lastClockIn = null;
+      }
+    }
+
+    const weeklyHours = Math.round((totalMinutes / 60) * 10) / 10;
+    if (weeklyHours > 40) {
+      const user = entries[0].user;
+      alerts.push({
+        userId: user.id,
+        fullName: user.fullName,
+        weeklyHours,
+        branchName: user.primaryBranch?.name ?? "—",
+      });
+    }
+  }
+
+  // Sort by most hours first
+  alerts.sort((a, b) => b.weeklyHours - a.weeklyHours);
+  return alerts;
 }
 
 // ============================================================

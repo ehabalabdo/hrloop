@@ -6,7 +6,7 @@
 // Arabic, mobile-first, card-based design
 // ============================================================
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import {
   Plus,
   Edit2,
@@ -25,16 +25,28 @@ import {
   Search,
   ToggleLeft,
   ToggleRight,
+  FileText,
+  Upload,
+  Download,
+  ExternalLink,
+  Hash,
+  Clock,
+  Briefcase,
+  Paperclip,
+  DollarSign,
+  Bus,
 } from "lucide-react";
 import type {
   EmployeeWithBranch,
   EmployeeFormData,
+  EmployeeDocument,
 } from "@/app/(app)/settings/employee-actions";
 import {
   createEmployee,
   updateEmployee,
   toggleEmployeeActive,
   deleteEmployee,
+  deleteEmployeeDocument,
 } from "@/app/(app)/settings/employee-actions";
 
 interface EmployeeManagementProps {
@@ -62,6 +74,12 @@ const emptyForm: EmployeeFormData = {
   role: "STAFF",
   primaryBranchId: "",
   phoneNumber: "",
+  socialSecurityNumber: "",
+  employmentType: "FULL_TIME",
+  assignedBranchIds: [],
+  hourlyRate: 0,
+  baseSalary: 0,
+  transportationAllowance: 0,
 };
 
 export default function EmployeeManagement({
@@ -82,6 +100,9 @@ export default function EmployeeManagement({
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState<string>("ALL");
+  const [uploadingFor, setUploadingFor] = useState<string | null>(null);
+  const [expandedDocs, setExpandedDocs] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -103,6 +124,12 @@ export default function EmployeeManagement({
       role: emp.role,
       primaryBranchId: emp.primaryBranchId || "",
       phoneNumber: emp.phoneNumber || "",
+      socialSecurityNumber: emp.socialSecurityNumber || "",
+      employmentType: emp.employmentType || "FULL_TIME",
+      assignedBranchIds: emp.assignedBranches?.map((ab) => ab.branch.id) || [],
+      hourlyRate: emp.payrollProfile?.hourlyRate ?? 0,
+      baseSalary: emp.payrollProfile?.baseSalary ?? 0,
+      transportationAllowance: emp.payrollProfile?.transportationAllowance ?? 0,
     });
     setEditingId(emp.id);
     setShowForm(true);
@@ -127,6 +154,8 @@ export default function EmployeeManagement({
         ...form,
         primaryBranchId: form.primaryBranchId || undefined,
         phoneNumber: form.phoneNumber || undefined,
+        socialSecurityNumber: form.socialSecurityNumber || undefined,
+        assignedBranchIds: form.assignedBranchIds || [],
       };
 
       let result;
@@ -196,6 +225,58 @@ export default function EmployeeManagement({
     const matchRole = filterRole === "ALL" || e.role === filterRole;
     return matchSearch && matchRole;
   });
+
+  const handleFileUpload = async (userId: string, file: File) => {
+    setUploadingFor(userId);
+    try {
+      const formData = new FormData();
+      formData.append("userId", userId);
+      formData.append("file", file);
+
+      const res = await fetch("/api/employees/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+
+      if (result.success) {
+        showToast("تم رفع الملف بنجاح", "success");
+        const { getEmployees } = await import(
+          "@/app/(app)/settings/employee-actions"
+        );
+        const fresh = await getEmployees();
+        setEmployees(fresh);
+      } else {
+        showToast(result.error || "فشل في رفع الملف", "error");
+      }
+    } catch {
+      showToast("فشل في رفع الملف", "error");
+    } finally {
+      setUploadingFor(null);
+    }
+  };
+
+  const handleDeleteDoc = async (docId: string) => {
+    startTransition(async () => {
+      const result = await deleteEmployeeDocument(docId);
+      if (result.success) {
+        showToast("تم حذف الملف", "success");
+        const { getEmployees } = await import(
+          "@/app/(app)/settings/employee-actions"
+        );
+        const fresh = await getEmployees();
+        setEmployees(fresh);
+      } else {
+        showToast(result.error || "حدث خطأ", "error");
+      }
+    });
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
 
   const activeCount = employees.filter((e) => e.isActive).length;
 
@@ -323,6 +404,15 @@ export default function EmployeeManagement({
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
+            <a
+              href="https://accounts.google.com/signup"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-brand-purple hover:underline"
+            >
+              <ExternalLink className="w-3 h-3" />
+              ما عندو إيميل؟ إنشاء حساب Gmail جديد
+            </a>
           </div>
 
           {/* Password */}
@@ -418,6 +508,170 @@ export default function EmployeeManagement({
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+
+          {/* Assigned Branches (Checkboxes) */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+              <Building2 className="inline w-3.5 h-3.5 ml-1" />
+              الفروع المسموح بالدوام فيها
+            </label>
+            <div className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 max-h-40 overflow-y-auto space-y-2">
+              {branches.length === 0 ? (
+                <div className="text-xs text-zinc-400 text-center py-2">لا توجد فروع</div>
+              ) : (
+                branches.map((b) => (
+                  <label
+                    key={b.id}
+                    className="flex items-center gap-2.5 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg px-2 py-1.5 transition"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={form.assignedBranchIds?.includes(b.id) || false}
+                      onChange={(e) => {
+                        const current = form.assignedBranchIds || [];
+                        if (e.target.checked) {
+                          setForm({
+                            ...form,
+                            assignedBranchIds: [...current, b.id],
+                          });
+                        } else {
+                          setForm({
+                            ...form,
+                            assignedBranchIds: current.filter((id) => id !== b.id),
+                          });
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-zinc-300 dark:border-zinc-600 text-brand-purple focus:ring-brand-purple/30 accent-brand-purple"
+                    />
+                    <span className="text-sm text-zinc-700 dark:text-zinc-300">
+                      {b.name}
+                    </span>
+                  </label>
+                ))
+              )}
+            </div>
+            {(form.assignedBranchIds?.length ?? 0) > 0 && (
+              <div className="text-[11px] text-brand-purple mt-1">
+                تم اختيار {form.assignedBranchIds!.length} فرع
+              </div>
+            )}
+          </div>
+
+          {/* Social Security Number */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+              رقم الضمان الاجتماعي (SSN)
+            </label>
+            <div className="relative">
+              <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+              <input
+                type="text"
+                value={form.socialSecurityNumber || ""}
+                onChange={(e) =>
+                  setForm({ ...form, socialSecurityNumber: e.target.value })
+                }
+                placeholder="XXX-XX-XXXX"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Employment Type */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+              نوع التوظيف *
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, employmentType: "FULL_TIME" })}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${
+                  form.employmentType === "FULL_TIME"
+                    ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <Briefcase className="w-4 h-4" />
+                دوام كامل
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, employmentType: "HOURLY" })}
+                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${
+                  form.employmentType === "HOURLY"
+                    ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                بالساعة
+              </button>
+            </div>
+          </div>
+
+          {/* Pay Info — conditional on employment type */}
+          {form.employmentType === "HOURLY" ? (
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                أجرة الساعة (بالدينار) *
+              </label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  type="number"
+                  min="0"
+                  step="0.25"
+                  value={form.hourlyRate || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, hourlyRate: parseFloat(e.target.value) || 0 })
+                  }
+                  placeholder="0.00"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+                الراتب الشهري (بالدينار) *
+              </label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.baseSalary || ""}
+                  onChange={(e) =>
+                    setForm({ ...form, baseSalary: parseFloat(e.target.value) || 0 })
+                  }
+                  placeholder="0.00"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Transportation Allowance */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+              بدل تنقل (بالدينار)
+            </label>
+            <div className="relative">
+              <Bus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+              <input
+                type="number"
+                min="0"
+                step="1"
+                value={form.transportationAllowance || ""}
+                onChange={(e) =>
+                  setForm({ ...form, transportationAllowance: parseFloat(e.target.value) || 0 })
+                }
+                placeholder="0.00"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+              />
             </div>
           </div>
 
@@ -522,7 +776,54 @@ export default function EmployeeManagement({
                   <Phone className="w-3.5 h-3.5" />
                   <span>{emp.phoneNumber || "—"}</span>
                 </div>
+                <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                  {emp.employmentType === "FULL_TIME" ? (
+                    <Briefcase className="w-3.5 h-3.5" />
+                  ) : (
+                    <Clock className="w-3.5 h-3.5" />
+                  )}
+                  <span>{emp.employmentType === "FULL_TIME" ? "دوام كامل" : "بالساعة"}</span>
+                </div>
+                {emp.payrollProfile && (
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <DollarSign className="w-3.5 h-3.5" />
+                    <span>
+                      {emp.employmentType === "HOURLY"
+                        ? `${Number(emp.payrollProfile.hourlyRate).toFixed(2)}/ساعة`
+                        : `${Number(emp.payrollProfile.baseSalary).toFixed(0)} شهري`}
+                    </span>
+                  </div>
+                )}
+                {emp.payrollProfile && Number(emp.payrollProfile.transportationAllowance) > 0 && (
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <Bus className="w-3.5 h-3.5" />
+                    <span>تنقل: {Number(emp.payrollProfile.transportationAllowance).toFixed(0)}</span>
+                  </div>
+                )}
+                {emp.socialSecurityNumber && (
+                  <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                    <Hash className="w-3.5 h-3.5" />
+                    <span>SSN: ••••{emp.socialSecurityNumber.slice(-4)}</span>
+                  </div>
+                )}
               </div>
+
+              {/* Assigned Branches */}
+              {emp.assignedBranches && emp.assignedBranches.length > 0 && (
+                <div className="mb-3">
+                  <div className="text-[10px] text-zinc-400 mb-1">الفروع المسموح بها:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {emp.assignedBranches.map((ab) => (
+                      <span
+                        key={ab.branch.id}
+                        className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                      >
+                        {ab.branch.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Stats Row */}
               <div className="flex items-center gap-3 mb-3">
@@ -550,6 +851,36 @@ export default function EmployeeManagement({
 
               {/* Actions Row */}
               <div className="flex items-center gap-2 border-t border-zinc-100 dark:border-zinc-800/40 pt-3">
+                {/* Document Upload Button */}
+                <button
+                  onClick={() => {
+                    setUploadingFor(emp.id);
+                    fileInputRef.current?.click();
+                  }}
+                  disabled={uploadingFor === emp.id}
+                  className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-900/40 transition active:scale-95"
+                >
+                  {uploadingFor === emp.id ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Upload className="w-3.5 h-3.5" />
+                  )}
+                  رفع ملف
+                </button>
+
+                {/* Expand Documents */}
+                {emp.documents && emp.documents.length > 0 && (
+                  <button
+                    onClick={() =>
+                      setExpandedDocs(expandedDocs === emp.id ? null : emp.id)
+                    }
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-zinc-700 transition active:scale-95"
+                  >
+                    <Paperclip className="w-3.5 h-3.5" />
+                    {emp.documents.length} ملف
+                  </button>
+                )}
+
                 <button
                   onClick={() => startEdit(emp)}
                   className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl py-2 text-xs font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition active:scale-95"
@@ -605,10 +936,72 @@ export default function EmployeeManagement({
                   </button>
                 )}
               </div>
+
+              {/* Expanded Documents Panel */}
+              {expandedDocs === emp.id && emp.documents && emp.documents.length > 0 && (
+                <div className="mt-3 border-t border-zinc-100 dark:border-zinc-800/40 pt-3 space-y-2">
+                  <div className="text-xs font-bold text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5" />
+                    مستندات التوظيف
+                  </div>
+                  {emp.documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-3 py-2"
+                    >
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <FileText className="w-4 h-4 text-brand-purple shrink-0" />
+                        <div className="min-w-0">
+                          <div className="text-xs font-medium text-zinc-700 dark:text-zinc-300 truncate">
+                            {doc.originalName}
+                          </div>
+                          <div className="text-[10px] text-zinc-400">
+                            {formatFileSize(doc.fileSize)}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <a
+                          href={`/api/employees/documents/${doc.fileName}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                          title="تحميل"
+                        >
+                          <Download className="w-3.5 h-3.5 text-brand-purple" />
+                        </a>
+                        <button
+                          onClick={() => handleDeleteDoc(doc.id)}
+                          disabled={isPending}
+                          className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition"
+                          title="حذف"
+                        >
+                          <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
+
+      {/* Hidden File Input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file && uploadingFor) {
+            handleFileUpload(uploadingFor, file);
+          }
+          e.target.value = "";
+        }}
+      />
 
       {/* Toast */}
       {toast && (

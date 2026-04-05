@@ -5,7 +5,7 @@
 // One big primary action per state. Mobile-first, Arabic.
 // ============================================================
 
-import { Fingerprint, LogIn, LogOut, Coffee, Play, Loader2 } from "lucide-react";
+import { Fingerprint, LogIn, LogOut, Coffee, Play, Loader2, ClipboardCheck } from "lucide-react";
 
 interface ActionButtonsProps {
   status: "not_clocked_in" | "clocked_in" | "on_break";
@@ -14,6 +14,7 @@ interface ActionButtonsProps {
   hasBiometric: boolean;
   onAction: (action: "CLOCK_IN" | "CLOCK_OUT" | "BREAK_START" | "BREAK_END") => void;
   onRegisterBiometric: () => void;
+  checklistComplete?: boolean;
 }
 
 export default function ActionButtons({
@@ -23,6 +24,7 @@ export default function ActionButtons({
   hasBiometric,
   onAction,
   onRegisterBiometric,
+  checklistComplete = false,
 }: ActionButtonsProps) {
   const disabled = !isWithinFence || isLoading;
 
@@ -90,6 +92,7 @@ export default function ActionButtons({
 
   // ── Clocked In → Break + Check Out ──
   if (status === "clocked_in") {
+    const checkoutDisabled = disabled || !checklistComplete;
     return (
       <div className="flex flex-col items-center gap-4 w-full px-2">
         {/* Primary: Start Break */}
@@ -109,18 +112,25 @@ export default function ActionButtons({
         {/* Secondary: Check Out */}
         <button
           onClick={() => onAction("CLOCK_OUT")}
-          disabled={disabled}
+          disabled={checkoutDisabled}
           className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-3xl text-base font-semibold border-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/10 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
           <span>تسجيل انصراف</span>
         </button>
+        {!checklistComplete && (
+          <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
+            <ClipboardCheck className="w-4 h-4" />
+            <span>أكمل لائحة المهام أولاً</span>
+          </div>
+        )}
       </div>
     );
   }
 
   // ── On Break → End Break (primary) + Check Out (secondary) ──
   if (status === "on_break") {
+    const checkoutDisabled = disabled || !checklistComplete;
     return (
       <div className="flex flex-col items-center gap-4 w-full px-2">
         {/* Break indicator */}
@@ -146,12 +156,18 @@ export default function ActionButtons({
         {/* Secondary: Check Out */}
         <button
           onClick={() => onAction("CLOCK_OUT")}
-          disabled={disabled}
+          disabled={checkoutDisabled}
           className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-3xl text-base font-semibold border-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/10 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
           <span>تسجيل انصراف</span>
         </button>
+        {!checklistComplete && (
+          <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
+            <ClipboardCheck className="w-4 h-4" />
+            <span>أكمل لائحة المهام أولاً</span>
+          </div>
+        )}
       </div>
     );
   }

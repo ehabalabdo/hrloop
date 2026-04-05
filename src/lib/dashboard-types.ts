@@ -50,3 +50,10 @@ export interface SettingItem {
   description: string | null;
   category: string;
 }
+
+export interface OvertimeAlert {
+  userId: string;
+  fullName: string;
+  weeklyHours: number;
+  branchName: string;
+}

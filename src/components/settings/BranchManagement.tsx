@@ -19,6 +19,7 @@ import {
   ToggleRight,
   Building2,
   Map,
+  Clock,
 } from "lucide-react";
 
 // Dynamic import — Leaflet uses window/document and can't be SSR'd
@@ -43,6 +44,10 @@ const emptyForm: BranchFormData = {
   longitude: 46.6753,
   geofenceRadius: 50,
   managerId: "",
+  openTime: "",
+  closeTime: "",
+  shiftStartTime: "",
+  shiftEndTime: "",
 };
 
 export default function BranchManagement({
@@ -79,6 +84,10 @@ export default function BranchManagement({
       longitude: branch.longitude,
       geofenceRadius: branch.geofenceRadius,
       managerId: branch.managerId || "",
+      openTime: branch.openTime || "",
+      closeTime: branch.closeTime || "",
+      shiftStartTime: branch.shiftStartTime || "",
+      shiftEndTime: branch.shiftEndTime || "",
     });
     setEditingId(branch.id);
     setShowForm(true);
@@ -298,6 +307,64 @@ export default function BranchManagement({
                 ))}
               </select>
             </div>
+
+            {/* Branch Operating Hours */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" />
+                ساعات فتح وإغلاق الفرع
+              </label>
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <label className="block text-[10px] text-zinc-400 mb-0.5">وقت الفتح</label>
+                  <input
+                    type="time"
+                    value={form.openTime || ""}
+                    onChange={(e) => setForm({ ...form, openTime: e.target.value })}
+                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                  />
+                </div>
+                <span className="text-zinc-400 mt-4">—</span>
+                <div className="flex-1">
+                  <label className="block text-[10px] text-zinc-400 mb-0.5">وقت الإغلاق</label>
+                  <input
+                    type="time"
+                    value={form.closeTime || ""}
+                    onChange={(e) => setForm({ ...form, closeTime: e.target.value })}
+                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Employee Shift Hours */}
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+                <Users className="w-3.5 h-3.5" />
+                ساعات دوام الموظفين
+              </label>
+              <div className="flex items-center gap-3">
+                <div className="flex-1">
+                  <label className="block text-[10px] text-zinc-400 mb-0.5">بداية الدوام</label>
+                  <input
+                    type="time"
+                    value={form.shiftStartTime || ""}
+                    onChange={(e) => setForm({ ...form, shiftStartTime: e.target.value })}
+                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                  />
+                </div>
+                <span className="text-zinc-400 mt-4">—</span>
+                <div className="flex-1">
+                  <label className="block text-[10px] text-zinc-400 mb-0.5">نهاية الدوام</label>
+                  <input
+                    type="time"
+                    value={form.shiftEndTime || ""}
+                    onChange={(e) => setForm({ ...form, shiftEndTime: e.target.value })}
+                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Save / Cancel */}
@@ -378,6 +445,22 @@ export default function BranchManagement({
                     </span>
                   )}
                 </div>
+
+                {/* Hours Display */}
+                {(branch.openTime || branch.shiftStartTime) && (
+                  <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs">
+                    {branch.openTime && branch.closeTime && (
+                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                        🏪 الفرع: {branch.openTime} — {branch.closeTime}
+                      </span>
+                    )}
+                    {branch.shiftStartTime && branch.shiftEndTime && (
+                      <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                        👷 الدوام: {branch.shiftStartTime} — {branch.shiftEndTime}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
