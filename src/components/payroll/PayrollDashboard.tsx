@@ -231,17 +231,17 @@ export default function PayrollDashboard({
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="bg-surface border-b border-border-main sticky top-0 z-30">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-purple/10 rounded-2xl flex items-center justify-center">
-              <Wallet className="w-5 h-5 text-brand-purple" />
+      <div className="bg-surface border-b border-border-main sticky top-0 z-30 elevation-2">
+        <div className="page-container py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-brand-purple/10 rounded-2xl flex items-center justify-center">
+              <Wallet className="w-6 h-6 text-brand-purple" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">
+              <h1 className="text-xl font-bold text-foreground">
                 الرواتب والخصومات
               </h1>
-              <p className="text-xs text-muted">
+              <p className="text-sm text-muted mt-0.5">
                 محرك تسوية الرواتب الشهري
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function PayrollDashboard({
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-5 space-y-5">
+      <div className="page-container py-8 section-gap">
         {/* Summary Cards */}
         <PayrollSummaryCards summary={summary} monthLabel={monthLabel} />
 

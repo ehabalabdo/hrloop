@@ -233,20 +233,20 @@ export default function ScheduleDashboard({
     <div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950 pb-36 font-sans">
       
       {/* ── STICKY TOP NAVIGATION & CALENDAR ── */}
-      <div className="bg-surface shadow-[0_4px_24px_-10px_rgba(0,0,0,0.05)] border-b border-zinc-200/50 dark:border-zinc-800/80 sticky top-0 z-30 rounded-b-[2rem]">
-        <div className="max-w-2xl mx-auto px-5 pt-6 pb-6">
+      <div className="bg-surface elevation-2 border-b border-zinc-200/50 dark:border-zinc-800/80 sticky top-0 z-30">
+        <div className="page-container pt-7 pb-7">
           
           {/* Header Row */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-purple to-brand-purple-dark rounded-2xl flex items-center justify-center shadow-lg shadow-brand-purple/20">
+          <div className="flex items-center justify-between mb-7">
+            <div className="flex items-center gap-4">
+              <div className="w-13 h-13 bg-gradient-to-br from-brand-purple to-brand-purple-dark rounded-2xl flex items-center justify-center shadow-lg shadow-brand-purple/20" style={{ width: '52px', height: '52px' }}>
                 <CalendarDays className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-xl font-extrabold text-foreground tracking-tight">
                   جدول الورديات
                 </h1>
-                <p className="text-[13px] text-muted font-medium mt-0.5">
+                <p className="text-sm text-muted font-medium mt-1">
                   تخطيط وتوزيع الموظفين
                 </p>
               </div>
@@ -275,7 +275,7 @@ export default function ScheduleDashboard({
           </div>
 
           {/* Week Selector */}
-          <div className="flex items-center bg-surface-hover/50 rounded-2xl p-1.5 mb-6 border border-border-main/50 relative overflow-hidden">
+          <div className="flex items-center bg-surface-hover/50 rounded-2xl p-2 mb-7 border border-border-main/50 relative overflow-hidden gap-2">
             <button
               onClick={() => shiftWeek(-7)}
               className="p-3 bg-white dark:bg-zinc-700 shadow-sm rounded-xl active:scale-95 transition-transform"
@@ -285,10 +285,10 @@ export default function ScheduleDashboard({
 
             {/* Clickable week label — opens native date picker */}
             <label className="flex-[2] text-center cursor-pointer relative">
-              <span className="font-bold text-foreground text-[15px]">
+              <span className="font-bold text-foreground text-base">
                 {data.weekLabel}
               </span>
-              <span className="block text-xs text-brand-purple font-semibold mt-0.5">اضغط لاختيار أسبوع</span>
+              <span className="block text-xs text-brand-purple font-semibold mt-1">اضغط لاختيار أسبوع</span>
               <input
                 type="date"
                 value={weekStart}
@@ -315,7 +315,7 @@ export default function ScheduleDashboard({
           </div>
 
           {/* Day Cards (horizontal scroll) */}
-          <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-2 -mx-2 px-2 snap-x">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 -mx-2 px-2 snap-x">
             {weekDays.map((dateStr, i) => {
               const date = new Date(dateStr);
               const dayNum = date.getDate();
@@ -334,18 +334,18 @@ export default function ScheduleDashboard({
                 <button
                   key={dateStr}
                   onClick={() => setSelectedDay(i)}
-                  className={`relative flex-shrink-0 snap-center flex flex-col items-center justify-center w-[66px] h-[78px] rounded-2xl transition-all duration-200 ${
+                  className={`relative flex-shrink-0 snap-center flex flex-col items-center justify-center w-[72px] h-[86px] rounded-2xl transition-all duration-200 ${
                     isSelected
                       ? "bg-brand-purple text-white shadow-xl shadow-brand-purple/25 scale-105 z-10"
                       : isDayToday
                       ? "bg-brand-purple/5 border border-brand-purple/30 text-brand-purple"
-                      : "bg-surface/40 border border-border-main/50 text-muted hover:bg-surface-hover shadow-sm"
+                      : "bg-surface/40 border border-border-main/50 text-muted hover:bg-surface-hover elevation-1"
                   }`}
                 >
-                  <span className={`text-xs font-semibold mb-1 ${isSelected ? "opacity-90" : ""}`}>
+                  <span className={`text-xs font-semibold mb-1.5 ${isSelected ? "opacity-90" : ""}`}>
                     {dayName}
                   </span>
-                  <span className={`text-[19px] font-black ${isSelected ? "" : "text-foreground"}`}>
+                  <span className={`text-xl font-black ${isSelected ? "" : "text-foreground"}`}>
                     {dayNum}
                   </span>
 
@@ -363,15 +363,15 @@ export default function ScheduleDashboard({
       </div>
 
       {/* ── DAY OVERVIEW & BRANCHES ── */}
-      <div className="max-w-2xl mx-auto px-5 py-8">
+      <div className="page-container py-10">
         
         {/* Selected Day Header */}
-        <div className="flex items-center justify-between mb-6 px-1">
-          <div className="flex items-center gap-2">
-            <h2 className="text-[19px] font-extrabold text-foreground tracking-tight">
+        <div className="flex items-center justify-between mb-8 px-1">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-extrabold text-foreground tracking-tight">
               {DAY_NAMES_AR[currentDayOfWeek]}
             </h2>
-            <span className="text-[15px] font-medium text-muted">
+            <span className="text-base font-medium text-muted">
               {new Date(currentDate).toLocaleDateString("ar-SA", { day: "numeric", month: "long" })}
             </span>
           </div>
@@ -384,17 +384,17 @@ export default function ScheduleDashboard({
 
         {/* Branches Feed */}
         {data.branches.length === 0 ? (
-          <div className="bg-surface border border-dashed border-zinc-300 dark:border-zinc-700 rounded-[28px] p-10 flex flex-col items-center text-center shadow-sm">
-            <div className="w-16 h-16 bg-surface-hover rounded-full flex items-center justify-center mb-4 border border-border-main/50">
-              <Briefcase className="w-8 h-8 text-muted-light" />
+          <div className="bg-surface border border-dashed border-zinc-300 dark:border-zinc-700 rounded-2xl p-12 flex flex-col items-center text-center elevation-1">
+            <div className="w-18 h-18 bg-surface-hover rounded-full flex items-center justify-center mb-5 border border-border-main/50" style={{ width: '72px', height: '72px' }}>
+              <Briefcase className="w-9 h-9 text-muted-light" />
             </div>
-            <h3 className="text-foreground font-bold mb-2">لا توجد فروع</h3>
-            <p className="text-[15px] text-zinc-500 max-w-[240px] leading-relaxed">
+            <h3 className="text-lg text-foreground font-bold mb-2">لا توجد فروع</h3>
+            <p className="text-base text-zinc-500 max-w-[280px] leading-relaxed">
               يرجى إضافة فروع من الإعدادات للبدء بجدولة وتوزيع الموظفين.
             </p>
           </div>
         ) : (
-          <div className="space-y-5">
+          <div className="space-y-6">
             {data.branches.map((branch) => {
               const day = branch.days.find((d) => d.date === currentDate);
               const required = day?.requiredStaff ?? 0;
@@ -409,12 +409,12 @@ export default function ScheduleDashboard({
               return (
                 <div 
                   key={branch.id}
-                  className={`bg-surface rounded-[28px] overflow-visible border transition-all duration-300 relative ${
+                  className={`bg-surface rounded-2xl overflow-visible border transition-all duration-300 relative elevation-1 ${
                     isUnderstaffed 
-                      ? "border-orange-200 dark:border-orange-900/50 shadow-[0_8px_30px_-12px_rgba(249,115,22,0.15)]" 
+                      ? "border-orange-200 dark:border-orange-900/50" 
                       : isFull || isOverstaffed
-                      ? "border-emerald-200 dark:border-emerald-900/50 shadow-[0_8px_30px_-12px_rgba(16,185,129,0.1)]"
-                      : "border-zinc-200/70 dark:border-zinc-800/80 shadow-sm"
+                      ? "border-emerald-200 dark:border-emerald-900/50"
+                      : "border-zinc-200/70 dark:border-zinc-800/80"
                   }`}
                 >
                   {/* Decorative Status Accent */}
@@ -423,10 +423,10 @@ export default function ScheduleDashboard({
                   }`} />
 
                   {/* Branch Header */}
-                  <div className="p-5 sm:p-6 flex items-start justify-between">
-                    <div className="flex items-center gap-4">
+                  <div className="p-6 sm:p-7 flex items-start justify-between">
+                    <div className="flex items-center gap-5">
                       {/* Branch Icon */}
-                      <div className={`w-14 h-14 rounded-[20px] flex items-center justify-center shrink-0 border ${
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border ${
                         isUnderstaffed 
                           ? "bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 text-orange-600 dark:from-orange-950/40 dark:to-orange-900/20 dark:border-orange-800/50 dark:text-orange-400" 
                           : isFull || isOverstaffed 
@@ -438,10 +438,10 @@ export default function ScheduleDashboard({
                       
                       {/* Title & Subtitle */}
                       <div>
-                        <h3 className="font-extrabold text-[17px] text-foreground leading-tight">
+                        <h3 className="font-extrabold text-lg text-foreground leading-tight">
                           {branch.name}
                         </h3>
-                        <div className="flex items-center gap-1.5 mt-2 text-[12px] font-medium text-muted">
+                        <div className="flex items-center gap-2 mt-2.5 text-sm font-medium text-muted">
                           <Briefcase className="w-3.5 h-3.5 opacity-70" />
                           <span>{branch.managerName || "لا يوجد مدير مدخل"}</span>
                         </div>
@@ -461,18 +461,18 @@ export default function ScheduleDashboard({
                   </div>
 
                   {/* Employees Workspace */}
-                  <div className="bg-zinc-50/50 dark:bg-zinc-950/30 p-4 sm:p-5 border-t border-zinc-100/80 dark:border-zinc-800/80 min-h-[6rem] rounded-b-[28px]">
+                  <div className="bg-zinc-50/50 dark:bg-zinc-950/30 p-5 sm:p-6 border-t border-zinc-100/80 dark:border-zinc-800/80 min-h-[7rem] rounded-b-2xl">
                     {assigned === 0 ? (
-                      <div className="h-full flex flex-col items-center justify-center py-6 opacity-60">
-                        <div className="w-12 h-12 bg-surface rounded-full flex items-center justify-center mb-3 shadow-sm border border-border-main">
-                          <Users className="w-5 h-5 text-muted-light" />
+                      <div className="h-full flex flex-col items-center justify-center py-8 opacity-60">
+                        <div className="w-14 h-14 bg-surface rounded-full flex items-center justify-center mb-3.5 elevation-1 border border-border-main">
+                          <Users className="w-6 h-6 text-muted-light" />
                         </div>
-                        <span className="text-[13px] font-semibold text-zinc-500">
+                        <span className="text-sm font-semibold text-zinc-500">
                           {isUnplanned ? "لم يتم تحديد احتياج لهذا اليوم" : "يجب توليد أو إضافة موظفين"}
                         </span>
                       </div>
                     ) : (
-                      <div className="flex flex-col gap-3">
+                      <div className="flex flex-col gap-3.5">
                         {day?.assignedStaff?.map((entry) => (
                           <EmployeeRow 
                             key={entry.shiftId} 
@@ -493,14 +493,14 @@ export default function ScheduleDashboard({
       {/* ── FLOATING ACTION BAR ── */}
       {(!hasShifts || hasDrafts) && (
       <div className="fixed bottom-6 left-0 right-0 z-40 px-5 pointer-events-none">
-        <div className="max-w-2xl mx-auto flex gap-3 pointer-events-auto bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl p-3 rounded-[28px] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.2)] border border-white/60 dark:border-zinc-700/60 ring-1 ring-black/5 dark:ring-white/5">
+        <div className="page-container flex gap-3 pointer-events-auto bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl p-3.5 rounded-2xl elevation-3 border border-white/60 dark:border-zinc-700/60 ring-1 ring-black/5 dark:ring-white/5">
           
           {/* Generate Button (When 0 shifts) */}
           {!hasShifts && (
             <button
               onClick={() => handleAction("generate", () => generateWeeklySchedule(weekStart))}
               disabled={actionLoading !== null}
-              className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-zinc-900 dark:bg-brand-purple text-white rounded-[20px] text-[15px] font-bold shadow-lg shadow-zinc-900/20 dark:shadow-brand-purple/30 disabled:opacity-50 transition-all hover:scale-[1.01] active:scale-95"
+              className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-zinc-900 dark:bg-brand-purple text-white rounded-xl text-base font-bold shadow-lg shadow-zinc-900/20 dark:shadow-brand-purple/30 disabled:opacity-50 transition-all hover:scale-[1.01] active:scale-95"
             >
               {actionLoading === "generate" ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -517,7 +517,7 @@ export default function ScheduleDashboard({
               <button
                 onClick={() => handleAction("publish", () => publishSchedule(weekStart))}
                 disabled={actionLoading !== null}
-                className="flex-[3] flex items-center justify-center gap-2.5 py-4 bg-emerald-600 text-white rounded-[20px] text-[15px] font-bold shadow-lg shadow-emerald-600/25 disabled:opacity-50 transition-all hover:scale-[1.01] active:scale-95"
+                className="flex-[3] flex items-center justify-center gap-2.5 py-4 bg-emerald-600 text-white rounded-xl text-base font-bold shadow-lg shadow-emerald-600/25 disabled:opacity-50 transition-all hover:scale-[1.01] active:scale-95"
               >
                 {actionLoading === "publish" ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -534,7 +534,7 @@ export default function ScheduleDashboard({
                   }
                 }}
                 disabled={actionLoading !== null}
-                className="flex-1 flex items-center justify-center bg-rose-50 dark:bg-rose-500/10 text-rose-600 rounded-[20px] shadow-sm disabled:opacity-50 transition-all hover:bg-rose-100 hover:scale-[1.01] active:scale-95 border border-rose-100 dark:border-rose-500/20"
+                className="flex-1 flex items-center justify-center bg-rose-50 dark:bg-rose-500/10 text-rose-600 rounded-xl shadow-sm disabled:opacity-50 transition-all hover:bg-rose-100 hover:scale-[1.01] active:scale-95 border border-rose-100 dark:border-rose-500/20"
               >
                 {actionLoading === "clear" ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -599,15 +599,15 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
   const isManager = entry.userRole === "MANAGER";
   
   return (
-    <div className={`group flex items-center justify-between py-3 px-4 rounded-[20px] border transition-all ${
+    <div className={`group flex items-center justify-between py-4 px-5 rounded-2xl border transition-all ${
       isDraft 
         ? "bg-amber-50/60 border-amber-200/80 dark:bg-amber-500/5 dark:border-amber-500/20" 
-        : "bg-white border-zinc-100 dark:bg-zinc-900 dark:border-zinc-700/60 shadow-sm"
+        : "bg-white border-zinc-100 dark:bg-zinc-900 dark:border-zinc-700/60 elevation-1"
     } hover:shadow flex-wrap sm:flex-nowrap gap-y-3`}>
       
       <div className="flex items-center gap-4">
         {/* Avatar */}
-        <div className={`w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm shrink-0 border ${
+        <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shrink-0 border ${
           isManager 
             ? "bg-brand-purple/10 border-brand-purple/20 text-brand-purple dark:bg-brand-purple/20" 
             : "bg-indigo-50 border-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400"
@@ -617,8 +617,8 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
         
         {/* Detail Info */}
         <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-[15px] text-foreground">
+          <div className="flex items-center gap-2.5">
+            <span className="font-bold text-base text-foreground">
               {entry.userName}
             </span>
             {isManager && (
@@ -627,8 +627,8 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
                </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5 text-[12px] font-semibold text-muted mt-1">
-            <Clock className="w-3.5 h-3.5 text-zinc-400" />
+          <div className="flex items-center gap-2 text-sm font-semibold text-muted mt-1.5">
+            <Clock className="w-4 h-4 text-zinc-400" />
             <span dir="ltr" className="tracking-wide">{formatTime(entry.scheduledStart)} - {formatTime(entry.scheduledEnd)}</span>
           </div>
         </div>
@@ -679,23 +679,23 @@ function UpdateRequirementControl({
 
   if (isOpen) {
     return (
-      <div className="flex items-center gap-1.5 bg-surface-hover/80 p-1.5 rounded-[18px] animate-in zoom-in-95 duration-200 border border-border-main">
+      <div className="flex items-center gap-2 bg-surface-hover/80 p-2 rounded-2xl animate-in zoom-in-95 duration-200 border border-border-main">
         <button 
           onClick={() => onChange(Math.max(0, required - 1))}
-          className="w-9 h-9 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-xl shadow-sm active:scale-95 transition-transform"
+          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-xl shadow-sm active:scale-95 transition-transform"
         >
           <Minus className="w-4 h-4" />
         </button>
-        <span className="w-8 text-center font-bold text-[17px] text-foreground">{required}</span>
+        <span className="w-9 text-center font-bold text-lg text-foreground">{required}</span>
         <button 
           onClick={() => onChange(required + 1)}
-          className="w-9 h-9 flex items-center justify-center bg-brand-purple text-white rounded-xl shadow-sm shadow-brand-purple/30 active:scale-95 transition-transform"
+          className="w-10 h-10 flex items-center justify-center bg-brand-purple text-white rounded-xl shadow-sm shadow-brand-purple/30 active:scale-95 transition-transform"
         >
           <Plus className="w-4 h-4" />
         </button>
         <button 
            onClick={() => setIsOpen(false)}
-           className="w-9 h-9 flex items-center justify-center mr-1 text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
+           className="w-10 h-10 flex items-center justify-center mr-1 text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
         >
           <CheckCircle2 className="w-5 h-5" />
         </button>
@@ -716,10 +716,10 @@ function UpdateRequirementControl({
     >
       <div className="flex items-center gap-1.5">
         <Users className="w-4 h-4 opacity-80" />
-        <span className="text-[13px]">المطلوب: {required}</span>
+        <span className="text-sm">المطلوب: {required}</span>
       </div>
       <span className="opacity-30 border-l h-3 mx-1"></span>
-      <span className="text-[13px]">معين: {assigned}</span>
+      <span className="text-sm">معين: {assigned}</span>
     </button>
   );
 }

@@ -20,6 +20,7 @@ import {
   Building2,
   Map,
   Clock,
+  AlertTriangle,
 } from "lucide-react";
 
 // Dynamic import — Leaflet uses window/document and can't be SSR'd
@@ -163,11 +164,11 @@ export default function BranchManagement({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold text-white ${
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3.5 rounded-2xl shadow-lg text-sm font-semibold text-white ${
             toast.type === "success" ? "bg-emerald-600" : "bg-red-500"
           }`}
         >
@@ -177,9 +178,9 @@ export default function BranchManagement({
 
       {/* Header with Add Button */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-muted">
-          <Building2 className="w-4 h-4" />
-          <span>{branches.length} فرع</span>
+        <div className="flex items-center gap-2.5 text-sm text-muted">
+          <Building2 className="w-5 h-5" />
+          <span className="font-medium">{branches.length} فرع</span>
         </div>
         {!showForm && (
           <button
@@ -188,7 +189,7 @@ export default function BranchManagement({
               setEditingId(null);
               setShowForm(true);
             }}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
+            className="flex items-center gap-2 px-5 py-3 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl transition-colors elevation-1"
           >
             <Plus className="w-4 h-4" />
             إضافة فرع
@@ -198,9 +199,9 @@ export default function BranchManagement({
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-surface rounded-2xl border border-brand-primary/20 p-6 space-y-5 shadow-sm">
-          <div className="flex items-center justify-between mb-1">
-            <h3 className="text-base font-bold text-foreground">
+        <div className="bg-surface rounded-2xl border border-brand-primary/20 p-8 space-y-6 elevation-2">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-bold text-foreground">
               {editingId ? "تعديل الفرع" : "إضافة فرع جديد"}
             </h3>
             <button
@@ -211,7 +212,7 @@ export default function BranchManagement({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Branch Name */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1">
@@ -391,7 +392,7 @@ export default function BranchManagement({
           </div>
 
           {/* Save / Cancel */}
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-3 pt-4">
             <button
               onClick={resetForm}
               className="px-4 py-2 text-sm text-muted hover:bg-surface-hover rounded-lg transition-colors"
@@ -401,7 +402,7 @@ export default function BranchManagement({
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-5 py-2.5 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl disabled:opacity-50 transition-colors shadow-sm"
+              className="flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl disabled:opacity-50 transition-colors elevation-1"
             >
               {isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -415,28 +416,28 @@ export default function BranchManagement({
       )}
 
       {/* Branch List */}
-      <div className="space-y-3">
+      <div className="space-y-4">
         {branches.length === 0 && (
-          <div className="text-center py-12 text-zinc-400">
-            <Building2 className="w-10 h-10 mx-auto mb-3 opacity-50" />
-            <p className="text-sm">لا توجد فروع - أضف فرعك الأول</p>
+          <div className="text-center py-16 text-zinc-400">
+            <Building2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+            <p className="text-base">لا توجد فروع - أضف فرعك الأول</p>
           </div>
         )}
 
         {branches.map((branch) => (
           <div
             key={branch.id}
-            className={`bg-surface rounded-2xl border p-5 transition-colors ${
+            className={`bg-surface rounded-2xl border p-6 transition-colors elevation-1 ${
               branch.isActive
                 ? "border-border-main"
                 : "border-red-300 dark:border-red-800 opacity-60"
             }`}
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-4">
               {/* Branch Info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-sm font-bold text-foreground truncate">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <h3 className="text-base font-bold text-foreground truncate">
                     {branch.name}
                   </h3>
                   {!branch.isActive && (
@@ -447,44 +448,52 @@ export default function BranchManagement({
                 </div>
 
                 {branch.address && (
-                  <p className="text-xs text-muted mb-1.5 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                  <p className="text-sm text-muted mb-2.5 flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                     {branch.address}
                   </p>
                 )}
 
-                <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-400">
-                  <span className="flex items-center gap-1">
-                    <Users className="w-3 h-3" />
+                <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
+                  <span className="flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5" />
                     {branch._count.users} موظف
                   </span>
-                  <span>
-                    📍 {branch.latitude.toFixed(4)}, {branch.longitude.toFixed(4)}
+                  <span className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5" />
+                    {branch.latitude.toFixed(4)}, {branch.longitude.toFixed(4)}
                   </span>
-                  <span>🔲 {branch.geofenceRadius}م</span>
+                  <span className="flex items-center gap-1.5">
+                    <Map className="w-3.5 h-3.5" />
+                    {branch.geofenceRadius}م
+                  </span>
                   {branch.manager && (
-                    <span className="text-violet-600 dark:text-violet-400 font-medium">
-                      👤 {branch.manager.fullName}
+                    <span className="text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5" />
+                      {branch.manager.fullName}
                     </span>
                   )}
                   {branch.minStaff > 0 && (
-                    <span className="text-amber-600 dark:text-amber-400">
-                      ⚠️ حد أدنى: {branch.minStaff} موظف
+                    <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                      <AlertTriangle className="w-3.5 h-3.5" />
+                      حد أدنى: {branch.minStaff} موظف
                     </span>
                   )}
                 </div>
 
                 {/* Hours Display */}
                 {(branch.openTime || branch.shiftStartTime) && (
-                  <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs">
+                  <div className="flex flex-wrap items-center gap-4 mt-2.5 text-sm">
                     {branch.openTime && branch.closeTime && (
-                      <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
-                        🏪 الفرع: {branch.openTime} — {branch.closeTime}
+                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                        <Clock className="w-3.5 h-3.5" />
+                        الفرع: {branch.openTime} — {branch.closeTime}
                       </span>
                     )}
                     {branch.shiftStartTime && branch.shiftEndTime && (
-                      <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
-                        👷 الدوام: {branch.shiftStartTime} — {branch.shiftEndTime}
+                      <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+                        <Clock className="w-3.5 h-3.5" />
+                        الدوام: {branch.shiftStartTime} — {branch.shiftEndTime}
                       </span>
                     )}
                   </div>

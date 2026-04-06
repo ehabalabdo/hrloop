@@ -40,8 +40,8 @@ export default function PayrollTabs({
   return (
     <div className="min-h-screen bg-background">
       {/* Tab Bar */}
-      <div className="bg-surface border-b border-border-main sticky top-0 z-30">
-        <div className="max-w-2xl mx-auto px-4 flex gap-2 overflow-x-auto no-scrollbar py-3">
+        <div className="bg-surface border-b border-border-main sticky top-0 z-30 elevation-2">
+        <div className="page-container flex gap-2 overflow-x-auto no-scrollbar py-4">
           {TABS.map((t) => {
             const Icon = t.icon;
             const badge = badges[t.key] ?? 0;
@@ -71,16 +71,16 @@ export default function PayrollTabs({
       {/* Content */}
       {tab === "payroll" && payrollDashboard}
       {tab === "disputes" && (
-        <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
-          <h2 className="text-lg font-bold text-foreground mb-4">
+        <div className="page-container py-8 pb-28">
+          <h2 className="text-xl font-bold text-foreground mb-5">
             اعتراضات العقوبات
           </h2>
           {disputesPanel}
         </div>
       )}
       {tab === "overrides" && (
-        <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
-          <h2 className="text-lg font-bold text-foreground mb-4">
+        <div className="page-container py-8 pb-28">
+          <h2 className="text-xl font-bold text-foreground mb-5">
             طلبات التعديل اليدوي
           </h2>
           {overridesPanel}

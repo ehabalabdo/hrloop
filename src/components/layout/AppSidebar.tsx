@@ -132,41 +132,41 @@ export default function AppSidebar({
   return (
     <div className="flex min-h-screen bg-background">
       {/* ===== Desktop Sidebar ===== */}
-      <aside className="hidden lg:flex flex-col w-64 bg-surface border-e border-border-main shrink-0 min-h-screen sticky top-0">
+      <aside className="hidden lg:flex flex-col w-[280px] bg-surface border-e border-border-main shrink-0 min-h-screen sticky top-0">
         {/* Logo */}
         <Link
           href="/dashboard"
-          className="flex items-center gap-3 px-5 py-5 border-b border-border-main"
+          className="flex items-center gap-4 px-7 py-7 border-b border-border-main"
         >
-          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-md shadow-brand-primary/20">
+          <div className="w-11 h-11 bg-brand-primary rounded-2xl flex items-center justify-center shadow-md shadow-brand-primary/20">
             <Clock className="w-5 h-5 text-white" />
           </div>
           <div>
-            <span className="text-base font-bold text-foreground tracking-tight">
+            <span className="text-lg font-bold text-foreground tracking-tight">
               HR Loop
             </span>
-            <p className="text-xs text-muted font-medium">نظام إدارة الموظفين</p>
+            <p className="text-xs text-muted font-medium mt-0.5">نظام إدارة الموظفين</p>
           </div>
         </Link>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
           {visibleItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
+                className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-sm font-medium transition-all duration-150 ${
                   active
-                    ? "bg-brand-primary-subtle text-brand-primary font-semibold"
+                    ? "bg-brand-primary-subtle text-brand-primary font-semibold elevation-1"
                     : "text-muted hover:text-foreground hover:bg-surface-hover"
                 }`}
               >
-                <item.icon className={`w-[18px] h-[18px] shrink-0 ${active ? "text-brand-primary" : ""}`} />
+                <item.icon className={`w-5 h-5 shrink-0 ${active ? "text-brand-primary" : ""}`} />
                 <span>{item.label}</span>
                 {active && (
-                  <div className="ms-auto w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                  <div className="ms-auto w-2 h-2 rounded-full bg-brand-primary" />
                 )}
               </Link>
             );
@@ -174,24 +174,24 @@ export default function AppSidebar({
         </nav>
 
         {/* User Info & Logout */}
-        <div className="px-3 py-4 border-t border-border-main">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-surface-hover">
-            <div className="w-9 h-9 bg-brand-primary/10 rounded-lg flex items-center justify-center shrink-0">
-              <User className="w-4 h-4 text-brand-primary" />
+        <div className="px-4 py-5 border-t border-border-main">
+          <div className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-surface-hover">
+            <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center shrink-0">
+              <User className="w-5 h-5 text-brand-primary" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-foreground truncate">
                 {user.fullName}
               </p>
-              <span className="text-xs text-muted">
+              <span className="text-xs text-muted mt-0.5 block">
                 {ROLE_LABELS[user.role]}
               </span>
             </div>
           </div>
-          <form action={logoutAction} className="mt-2">
+          <form action={logoutAction} className="mt-3">
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-muted hover:text-danger hover:bg-danger-subtle rounded-xl transition-colors"
+              className="w-full flex items-center justify-center gap-2.5 px-4 py-3 text-sm font-medium text-muted hover:text-danger hover:bg-danger-subtle rounded-2xl transition-colors"
             >
               <LogOut className="w-4 h-4" />
               تسجيل الخروج
@@ -253,7 +253,7 @@ export default function AppSidebar({
       )}
 
       {/* ===== Main Content ===== */}
-      <main className="flex-1 min-w-0 lg:pt-0 pt-14 pb-20 lg:pb-0">
+      <main className="flex-1 min-w-0 lg:pt-0 pt-16 pb-24 lg:pb-0">
         {children}
       </main>
 

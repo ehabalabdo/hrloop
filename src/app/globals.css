@@ -157,11 +157,57 @@ input, select, textarea {
   display: none;
 }
 
+/* ============================================================
+   Spatial Design System — Elevation, Spacing, Cards
+   ============================================================ */
+
+/* Elevation layers */
+.elevation-0 { box-shadow: none; }
+.elevation-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02); }
+.elevation-2 { box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03); }
+.elevation-3 { box-shadow: 0 12px 40px -8px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); }
+
+@media (prefers-color-scheme: dark) {
+  .elevation-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.12); }
+  .elevation-2 { box-shadow: 0 4px 16px -4px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.15); }
+  .elevation-3 { box-shadow: 0 12px 40px -8px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2); }
+}
+
 /* Card base utility */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+}
+.card-lg {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03);
+}
+
+/* Section containers */
+.section-header {
+  margin-bottom: 1.5rem;
+}
+.section-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* Page container utility — consistent wide layout */
+.page-container {
+  max-width: 960px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+@media (min-width: 1024px) {
+  .page-container {
+    max-width: 1080px;
+    padding-inline: 2.5rem;
+  }
 }
 
 /* Better focus rings */

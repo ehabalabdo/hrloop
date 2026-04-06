@@ -229,17 +229,17 @@ export default function SwapDashboard({
       )}
 
       {/* ─── Header ─── */}
-      <div className="bg-surface border-b border-border-main sticky top-0 z-20">
-        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-purple/10 dark:bg-brand-purple/20 rounded-2xl flex items-center justify-center">
-              <ArrowLeftRight className="w-5 h-5 text-brand-purple" />
+      <div className="bg-surface border-b border-border-main sticky top-0 z-20 elevation-2">
+        <div className="page-container py-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-brand-purple/10 dark:bg-brand-purple/20 rounded-2xl flex items-center justify-center">
+              <ArrowLeftRight className="w-6 h-6 text-brand-purple" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">
+              <h1 className="text-xl font-bold text-foreground">
                 تبديل الورديات
               </h1>
-              <p className="text-xs text-muted">
+              <p className="text-sm text-muted mt-0.5">
                 {pendingCount > 0
                   ? `${pendingCount} طلب بانتظار ردك`
                   : "لا توجد طلبات معلّقة"}
@@ -258,7 +258,7 @@ export default function SwapDashboard({
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-5 space-y-5">
+      <div className="page-container py-8 section-gap">
         {/* ─── Create Form ─── */}
         {showForm && (
           <div className="bg-surface rounded-3xl border border-border-main shadow-sm overflow-hidden">

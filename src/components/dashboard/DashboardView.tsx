@@ -115,48 +115,41 @@ export default function DashboardView({
   return (
     <div className="min-h-screen bg-background pb-28 font-sans">
       {/* ─── Header ─── */}
-      <div className="bg-surface border-b border-border-main sticky top-0 z-20 shadow-[0_2px_16px_-6px_rgba(0,0,0,0.06)]">
-        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-brand-purple to-brand-purple-dark rounded-xl flex items-center justify-center shadow-lg shadow-brand-purple/20">
-              <BarChart3 className="w-5 h-5 text-white" />
+      <div className="bg-surface border-b border-border-main sticky top-0 z-20 elevation-2">
+        <div className="page-container py-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-brand-purple to-brand-purple-dark rounded-2xl flex items-center justify-center shadow-lg shadow-brand-purple/20">
+              <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground tracking-tight">
+              <h1 className="text-xl font-bold text-foreground tracking-tight">
                 لوحة التحكم
               </h1>
-              <p className="text-xs text-muted font-medium">
+              <p className="text-sm text-muted font-medium mt-0.5">
                 نظرة شاملة على جميع الفروع
               </p>
             </div>
           </div>
-          <div className={`flex items-center gap-1.5 text-xs font-bold px-2.5 py-1.5 rounded-full border ${
+          <div className={`flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-full border ${
             health.database
               ? "text-emerald-600 bg-emerald-50 border-emerald-100 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400"
               : "text-rose-600 bg-rose-50 border-rose-100 dark:bg-rose-500/10 dark:border-rose-500/20 dark:text-rose-400"
           }`}>
-            {health.database ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
+            {health.database ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
             {health.database ? "متصل" : "غير متصل"}
           </div>
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 py-5 space-y-4">
+      <div className="page-container py-8 section-gap">
         
-        {/* ─── Compact KPI Strip ─── */}
-        <div className="bg-surface rounded-2xl border border-border-main shadow-sm overflow-hidden">
-          <div className="grid grid-cols-5 divide-x divide-border-main rtl:divide-x-reverse">
-            {/* Staff */}
-            <KpiCell icon={Users} value={metrics.totalStaff} label="موظفين" color="text-brand-purple" bg="bg-brand-purple/10" />
-            {/* Active Today */}
-            <KpiCell icon={Timer} value={metrics.activeToday} label="متصل" color="text-emerald-600" bg="bg-emerald-50 dark:bg-emerald-500/10" sub={`${metrics.todayAttendancePct}%`} />
-            {/* Payroll */}
-            <KpiCell icon={DollarSign} value={`$${formatCurrency(metrics.monthlyPayrollCost)}`} label="رواتب" color="text-amber-600" bg="bg-amber-50 dark:bg-amber-500/10" />
-            {/* Branches */}
-            <KpiCell icon={Building2} value={metrics.totalBranches} label="فروع" color="text-blue-600" bg="bg-blue-50 dark:bg-blue-500/10" />
-            {/* Pending Leaves */}
-            <KpiCell icon={TreePalm} value={metrics.pendingLeaves} label="إجازات" color="text-orange-600" bg="bg-orange-50 dark:bg-orange-500/10" />
-          </div>
+        {/* ─── KPI Cards Grid ─── */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <KpiCell icon={Users} value={metrics.totalStaff} label="موظفين" color="text-brand-purple" bg="bg-brand-purple/10" />
+          <KpiCell icon={Timer} value={metrics.activeToday} label="متصل اليوم" color="text-emerald-600" bg="bg-emerald-50 dark:bg-emerald-500/10" sub={`${metrics.todayAttendancePct}%`} />
+          <KpiCell icon={DollarSign} value={`$${formatCurrency(metrics.monthlyPayrollCost)}`} label="الرواتب الشهرية" color="text-amber-600" bg="bg-amber-50 dark:bg-amber-500/10" />
+          <KpiCell icon={Building2} value={metrics.totalBranches} label="الفروع" color="text-blue-600" bg="bg-blue-50 dark:bg-blue-500/10" />
+          <KpiCell icon={TreePalm} value={metrics.pendingLeaves} label="طلبات الإجازة" color="text-orange-600" bg="bg-orange-50 dark:bg-orange-500/10" />
         </div>
 
         {/* ─── Overtime Alerts ─── */}
@@ -196,19 +189,19 @@ export default function DashboardView({
 
         {/* ─── Top Branches Podium (mini) ─── */}
         {metrics.topPerfectBranches.length > 0 && (
-          <div className="bg-surface rounded-2xl border border-border-main shadow-sm p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Trophy className="w-4 h-4 text-amber-500" />
-              <span className="text-sm font-bold text-muted uppercase tracking-wider">
+          <div className="bg-surface rounded-2xl border border-border-main elevation-1 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Trophy className="w-5 h-5 text-amber-500" />
+              <span className="text-base font-bold text-foreground">
                 أفضل الفروع
               </span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               {metrics.topPerfectBranches.map(
                 (branch: { name: string; score: number }, idx: number) => (
                   <div
                     key={branch.name}
-                    className={`flex-1 flex items-center gap-2.5 py-2.5 px-3 rounded-xl border ${
+                    className={`flex-1 flex items-center gap-3 py-4 px-4 rounded-xl border ${
                       idx === 0
                         ? "bg-amber-50/60 border-amber-200/60 dark:bg-amber-500/5 dark:border-amber-500/20"
                         : idx === 1
@@ -216,7 +209,7 @@ export default function DashboardView({
                         : "bg-orange-50/60 border-orange-200/60 dark:bg-orange-500/5 dark:border-orange-500/20"
                     }`}
                   >
-                    <span className={`text-sm font-bold ${
+                    <span className={`text-lg font-bold ${
                       idx === 0 ? "text-amber-500" : idx === 1 ? "text-zinc-400" : "text-orange-400"
                     }`}>
                       {idx + 1}
@@ -225,7 +218,7 @@ export default function DashboardView({
                       <div className="text-sm font-bold text-foreground truncate">
                         {branch.name}
                       </div>
-                      <div className={`text-xs font-bold ${
+                      <div className={`text-sm font-bold mt-0.5 ${
                         idx === 0 ? "text-amber-600" : idx === 1 ? "text-zinc-500" : "text-orange-500"
                       }`}>
                         {branch.score}%
@@ -239,10 +232,10 @@ export default function DashboardView({
         )}
 
         {/* ─── Branch Ranking (Dense) ─── */}
-        <div className="bg-surface rounded-2xl border border-border-main shadow-sm overflow-hidden">
+        <div className="bg-surface rounded-2xl border border-border-main elevation-1 overflow-hidden">
           {/* Header */}
-          <div className="px-4 py-3 border-b border-border-main flex items-center justify-between">
-            <span className="text-sm font-bold text-foreground">
+          <div className="px-6 py-4 border-b border-border-main flex items-center justify-between">
+            <span className="text-base font-bold text-foreground">
               ترتيب الفروع
             </span>
             <div className="flex items-center gap-2">
@@ -298,9 +291,9 @@ export default function DashboardView({
           ) : (
             <div className="divide-y divide-zinc-100/80 dark:divide-zinc-800/50">
               {visibleBranches.map((b: BranchPerformance, idx: number) => (
-                <div key={b.id} className="flex items-center gap-3 px-4 py-3 hover:bg-surface-hover transition-colors">
+                <div key={b.id} className="flex items-center gap-4 px-6 py-4 hover:bg-surface-hover transition-colors">
                   {/* Rank */}
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
                     idx === 0 ? "bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400"
                     : idx === 1 ? "bg-zinc-200 text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300"
                     : idx === 2 ? "bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400"
@@ -350,23 +343,23 @@ export default function DashboardView({
           )}
         </div>
 
-        {/* ─── Activity Feed (Compact) ─── */}
-        <div className="bg-surface rounded-2xl border border-border-main shadow-sm overflow-hidden">
-          <div className="px-4 py-3 border-b border-border-main flex items-center gap-2">
-            <Activity className="w-4 h-4 text-brand-purple" />
-            <span className="text-sm font-bold text-foreground">
+        {/* ─── Activity Feed ─── */}
+        <div className="bg-surface rounded-2xl border border-border-main elevation-1 overflow-hidden">
+          <div className="px-6 py-4 border-b border-border-main flex items-center gap-2.5">
+            <Activity className="w-5 h-5 text-brand-purple" />
+            <span className="text-base font-bold text-foreground">
               النشاط الأخير
             </span>
           </div>
           {activities.length === 0 ? (
-            <div className="px-4 py-8 text-center text-zinc-400 text-sm">
+            <div className="px-6 py-12 text-center text-zinc-400 text-sm">
               لا يوجد نشاط حديث
             </div>
           ) : (
             <div className="divide-y divide-border-main">
               {activities.slice(0, 10).map((a: ActivityLogItem) => (
-                <div key={a.id} className="flex items-center gap-3 px-4 py-2.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-brand-purple/60 shrink-0" />
+                <div key={a.id} className="flex items-center gap-3.5 px-6 py-4">
+                  <div className="w-2 h-2 rounded-full bg-brand-purple/60 shrink-0" />
                   <p className="flex-1 text-sm text-muted truncate min-w-0">
                     <span className="font-bold text-foreground">{a.actorName}</span>{" "}
                     {a.description}
@@ -397,13 +390,15 @@ function KpiCell({ icon: Icon, value, label, color, bg, sub }: {
   sub?: string;
 }) {
   return (
-    <div className="flex flex-col items-center py-4 px-2 gap-1.5">
-      <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center`}>
-        <Icon className={`w-4 h-4 ${color}`} />
+    <div className="bg-surface rounded-2xl border border-border-main p-5 elevation-1 flex flex-col gap-3">
+      <div className={`w-11 h-11 rounded-xl ${bg} flex items-center justify-center`}>
+        <Icon className={`w-5 h-5 ${color}`} />
       </div>
-      <span className={`text-lg font-bold ${color} leading-none`}>{value}</span>
+      <div>
+        <span className={`text-2xl font-bold ${color} leading-none block`}>{value}</span>
+        {sub && <span className={`text-sm font-bold ${color} opacity-60 leading-none mt-1 block`}>{sub}</span>}
+      </div>
       <span className="text-xs text-muted-light font-semibold leading-none">{label}</span>
-      {sub && <span className={`text-xs font-bold ${color} opacity-60 leading-none -mt-0.5`}>{sub}</span>}
     </div>
   );
 }
@@ -417,7 +412,7 @@ function StatPill({ icon: Icon, value, warn }: {
   warn?: boolean;
 }) {
   return (
-    <div className={`flex items-center gap-1 px-1.5 py-1 rounded-lg text-xs font-bold ${
+    <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold ${
       warn
         ? "bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400"
         : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"

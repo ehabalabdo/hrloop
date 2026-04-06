@@ -37,24 +37,24 @@ export default function SettingsTabs({
   return (
     <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="bg-surface border-b border-border-main sticky top-0 lg:top-0 z-20">
-        <div className="max-w-3xl mx-auto px-5 py-5">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-11 h-11 bg-brand-primary-subtle rounded-xl flex items-center justify-center">
-              <Settings className="w-5 h-5 text-brand-primary" />
+      <div className="bg-surface border-b border-border-main sticky top-0 lg:top-0 z-20 elevation-2">
+        <div className="page-container py-6">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 bg-brand-primary-subtle rounded-2xl flex items-center justify-center">
+              <Settings className="w-6 h-6 text-brand-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-foreground">
+              <h1 className="text-xl font-bold text-foreground">
                 إعدادات النظام
               </h1>
-              <p className="text-sm text-muted">
+              <p className="text-sm text-muted mt-0.5">
                 إدارة الموظفين، الفروع والإعدادات العامة
               </p>
             </div>
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex gap-1 overflow-x-auto no-scrollbar -mx-1 px-1 pb-0.5">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-1 px-1 pb-0.5">
             {TABS.map((t) => {
               const Icon = t.icon;
               const active = tab === t.key;
@@ -62,7 +62,7 @@ export default function SettingsTabs({
                 <button
                   key={t.key}
                   onClick={() => setTab(t.key)}
-                  className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  className={`shrink-0 flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold transition-all ${
                     active
                       ? "bg-brand-primary text-white shadow-sm shadow-brand-primary/20"
                       : "text-muted hover:text-foreground hover:bg-surface-hover"
@@ -78,7 +78,7 @@ export default function SettingsTabs({
       </div>
 
       {/* Content */}
-      <div className="max-w-3xl mx-auto px-5 py-6">
+      <div className="page-container py-8">
         {tab === "employees" && employeeManagement}
         {tab === "settings" && settingsPanel}
         {tab === "branches" && branchManagement}
