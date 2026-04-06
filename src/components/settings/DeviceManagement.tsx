@@ -93,8 +93,8 @@ export default function DeviceManagement({
           </div>
           <div className="text-xs text-zinc-500">Total Employees</div>
         </div>
-        <div className="bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
-          <div className="text-2xl font-bold text-brand-magenta dark:text-brand-magenta">
+        <div className="bg-brand-primary/5 dark:bg-brand-primary/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
+          <div className="text-2xl font-bold text-brand-primary dark:text-brand-primary">
             {registered}
           </div>
           <div className="text-xs text-zinc-500">Registered</div>
@@ -115,12 +115,12 @@ export default function DeviceManagement({
           placeholder="Search by name or branch..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 text-sm border border-zinc-200 dark:border-zinc-700 rounded-xl bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
+          className="w-full pl-9 pr-4 py-2.5 text-sm border border-border-main rounded-xl bg-surface text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
         />
       </div>
 
       {/* Employee List */}
-      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 divide-y divide-zinc-100 dark:divide-zinc-800">
+      <div className="bg-surface rounded-xl border border-border-main divide-y divide-border-main">
         {filtered.length === 0 && (
           <div className="px-5 py-8 text-center text-sm text-zinc-400">
             No employees found
@@ -135,25 +135,25 @@ export default function DeviceManagement({
               <div
                 className={`w-8 h-8 rounded-lg flex items-center justify-center ${
                   emp.hasCredential
-                    ? "bg-brand-magenta/10 dark:bg-brand-magenta/10"
-                    : "bg-zinc-100 dark:bg-zinc-800"
+                    ? "bg-brand-primary/10 dark:bg-brand-primary/10"
+                    : "bg-surface-hover"
                 }`}
               >
                 {emp.hasCredential ? (
-                  <ShieldCheck className="w-4 h-4 text-brand-magenta dark:text-brand-magenta" />
+                  <ShieldCheck className="w-4 h-4 text-brand-primary dark:text-brand-primary" />
                 ) : (
                   <ShieldOff className="w-4 h-4 text-zinc-400" />
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                <p className="text-sm font-semibold text-foreground truncate">
                   {emp.fullName}
                 </p>
                 <p className="text-xs text-zinc-400 truncate">
                   {emp.branchName} &middot;{" "}
                   <span className="uppercase">{emp.role}</span>
                   {emp.hasCredential && (
-                    <span className="ml-1 text-brand-magenta">
+                    <span className="ml-1 text-brand-primary">
                       &middot; Sign count: {emp.signCount}
                     </span>
                   )}
@@ -184,7 +184,7 @@ export default function DeviceManagement({
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-brand-magenta text-white"
+              ? "bg-brand-primary text-white"
               : "bg-red-600 text-white"
           }`}
         >

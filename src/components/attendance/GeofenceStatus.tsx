@@ -65,7 +65,7 @@ export default function GeofenceStatus({
   return (
     <div className="w-full">
       {status === "checking" && (
-        <div className="flex items-center justify-center gap-2 text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl px-5 py-3.5">
+        <div className="flex items-center justify-center gap-2 text-muted bg-surface-hover/40 rounded-2xl px-5 py-3.5">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span className="text-sm font-medium">جاري تحديد الموقع...</span>
         </div>

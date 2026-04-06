@@ -35,27 +35,27 @@ export default function ShiftInfo({
       {/* Branch + Shift in a 2-col grid on mobile */}
       <div className="grid grid-cols-2 gap-3">
         {/* Branch Name */}
-        <div className="bg-white dark:bg-zinc-800/60 rounded-3xl px-5 py-4 border border-zinc-100 dark:border-zinc-700/40 shadow-sm">
+        <div className="bg-surface/60 rounded-3xl px-5 py-4 border border-border-main/40 shadow-sm">
           <div className="flex items-center gap-2 mb-1.5">
             <Building2 className="w-4 h-4 text-brand-purple/60" />
-            <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
+            <span className="text-xs text-muted-light font-medium">
               الفرع
             </span>
           </div>
-          <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
+          <p className="text-sm font-bold text-foreground truncate">
             {branchName}
           </p>
         </div>
 
         {/* Shift Hours */}
-        <div className="bg-white dark:bg-zinc-800/60 rounded-3xl px-5 py-4 border border-zinc-100 dark:border-zinc-700/40 shadow-sm">
+        <div className="bg-surface/60 rounded-3xl px-5 py-4 border border-border-main/40 shadow-sm">
           <div className="flex items-center gap-2 mb-1.5">
             <CalendarClock className="w-4 h-4 text-brand-purple/60" />
-            <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
+            <span className="text-xs text-muted-light font-medium">
               وقت الوردية
             </span>
           </div>
-          <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100" dir="ltr">
+          <p className="text-sm font-bold text-foreground" dir="ltr">
             {formatTime(scheduledStart)} – {formatTime(scheduledEnd)}
           </p>
         </div>

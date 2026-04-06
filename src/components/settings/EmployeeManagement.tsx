@@ -69,7 +69,7 @@ const ROLE_COLORS: Record<string, string> = {
   OWNER: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
   MANAGER:
     "bg-brand-purple/10 dark:bg-brand-purple/20 text-brand-purple",
-  STAFF: "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400",
+  STAFF: "bg-surface-hover text-muted",
 };
 
 const emptyForm: EmployeeFormData = {
@@ -140,8 +140,8 @@ export default function EmployeeManagement({
       isFlexibleSchedule: emp.isFlexibleSchedule ?? false,
       availability: emp.availability?.map((a) => ({
         dayOfWeek: a.dayOfWeek,
-        startTime: new Date(a.startTime).toTimeString().slice(0, 5),
-        endTime: new Date(a.endTime).toTimeString().slice(0, 5),
+        startTime: a.startTime,
+        endTime: a.endTime,
       })) || [],
     });
     setEditingId(emp.id);
@@ -297,19 +297,19 @@ export default function EmployeeManagement({
     <div className="space-y-5">
       {/* Stats Row */}
       <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1">
-        <div className="shrink-0 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-surface/60 border border-border-main/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-brand-purple">
             {employees.length}
           </div>
           <div className="text-xs text-zinc-500 mt-0.5">إجمالي الموظفين</div>
         </div>
-        <div className="shrink-0 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-surface/60 border border-border-main/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-emerald-600">
             {activeCount}
           </div>
           <div className="text-xs text-zinc-500 mt-0.5">نشط</div>
         </div>
-        <div className="shrink-0 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-surface/60 border border-border-main/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-zinc-400">
             {employees.length - activeCount}
           </div>
@@ -326,7 +326,7 @@ export default function EmployeeManagement({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="بحث بالاسم أو البريد..."
-            className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/50 outline-none"
+            className="w-full pl-10 pr-4 py-3 rounded-2xl bg-surface/60 border border-border-main/40 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/50 outline-none"
           />
         </div>
 
@@ -344,7 +344,7 @@ export default function EmployeeManagement({
                 className={`shrink-0 px-3.5 py-2 rounded-full text-xs font-bold transition-all ${
                   filterRole === r.key
                     ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400"
+                    : "bg-surface-hover text-muted"
                 }`}
               >
                 {r.label}
@@ -357,7 +357,7 @@ export default function EmployeeManagement({
               resetForm();
               setShowForm(true);
             }}
-            className="shrink-0 flex items-center gap-1.5 bg-brand-purple hover:bg-brand-purple-dark text-white px-4 py-2.5 rounded-2xl text-sm font-bold shadow-lg shadow-brand-purple/20 transition-all active:scale-95"
+            className="shrink-0 flex items-center gap-1.5 bg-brand-purple hover:bg-brand-primary-dark text-white px-4 py-2.5 rounded-2xl text-sm font-bold shadow-lg shadow-brand-purple/20 transition-all active:scale-95"
           >
             <UserPlus className="w-4 h-4" />
             إضافة موظف
@@ -367,15 +367,15 @@ export default function EmployeeManagement({
 
       {/* Employee Form */}
       {showForm && (
-        <div className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-3xl p-5 space-y-4">
+        <div className="bg-surface/60 border border-border-main/40 shadow-sm rounded-3xl p-5 space-y-4">
           <div className="flex items-center justify-between mb-1">
-            <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+            <h3 className="text-base font-bold text-foreground flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-brand-purple" />
               {editingId ? "تعديل بيانات الموظف" : "إضافة موظف جديد"}
             </h3>
             <button
               onClick={resetForm}
-              className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+              className="p-2 rounded-xl hover:bg-surface-hover transition"
             >
               <X className="w-4 h-4 text-zinc-400" />
             </button>
@@ -383,7 +383,7 @@ export default function EmployeeManagement({
 
           {/* Name */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               الاسم الكامل *
             </label>
             <div className="relative">
@@ -395,14 +395,14 @@ export default function EmployeeManagement({
                   setForm({ ...form, fullName: e.target.value })
                 }
                 placeholder="أحمد محمد علي"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               البريد الإلكتروني *
             </label>
             <div className="relative">
@@ -414,14 +414,14 @@ export default function EmployeeManagement({
                   setForm({ ...form, email: e.target.value })
                 }
                 placeholder="ahmed@hrloop.com"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
             <a
               href="https://accounts.google.com/signup"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 mt-1.5 text-[11px] text-brand-purple hover:underline"
+              className="inline-flex items-center gap-1 mt-1.5 text-xs text-brand-purple hover:underline"
             >
               <ExternalLink className="w-3 h-3" />
               ما عندو إيميل؟ إنشاء حساب Gmail جديد
@@ -430,7 +430,7 @@ export default function EmployeeManagement({
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               كلمة المرور {editingId ? "(اتركها فارغة للإبقاء)" : "*"}
             </label>
             <div className="relative">
@@ -442,7 +442,7 @@ export default function EmployeeManagement({
                   setForm({ ...form, password: e.target.value })
                 }
                 placeholder={editingId ? "••••••" : "6 أحرف على الأقل"}
-                className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
               <button
                 type="button"
@@ -460,7 +460,7 @@ export default function EmployeeManagement({
 
           {/* Phone */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               رقم الجوال
             </label>
             <div className="relative">
@@ -472,14 +472,14 @@ export default function EmployeeManagement({
                   setForm({ ...form, phoneNumber: e.target.value })
                 }
                 placeholder="05xxxxxxxx"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
           </div>
 
           {/* Role */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               الدور *
             </label>
             <div className="flex gap-2">
@@ -491,7 +491,7 @@ export default function EmployeeManagement({
                   className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${
                     form.role === r
                       ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                      : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                      : "bg-surface-hover text-muted hover:bg-surface-hover"
                   }`}
                 >
                   {ROLE_LABELS[r]}
@@ -502,7 +502,7 @@ export default function EmployeeManagement({
 
           {/* Branch */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               الفرع الأساسي
             </label>
             <div className="relative">
@@ -512,7 +512,7 @@ export default function EmployeeManagement({
                 onChange={(e) =>
                   setForm({ ...form, primaryBranchId: e.target.value })
                 }
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-brand-purple/30 outline-none appearance-none"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground focus:ring-2 focus:ring-brand-purple/30 outline-none appearance-none"
               >
                 <option value="">بدون فرع</option>
                 {branches.map((b) => (
@@ -526,18 +526,18 @@ export default function EmployeeManagement({
 
           {/* Assigned Branches (Checkboxes) */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               <Building2 className="inline w-3.5 h-3.5 ml-1" />
               الفروع المسموح بالدوام فيها
             </label>
-            <div className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 max-h-40 overflow-y-auto space-y-2">
+            <div className="bg-surface-hover border border-border-main rounded-xl p-3 max-h-40 overflow-y-auto space-y-2">
               {branches.length === 0 ? (
                 <div className="text-xs text-zinc-400 text-center py-2">لا توجد فروع</div>
               ) : (
                 branches.map((b) => (
                   <label
                     key={b.id}
-                    className="flex items-center gap-2.5 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-lg px-2 py-1.5 transition"
+                    className="flex items-center gap-2.5 cursor-pointer hover:bg-surface-hover rounded-lg px-2 py-1.5 transition"
                   >
                     <input
                       type="checkbox"
@@ -566,7 +566,7 @@ export default function EmployeeManagement({
               )}
             </div>
             {(form.assignedBranchIds?.length ?? 0) > 0 && (
-              <div className="text-[11px] text-brand-purple mt-1">
+              <div className="text-xs text-brand-purple mt-1">
                 تم اختيار {form.assignedBranchIds!.length} فرع
               </div>
             )}
@@ -574,7 +574,7 @@ export default function EmployeeManagement({
 
           {/* Social Security Number */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               رقم الضمان الاجتماعي (SSN)
             </label>
             <div className="relative">
@@ -586,14 +586,14 @@ export default function EmployeeManagement({
                   setForm({ ...form, socialSecurityNumber: e.target.value })
                 }
                 placeholder="XXX-XX-XXXX"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
           </div>
 
           {/* Employment Type */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               نوع التوظيف *
             </label>
             <div className="flex gap-2">
@@ -603,7 +603,7 @@ export default function EmployeeManagement({
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${
                   form.employmentType === "FULL_TIME"
                     ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    : "bg-surface-hover text-muted hover:bg-surface-hover"
                 }`}
               >
                 <Briefcase className="w-4 h-4" />
@@ -615,7 +615,7 @@ export default function EmployeeManagement({
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${
                   form.employmentType === "HOURLY"
                     ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    : "bg-surface-hover text-muted hover:bg-surface-hover"
                 }`}
               >
                 <Clock className="w-4 h-4" />
@@ -627,7 +627,7 @@ export default function EmployeeManagement({
           {/* Pay Info — conditional on employment type */}
           {form.employmentType === "HOURLY" ? (
             <div>
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+              <label className="block text-xs font-medium text-muted mb-1.5">
                 أجرة الساعة (بالدينار) *
               </label>
               <div className="relative">
@@ -641,13 +641,13 @@ export default function EmployeeManagement({
                     setForm({ ...form, hourlyRate: parseFloat(e.target.value) || 0 })
                   }
                   placeholder="0.00"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
                 />
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+              <label className="block text-xs font-medium text-muted mb-1.5">
                 الراتب الشهري (بالدينار) *
               </label>
               <div className="relative">
@@ -661,7 +661,7 @@ export default function EmployeeManagement({
                     setForm({ ...form, baseSalary: parseFloat(e.target.value) || 0 })
                   }
                   placeholder="0.00"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
                 />
               </div>
             </div>
@@ -669,7 +669,7 @@ export default function EmployeeManagement({
 
           {/* Transportation Allowance */}
           <div>
-            <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5">
+            <label className="block text-xs font-medium text-muted mb-1.5">
               بدل تنقل (بالدينار)
             </label>
             <div className="relative">
@@ -683,14 +683,14 @@ export default function EmployeeManagement({
                   setForm({ ...form, transportationAllowance: parseFloat(e.target.value) || 0 })
                 }
                 placeholder="0.00"
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
           </div>
 
           {/* Schedule Type Toggle */}
-          <div className="sm:col-span-2 border-t border-zinc-100 dark:border-zinc-800 pt-4">
-            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-2 flex items-center gap-1.5">
+          <div className="sm:col-span-2 border-t border-border-main pt-4">
+            <label className="block text-xs font-medium text-muted mb-2 flex items-center gap-1.5">
               <CalendarDays className="w-3.5 h-3.5" />
               نوع الجدول
             </label>
@@ -701,7 +701,7 @@ export default function EmployeeManagement({
                 className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
                   !form.isFlexibleSchedule
                     ? "bg-brand-purple text-white shadow-lg shadow-brand-purple/20"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
+                    : "bg-surface-hover text-zinc-500"
                 }`}
               >
                 أيام وساعات محددة
@@ -712,7 +712,7 @@ export default function EmployeeManagement({
                 className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
                   form.isFlexibleSchedule
                     ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
+                    : "bg-surface-hover text-zinc-500"
                 }`}
               >
                 مرن - أي وقت
@@ -723,7 +723,7 @@ export default function EmployeeManagement({
           {/* Availability Picker (when not flexible) */}
           {!form.isFlexibleSchedule && (
             <div className="sm:col-span-2 space-y-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+              <label className="block text-xs font-medium text-muted mb-1">
                 أيام وساعات الدوام
               </label>
               {DAY_LABELS.map((label, dayIdx) => {
@@ -749,10 +749,10 @@ export default function EmployeeManagement({
                           });
                         }
                       }}
-                      className={`w-20 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                      className={`w-20 py-1.5 rounded-lg text-xs font-bold transition-all ${
                         isActive
                           ? "bg-brand-purple text-white"
-                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                          : "bg-surface-hover text-zinc-400"
                       }`}
                     >
                       {label}
@@ -770,7 +770,7 @@ export default function EmployeeManagement({
                               ),
                             });
                           }}
-                          className="text-xs border border-zinc-200 dark:border-zinc-700 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                          className="text-xs border border-border-main rounded-lg px-2 py-1.5 bg-surface text-foreground"
                         />
                         <span className="text-zinc-400 text-xs">—</span>
                         <input
@@ -784,7 +784,7 @@ export default function EmployeeManagement({
                               ),
                             });
                           }}
-                          className="text-xs border border-zinc-200 dark:border-zinc-700 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                          className="text-xs border border-border-main rounded-lg px-2 py-1.5 bg-surface text-foreground"
                         />
                       </div>
                     )}
@@ -798,14 +798,14 @@ export default function EmployeeManagement({
           <div className="flex gap-3 pt-2">
             <button
               onClick={resetForm}
-              className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-2xl py-3 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition active:scale-95"
+              className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-2xl py-3 text-sm font-bold hover:bg-surface-hover transition active:scale-95"
             >
               إلغاء
             </button>
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="flex-1 bg-brand-purple hover:bg-brand-purple-dark text-white rounded-2xl py-3 text-sm font-bold shadow-lg shadow-brand-purple/20 disabled:opacity-50 transition flex items-center justify-center gap-2 active:scale-95"
+              className="flex-1 bg-brand-purple hover:bg-brand-primary-dark text-white rounded-2xl py-3 text-sm font-bold shadow-lg shadow-brand-purple/20 disabled:opacity-50 transition flex items-center justify-center gap-2 active:scale-95"
             >
               {isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -820,9 +820,9 @@ export default function EmployeeManagement({
 
       {/* Employee List */}
       {filtered.length === 0 ? (
-        <div className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-3xl p-8 text-center">
+        <div className="bg-surface/60 border border-border-main/40 shadow-sm rounded-3xl p-8 text-center">
           <Users className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
-          <div className="text-sm text-zinc-500 dark:text-zinc-400">
+          <div className="text-sm text-muted">
             {search || filterRole !== "ALL"
               ? "لا توجد نتائج مطابقة"
               : "لا يوجد موظفين. أضف أول موظف!"}
@@ -833,9 +833,9 @@ export default function EmployeeManagement({
           {filtered.map((emp) => (
             <div
               key={emp.id}
-              className={`bg-white dark:bg-zinc-900/60 border shadow-sm rounded-3xl p-4 transition-all ${
+              className={`bg-surface/60 border shadow-sm rounded-3xl p-4 transition-all ${
                 emp.isActive
-                  ? "border-zinc-100 dark:border-zinc-800/40"
+                  ? "border-border-main/40"
                   : "border-red-200/50 dark:border-red-900/30 opacity-60"
               }`}
             >
@@ -849,7 +849,7 @@ export default function EmployeeManagement({
                         ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
                         : emp.role === "MANAGER"
                         ? "bg-brand-purple/10 dark:bg-brand-purple/20 text-brand-purple"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+                        : "bg-surface-hover text-muted"
                     }`}
                   >
                     {emp.fullName
@@ -862,21 +862,21 @@ export default function EmployeeManagement({
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate">
+                      <span className="font-bold text-sm text-foreground truncate">
                         {emp.fullName}
                       </span>
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${ROLE_COLORS[emp.role]}`}
+                        className={`px-2 py-0.5 rounded-full text-xs font-bold ${ROLE_COLORS[emp.role]}`}
                       >
                         {ROLE_LABELS[emp.role]}
                       </span>
                       {!emp.isActive && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
                           معطل
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                    <div className="text-xs text-muted truncate">
                       {emp.email}
                     </div>
                   </div>
@@ -930,12 +930,12 @@ export default function EmployeeManagement({
               {/* Assigned Branches */}
               {emp.assignedBranches && emp.assignedBranches.length > 0 && (
                 <div className="mb-3">
-                  <div className="text-[10px] text-zinc-400 mb-1">الفروع المسموح بها:</div>
+                  <div className="text-xs text-zinc-400 mb-1">الفروع المسموح بها:</div>
                   <div className="flex flex-wrap gap-1">
                     {emp.assignedBranches.map((ab) => (
                       <span
                         key={ab.branch.id}
-                        className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                        className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
                       >
                         {ab.branch.name}
                       </span>
@@ -947,7 +947,7 @@ export default function EmployeeManagement({
               {/* Schedule Info */}
               <div className="mb-3">
                 {emp.isFlexibleSchedule ? (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
                     مرن - أي وقت
                   </span>
                 ) : emp.availability && emp.availability.length > 0 ? (
@@ -955,43 +955,43 @@ export default function EmployeeManagement({
                     {emp.availability.map((a) => (
                       <span
                         key={a.dayOfWeek}
-                        className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400"
+                        className="px-2 py-0.5 rounded-full text-xs font-medium bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400"
                       >
                         {DAY_LABELS[a.dayOfWeek]}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-[10px] text-zinc-400">لم يتم تحديد جدول</span>
+                  <span className="text-xs text-zinc-400">لم يتم تحديد جدول</span>
                 )}
               </div>
 
               {/* Stats Row */}
               <div className="flex items-center gap-3 mb-3">
-                <div className="flex-1 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-3 py-2 text-center">
+                <div className="flex-1 bg-surface-hover/50 rounded-xl px-3 py-2 text-center">
                   <div className="text-sm font-bold text-brand-purple">
                     {emp._count.shifts}
                   </div>
-                  <div className="text-[10px] text-zinc-400">ورديات</div>
+                  <div className="text-xs text-zinc-400">ورديات</div>
                 </div>
-                <div className="flex-1 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-3 py-2 text-center">
+                <div className="flex-1 bg-surface-hover/50 rounded-xl px-3 py-2 text-center">
                   <div className="text-sm font-bold text-brand-purple">
                     {emp._count.attendanceLogs}
                   </div>
-                  <div className="text-[10px] text-zinc-400">سجل حضور</div>
+                  <div className="text-xs text-zinc-400">سجل حضور</div>
                 </div>
                 {emp.managedBranches.length > 0 && (
                   <div className="flex-1 bg-amber-50 dark:bg-amber-900/20 rounded-xl px-3 py-2 text-center">
                     <div className="text-sm font-bold text-amber-600 dark:text-amber-400">
                       {emp.managedBranches.length}
                     </div>
-                    <div className="text-[10px] text-zinc-400">يدير فروع</div>
+                    <div className="text-xs text-zinc-400">يدير فروع</div>
                   </div>
                 )}
               </div>
 
               {/* Actions Row */}
-              <div className="flex items-center gap-2 border-t border-zinc-100 dark:border-zinc-800/40 pt-3">
+              <div className="flex items-center gap-2 border-t border-border-main/40 pt-3">
                 {/* Document Upload Button */}
                 <button
                   onClick={() => {
@@ -1015,7 +1015,7 @@ export default function EmployeeManagement({
                     onClick={() =>
                       setExpandedDocs(expandedDocs === emp.id ? null : emp.id)
                     }
-                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 text-zinc-600 dark:text-zinc-400 text-xs font-bold hover:bg-zinc-100 dark:hover:bg-zinc-700 transition active:scale-95"
+                    className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-surface-hover/50 text-muted text-xs font-bold hover:bg-surface-hover transition active:scale-95"
                   >
                     <Paperclip className="w-3.5 h-3.5" />
                     {emp.documents.length} ملف
@@ -1024,7 +1024,7 @@ export default function EmployeeManagement({
 
                 <button
                   onClick={() => startEdit(emp)}
-                  className="flex-1 flex items-center justify-center gap-1.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl py-2 text-xs font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition active:scale-95"
+                  className="flex-1 flex items-center justify-center gap-1.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-xl py-2 text-xs font-bold hover:bg-surface-hover transition active:scale-95"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
                   تعديل
@@ -1062,7 +1062,7 @@ export default function EmployeeManagement({
                     </button>
                     <button
                       onClick={() => setConfirmDelete(null)}
-                      className="px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-500 text-xs font-bold transition"
+                      className="px-3 py-2 rounded-xl bg-surface-hover text-zinc-500 text-xs font-bold transition"
                     >
                       لا
                     </button>
@@ -1080,15 +1080,15 @@ export default function EmployeeManagement({
 
               {/* Expanded Documents Panel */}
               {expandedDocs === emp.id && emp.documents && emp.documents.length > 0 && (
-                <div className="mt-3 border-t border-zinc-100 dark:border-zinc-800/40 pt-3 space-y-2">
-                  <div className="text-xs font-bold text-zinc-600 dark:text-zinc-400 flex items-center gap-1.5">
+                <div className="mt-3 border-t border-border-main/40 pt-3 space-y-2">
+                  <div className="text-xs font-bold text-muted flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5" />
                     مستندات التوظيف
                   </div>
                   {emp.documents.map((doc) => (
                     <div
                       key={doc.id}
-                      className="flex items-center justify-between bg-zinc-50 dark:bg-zinc-800/50 rounded-xl px-3 py-2"
+                      className="flex items-center justify-between bg-surface-hover/50 rounded-xl px-3 py-2"
                     >
                       <div className="flex items-center gap-2 min-w-0 flex-1">
                         <FileText className="w-4 h-4 text-brand-purple shrink-0" />
@@ -1096,7 +1096,7 @@ export default function EmployeeManagement({
                           <div className="text-xs font-medium text-zinc-700 dark:text-zinc-300 truncate">
                             {doc.originalName}
                           </div>
-                          <div className="text-[10px] text-zinc-400">
+                          <div className="text-xs text-zinc-400">
                             {formatFileSize(doc.fileSize)}
                           </div>
                         </div>
@@ -1106,7 +1106,7 @@ export default function EmployeeManagement({
                           href={`/api/employees/documents/${doc.fileName}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="p-1.5 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                          className="p-1.5 rounded-lg hover:bg-surface-hover transition"
                           title="تحميل"
                         >
                           <Download className="w-3.5 h-3.5 text-brand-purple" />

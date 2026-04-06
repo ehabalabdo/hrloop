@@ -97,19 +97,19 @@ export default function ScheduleSidebar({
   if (!isOpen) return null;
 
   return (
-    <div className="w-72 shrink-0 bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto h-full">
+    <div className="w-72 shrink-0 bg-surface border-r border-border-main overflow-y-auto h-full">
       <div className="p-4 space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-zinc-500" />
-            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+            <span className="text-sm font-bold text-foreground">
               الفلاتر
             </span>
           </div>
           <button
             onClick={onToggle}
-            className="p-1 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className="p-1 rounded-md hover:bg-surface-hover"
           >
             <X className="w-4 h-4 text-zinc-400" />
           </button>
@@ -117,7 +117,7 @@ export default function ScheduleSidebar({
 
         {/* Search / City Filter */}
         <div>
-          <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted mb-2">
             <Building2 className="w-3.5 h-3.5" />
             المدينة
           </label>
@@ -129,7 +129,7 @@ export default function ScheduleSidebar({
                 branchCity: e.target.value || undefined,
               })
             }
-            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-purple"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-border-main bg-surface-hover text-foreground focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
             <option value="">جميع المدن</option>
             {cities.map((city) => (
@@ -142,7 +142,7 @@ export default function ScheduleSidebar({
 
         {/* Manager Filter */}
         <div>
-          <label className="flex items-center gap-1.5 text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-2">
+          <label className="flex items-center gap-1.5 text-xs font-semibold text-muted mb-2">
             <UserCog className="w-3.5 h-3.5" />
             المدير
           </label>
@@ -154,7 +154,7 @@ export default function ScheduleSidebar({
                 managerName: e.target.value || undefined,
               })
             }
-            className="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-brand-purple"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-border-main bg-surface-hover text-foreground focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
             <option value="">جميع المدراء</option>
             {managers.map((mgr) => (
@@ -200,20 +200,20 @@ export default function ScheduleSidebar({
                 showUnderstaffedOnly: undefined,
               })
             }
-            className="w-full px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 border border-zinc-200 dark:border-zinc-700 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            className="w-full px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 border border-border-main rounded-xl hover:bg-surface-hover transition-colors"
           >
             مسح الفلاتر
           </button>
         )}
 
         {/* Divider */}
-        <div className="border-t border-zinc-200 dark:border-zinc-700" />
+        <div className="border-t border-border-main" />
 
         {/* Branch Requirements Section */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Settings2 className="w-4 h-4 text-zinc-500" />
-            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+            <span className="text-sm font-bold text-foreground">
               متطلبات الموظفين
             </span>
           </div>
@@ -227,13 +227,13 @@ export default function ScheduleSidebar({
                       ? setEditingBranchId(null)
                       : startEditing(branch.id)
                   }
-                  className="w-full flex items-center justify-between px-2 py-1.5 text-xs rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors group"
+                  className="w-full flex items-center justify-between px-2 py-1.5 text-xs rounded-lg hover:bg-surface-hover transition-colors group"
                 >
                   <span className="text-zinc-700 dark:text-zinc-300 font-medium truncate">
                     {branch.name}
                   </span>
                   <div className="flex items-center gap-1">
-                    <span className="text-[10px] text-zinc-400 font-mono">
+                    <span className="text-xs text-zinc-400 font-mono">
                       {branch.requirements
                         .reduce((sum, r) => sum + r.requiredStaff, 0)}
                       /wk
@@ -248,7 +248,7 @@ export default function ScheduleSidebar({
 
                 {/* Edit panel */}
                 {editingBranchId === branch.id && (
-                  <div className="mx-2 mb-2 p-2 bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                  <div className="mx-2 mb-2 p-2 bg-surface-hover rounded-lg border border-border-main">
                     <div className="grid grid-cols-7 gap-1 mb-2">
                       {editReqs.map((req, i) => (
                         <div key={req.dayOfWeek} className="text-center">
@@ -269,7 +269,7 @@ export default function ScheduleSidebar({
                               };
                               setEditReqs(updated);
                             }}
-                            className="w-full px-1 py-1 text-xs text-center rounded border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-brand-purple"
+                            className="w-full px-1 py-1 text-xs text-center rounded border border-zinc-300 dark:border-zinc-600 bg-surface text-foreground focus:outline-none focus:ring-1 focus:ring-brand-purple"
                           />
                         </div>
                       ))}
@@ -277,7 +277,7 @@ export default function ScheduleSidebar({
                     <button
                       onClick={saveRequirements}
                       disabled={saving}
-                      className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium bg-brand-magenta hover:bg-brand-magenta/90 text-white rounded-lg disabled:opacity-50 transition-colors"
+                      className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium bg-brand-primary hover:bg-brand-primary/90 text-white rounded-lg disabled:opacity-50 transition-colors"
                     >
                       <Save className="w-3 h-3" />
                       {saving ? "جاري الحفظ..." : "حفظ"}

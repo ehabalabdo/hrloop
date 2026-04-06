@@ -1,7 +1,7 @@
 "use client";
 
 // ============================================================
-// Settings Tabs — Arabic, mobile-first pill tabs
+// Settings Tabs — Clean Arabic navigation
 // ============================================================
 
 import { useState, type ReactNode } from "react";
@@ -35,36 +35,37 @@ export default function SettingsTabs({
   const [tab, setTab] = useState<TabKey>("employees");
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800/40 sticky top-0 z-20">
-        <div className="max-w-2xl mx-auto px-5 py-4">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-brand-purple/10 dark:bg-brand-purple/20 rounded-2xl flex items-center justify-center">
-              <Settings className="w-5 h-5 text-brand-purple" />
+      <div className="bg-surface border-b border-border-main sticky top-0 lg:top-0 z-20">
+        <div className="max-w-3xl mx-auto px-5 py-5">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-11 h-11 bg-brand-primary-subtle rounded-xl flex items-center justify-center">
+              <Settings className="w-5 h-5 text-brand-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-lg font-bold text-foreground">
                 إعدادات النظام
               </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                الإعدادات، الأجهزة، الفروع وسجل النظام
+              <p className="text-sm text-muted">
+                إدارة الموظفين، الفروع والإعدادات العامة
               </p>
             </div>
           </div>
 
-          {/* Scrollable Pill Tabs */}
-          <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 pb-0.5">
+          {/* Tab Navigation */}
+          <div className="flex gap-1 overflow-x-auto no-scrollbar -mx-1 px-1 pb-0.5">
             {TABS.map((t) => {
               const Icon = t.icon;
+              const active = tab === t.key;
               return (
                 <button
                   key={t.key}
                   onClick={() => setTab(t.key)}
-                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold transition-all ${
-                    tab === t.key
-                      ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                      : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                  className={`shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    active
+                      ? "bg-brand-primary text-white shadow-sm shadow-brand-primary/20"
+                      : "text-muted hover:text-foreground hover:bg-surface-hover"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -77,7 +78,7 @@ export default function SettingsTabs({
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-5 py-5">
+      <div className="max-w-3xl mx-auto px-5 py-6">
         {tab === "employees" && employeeManagement}
         {tab === "settings" && settingsPanel}
         {tab === "branches" && branchManagement}

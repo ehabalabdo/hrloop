@@ -1,8 +1,8 @@
 "use client";
 
 // ============================================================
-// AppSidebar — Metro-branded Navigation for HR Loop
-// Desktop: Purple sidebar | Mobile: Glassmorphic bottom nav
+// AppSidebar — Clean Professional Navigation for HR Loop
+// Desktop: Clean sidebar | Mobile: Bottom nav
 // Role-based filtering for OWNER / MANAGER / STAFF
 // ============================================================
 
@@ -22,6 +22,7 @@ import {
   ArrowLeftRight,
   LogOut,
   User,
+  ChevronDown,
 } from "lucide-react";
 import { logoutAction } from "@/app/login/actions";
 
@@ -122,76 +123,77 @@ export default function AppSidebar({
 
   const isActive = (href: string) => pathname.startsWith(href);
 
-  // Filter nav items based on user role
   const visibleItems = NAV_ITEMS.filter((item) =>
     item.roles.includes(user.role)
   );
 
-  // Mobile bottom nav: max 5 items
   const mobileItems = visibleItems.slice(0, 5);
 
   return (
-    <div className="flex min-h-screen bg-white dark:bg-[#0f0a19]">
+    <div className="flex min-h-screen bg-background">
       {/* ===== Desktop Sidebar ===== */}
-      <aside className="hidden lg:flex flex-col w-60 bg-brand-purple-dark shrink-0 min-h-screen">
+      <aside className="hidden lg:flex flex-col w-64 bg-surface border-e border-border-main shrink-0 min-h-screen sticky top-0">
         {/* Logo */}
         <Link
           href="/dashboard"
-          className="flex items-center gap-3 px-6 py-5 border-b border-white/10"
+          className="flex items-center gap-3 px-5 py-5 border-b border-border-main"
         >
-          <div className="w-9 h-9 bg-brand-magenta rounded-xl flex items-center justify-center shadow-lg shadow-brand-magenta/30">
-            <Clock className="w-4 h-4 text-white" />
+          <div className="w-10 h-10 bg-brand-primary rounded-xl flex items-center justify-center shadow-md shadow-brand-primary/20">
+            <Clock className="w-5 h-5 text-white" />
           </div>
           <div>
-            <span className="text-base font-bold text-white tracking-tight">
+            <span className="text-base font-bold text-foreground tracking-tight">
               HR Loop
             </span>
-            <p className="text-[10px] text-white/50 font-medium">Metro by T-Mobile</p>
+            <p className="text-xs text-muted font-medium">نظام إدارة الموظفين</p>
           </div>
         </Link>
 
         {/* Nav */}
-        <nav className="flex-1 px-3 py-5 space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {visibleItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                   active
-                    ? "bg-white/15 text-white shadow-sm"
-                    : "text-white/60 hover:text-white hover:bg-white/[0.08]"
+                    ? "bg-brand-primary-subtle text-brand-primary font-semibold"
+                    : "text-muted hover:text-foreground hover:bg-surface-hover"
                 }`}
               >
-                <item.icon className={`w-[18px] h-[18px] ${active ? "text-brand-magenta" : ""}`} />
+                <item.icon className={`w-[18px] h-[18px] shrink-0 ${active ? "text-brand-primary" : ""}`} />
                 <span>{item.label}</span>
+                {active && (
+                  <div className="ms-auto w-1.5 h-1.5 rounded-full bg-brand-primary" />
+                )}
               </Link>
             );
           })}
         </nav>
 
         {/* User Info & Logout */}
-        <div className="px-4 py-4 border-t border-white/10">
-          <div className="flex items-center gap-3 px-2 mb-3">
-            <div className="w-9 h-9 bg-brand-magenta/20 rounded-xl flex items-center justify-center shrink-0">
-              <User className="w-4 h-4 text-brand-magenta" />
+        <div className="px-3 py-4 border-t border-border-main">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-surface-hover">
+            <div className="w-9 h-9 bg-brand-primary/10 rounded-lg flex items-center justify-center shrink-0">
+              <User className="w-4 h-4 text-brand-primary" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-white truncate">
+              <p className="text-sm font-semibold text-foreground truncate">
                 {user.fullName}
               </p>
-              <span className="text-[10px] text-white/50 font-medium">
+              <span className="text-xs text-muted">
                 {ROLE_LABELS[user.role]}
               </span>
             </div>
           </div>
-          <form action={logoutAction}>
+          <form action={logoutAction} className="mt-2">
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-white/60 hover:text-white hover:bg-white/[0.08] rounded-xl transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-muted hover:text-danger hover:bg-danger-subtle rounded-xl transition-colors"
             >
-              <LogOut className="w-3.5 h-3.5" />
+              <LogOut className="w-4 h-4" />
               تسجيل الخروج
             </button>
           </form>
@@ -199,12 +201,12 @@ export default function AppSidebar({
       </aside>
 
       {/* ===== Mobile Top Bar ===== */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-brand-purple-dark px-4 py-3 flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-brand-magenta rounded-lg flex items-center justify-center">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-border-main px-4 py-3 flex items-center justify-between">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center shadow-sm">
             <Clock className="w-4 h-4 text-white" />
           </div>
-          <span className="text-sm font-bold text-white tracking-tight">
+          <span className="text-sm font-bold text-foreground tracking-tight">
             HR Loop
           </span>
         </Link>
@@ -212,10 +214,11 @@ export default function AppSidebar({
         {/* Profile Toggle */}
         <button
           onClick={() => setShowProfile(!showProfile)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 text-white"
+          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-hover border border-border-main text-foreground"
         >
-          <User className="w-4 h-4" />
-          <span className="text-xs font-medium max-w-[80px] truncate">{user.fullName}</span>
+          <User className="w-4 h-4 text-muted" />
+          <span className="text-xs font-semibold max-w-[80px] truncate">{user.fullName}</span>
+          <ChevronDown className="w-3 h-3 text-muted" />
         </button>
       </div>
 
@@ -223,23 +226,23 @@ export default function AppSidebar({
       {showProfile && (
         <>
           <div
-            className="lg:hidden fixed inset-0 z-40 bg-black/40"
+            className="lg:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
             onClick={() => setShowProfile(false)}
           />
-          <div className="lg:hidden fixed top-14 right-3 z-50 w-56 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-            <div className="p-4 border-b border-zinc-100 dark:border-zinc-800">
-              <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+          <div className="lg:hidden fixed top-14 left-4 z-50 w-64 bg-surface rounded-2xl shadow-xl border border-border-main overflow-hidden">
+            <div className="p-4 border-b border-border-main">
+              <p className="text-sm font-bold text-foreground">
                 {user.fullName}
               </p>
-              <p className="text-[11px] text-zinc-500 mt-0.5">{user.email}</p>
-              <span className="inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-brand-purple/10 text-brand-purple">
+              <p className="text-xs text-muted mt-1">{user.email}</p>
+              <span className="inline-block mt-2 text-xs font-semibold px-2.5 py-1 rounded-lg bg-brand-primary-subtle text-brand-primary">
                 {ROLE_LABELS[user.role]}
               </span>
             </div>
             <form action={logoutAction} className="p-2">
               <button
                 type="submit"
-                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-danger hover:bg-danger-subtle rounded-xl transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 تسجيل الخروج
@@ -254,33 +257,26 @@ export default function AppSidebar({
         {children}
       </main>
 
-      {/* ===== Mobile Bottom Nav — Polished, larger touch targets ===== */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-200/60 dark:border-zinc-800/40 safe-area-pb">
-        <div className="flex items-stretch justify-around px-1">
+      {/* ===== Mobile Bottom Nav ===== */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-border-main safe-area-pb">
+        <div className="flex items-stretch justify-around px-2">
           {mobileItems.map((item) => {
             const active = isActive(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center gap-1 py-3 px-2 flex-1 min-w-0 transition-all relative ${
+                className={`flex flex-col items-center justify-center gap-1 py-2.5 px-2 flex-1 min-w-0 transition-all relative ${
                   active
-                    ? "text-brand-purple"
-                    : "text-zinc-400 dark:text-zinc-500 active:text-brand-purple/60"
+                    ? "text-brand-primary"
+                    : "text-muted-light active:text-brand-primary/60"
                 }`}
               >
-                {/* Active indicator dot */}
                 {active && (
-                  <div className="absolute top-1 left-1/2 -translate-x-1/2 w-5 h-1 rounded-full bg-brand-purple" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-brand-primary" />
                 )}
-                <div
-                  className={`p-2 rounded-2xl transition-all ${
-                    active ? "bg-brand-purple/10" : ""
-                  }`}
-                >
-                  <item.icon className={`w-5 h-5 ${active ? "text-brand-purple" : ""}`} />
-                </div>
-                <span className={`text-[10px] font-bold truncate max-w-full ${active ? "text-brand-purple" : ""}`}>
+                <item.icon className={`w-5 h-5 ${active ? "text-brand-primary" : ""}`} />
+                <span className={`text-xs font-semibold truncate max-w-full ${active ? "text-brand-primary" : ""}`}>
                   {item.shortLabel}
                 </span>
               </Link>

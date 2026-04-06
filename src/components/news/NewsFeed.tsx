@@ -40,8 +40,8 @@ interface NewsFeedProps {
 
 const ROLE_BADGE: Record<string, { label: string; color: string }> = {
   OWNER: { label: "مالك", color: "bg-brand-purple text-white" },
-  MANAGER: { label: "مدير", color: "bg-brand-magenta text-white" },
-  STAFF: { label: "موظف", color: "bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300" },
+  MANAGER: { label: "مدير", color: "bg-brand-primary text-white" },
+  STAFF: { label: "موظف", color: "bg-zinc-200 dark:bg-zinc-700 text-muted" },
 };
 
 function timeAgo(dateStr: string): string {
@@ -171,7 +171,7 @@ export default function NewsFeed({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-24">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-purple-light px-5 pt-8 pb-10 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full" />
@@ -196,26 +196,26 @@ export default function NewsFeed({
             {total} منشور
           </p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-zinc-50 dark:bg-[#0f0a19] rounded-t-[2rem]" />
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
       </div>
 
       {/* Composer */}
       {showComposer && canPost && (
         <div className="px-5 -mt-1 mb-4">
-          <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-lg overflow-hidden">
+          <div className="bg-surface/60 rounded-3xl border border-border-main shadow-lg overflow-hidden">
             <div className="p-5">
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="اكتب منشوراً..."
                 rows={3}
-                className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none resize-none"
+                className="w-full rounded-2xl border border-border-main bg-surface-hover px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none resize-none"
                 dir="rtl"
               />
 
               {/* Media Preview */}
               {mediaUrl && (
-                <div className="relative mt-3 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                <div className="relative mt-3 rounded-2xl overflow-hidden bg-surface-hover">
                   {mediaType === "image" ? (
                     <img src={mediaUrl} alt="مرفق" className="w-full max-h-64 object-cover" />
                   ) : mediaType === "video" ? (
@@ -245,7 +245,7 @@ export default function NewsFeed({
             </div>
 
             {/* Actions Bar */}
-            <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800/40 px-5 py-3">
+            <div className="flex items-center justify-between border-t border-border-main px-5 py-3">
               <div className="flex items-center gap-2">
                 <input
                   ref={fileRef}
@@ -257,7 +257,7 @@ export default function NewsFeed({
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted hover:bg-surface-hover transition disabled:opacity-50"
                 >
                   <ImageIcon className="w-4 h-4" />
                   صورة
@@ -265,7 +265,7 @@ export default function NewsFeed({
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted hover:bg-surface-hover transition disabled:opacity-50"
                 >
                   <Video className="w-4 h-4" />
                   فيديو
@@ -273,7 +273,7 @@ export default function NewsFeed({
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted hover:bg-surface-hover transition disabled:opacity-50"
                 >
                   <Paperclip className="w-4 h-4" />
                   ملف
@@ -283,14 +283,14 @@ export default function NewsFeed({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setShowComposer(false); setContent(""); setMediaUrl(null); setMediaType(null); }}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 hover:bg-surface-hover transition"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={handlePost}
                   disabled={isPending || (!content.trim() && !mediaUrl)}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-brand-purple text-white hover:bg-brand-purple-dark disabled:opacity-50 transition active:scale-95"
+                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-brand-purple text-white hover:bg-brand-primary-dark disabled:opacity-50 transition active:scale-95"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -310,9 +310,9 @@ export default function NewsFeed({
         {items.length === 0 && (
           <div className="text-center py-20">
             <Megaphone className="w-14 h-14 mx-auto text-zinc-200 dark:text-zinc-700 mb-4" />
-            <p className="text-zinc-500 dark:text-zinc-400 font-semibold">لا توجد منشورات بعد</p>
+            <p className="text-muted font-semibold">لا توجد منشورات بعد</p>
             {canPost && (
-              <p className="text-zinc-400 dark:text-zinc-500 text-sm mt-1">
+              <p className="text-muted-light text-sm mt-1">
                 كن أول من ينشر خبراً!
               </p>
             )}
@@ -326,10 +326,10 @@ export default function NewsFeed({
           return (
             <article
               key={item.id}
-              className={`bg-white dark:bg-zinc-900/60 rounded-3xl border shadow-sm overflow-hidden ${
+              className={`bg-surface/60 rounded-3xl border shadow-sm overflow-hidden ${
                 item.isPinned
                   ? "border-brand-purple/30 dark:border-brand-purple/20 ring-1 ring-brand-purple/10"
-                  : "border-zinc-100 dark:border-zinc-800/40"
+                  : "border-border-main"
               }`}
             >
               {/* Pinned badge */}
@@ -349,10 +349,10 @@ export default function NewsFeed({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                      <span className="text-sm font-bold text-foreground">
                         {item.author.fullName}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${badge.color}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${badge.color}`}>
                         {badge.label}
                       </span>
                     </div>
@@ -365,16 +365,16 @@ export default function NewsFeed({
                   <div className="relative">
                     <button
                       onClick={() => setMenuOpen(menuOpen === item.id ? null : item.id)}
-                      className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+                      className="p-2 rounded-xl hover:bg-surface-hover transition"
                     >
                       <MoreVertical className="w-4 h-4 text-zinc-400" />
                     </button>
                     {menuOpen === item.id && (
-                      <div className="absolute left-0 top-10 z-10 w-40 bg-white dark:bg-zinc-800 rounded-2xl shadow-xl border border-zinc-100 dark:border-zinc-700 overflow-hidden">
+                      <div className="absolute left-0 top-10 z-10 w-40 bg-surface rounded-2xl shadow-xl border border-border-main overflow-hidden">
                         {isOwner && (
                           <button
                             onClick={() => { handlePin(item.id); setMenuOpen(null); }}
-                            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition"
+                            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-surface-hover transition"
                           >
                             {item.isPinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
                             {item.isPinned ? "إلغاء التثبيت" : "تثبيت"}
@@ -422,7 +422,7 @@ export default function NewsFeed({
                       href={item.mediaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition" dir="rtl"
+                      className="flex items-center gap-3 p-4 rounded-2xl bg-surface-hover/60 hover:bg-surface-hover transition" dir="rtl"
                     >
                       <FileText className="w-8 h-8 text-brand-purple shrink-0" />
                       <div className="flex-1 min-w-0">

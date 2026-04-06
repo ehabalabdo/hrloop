@@ -47,14 +47,14 @@ export default function PayslipModal({
 }: PayslipModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
-      <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-surface rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 border-b border-border-main flex items-center justify-between shrink-0">
           <div>
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+            <h2 className="text-lg font-bold text-foreground">
               {payslip.userName}
             </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-muted">
               {payslip.monthLabel} — {payslip.branchName ?? "No Branch"} —{" "}
               <span className="uppercase">{payslip.userRole}</span>
             </p>
@@ -62,14 +62,14 @@ export default function PayslipModal({
           <div className="flex items-center gap-2">
             <button
               onClick={onDownloadPDF}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-purple-dark text-white rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-primary-dark text-white rounded-lg transition-colors"
             >
               <Download className="w-3 h-3" />
               PDF
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-surface-hover transition-colors"
             >
               <X className="w-5 h-5 text-zinc-500" />
             </button>
@@ -80,19 +80,19 @@ export default function PayslipModal({
         <div className="overflow-y-auto flex-1 px-6 py-4 space-y-5">
           {/* Financial Summary Cards */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-brand-magenta/5 dark:bg-brand-magenta/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
-              <DollarSign className="w-5 h-5 text-brand-magenta dark:text-brand-magenta mx-auto mb-1" />
-              <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-0.5">
+            <div className="bg-brand-primary/5 dark:bg-brand-primary/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
+              <DollarSign className="w-5 h-5 text-brand-primary dark:text-brand-primary mx-auto mb-1" />
+              <div className="text-xs text-muted mb-0.5">
                 الراتب الأساسي
               </div>
-              <div className="text-lg font-bold text-brand-magenta dark:text-brand-magenta">
+              <div className="text-lg font-bold text-brand-primary dark:text-brand-primary">
                 ${formatCurrency(payslip.baseSalary)}
               </div>
             </div>
 
             <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-3 text-center">
               <TrendingDown className="w-5 h-5 text-red-600 dark:text-red-400 mx-auto mb-1" />
-              <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-0.5">
+              <div className="text-xs text-muted mb-0.5">
                 إجمالي الخصومات
               </div>
               <div className="text-lg font-bold text-red-600 dark:text-red-400">
@@ -102,7 +102,7 @@ export default function PayslipModal({
 
             <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 rounded-xl p-3 text-center">
               <DollarSign className="w-5 h-5 text-brand-purple mx-auto mb-1" />
-              <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-0.5">
+              <div className="text-xs text-muted mb-0.5">
                 صافي الراتب
               </div>
               <div className="text-lg font-bold text-brand-purple dark:text-brand-purple">
@@ -112,8 +112,8 @@ export default function PayslipModal({
           </div>
 
           {/* Detailed Breakdown */}
-          <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4 space-y-3">
-            <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <div className="bg-surface-hover/50 rounded-xl p-4 space-y-3">
+            <h3 className="text-xs font-bold text-muted uppercase tracking-wider">
               تفاصيل الراتب والخصومات
             </h3>
 
@@ -140,7 +140,7 @@ export default function PayslipModal({
               )}
             </div>
 
-            <div className="border-t border-zinc-200 dark:border-zinc-700" />
+            <div className="border-t border-border-main" />
 
             {/* Deductions */}
             <div className="space-y-1.5">
@@ -166,20 +166,20 @@ export default function PayslipModal({
                 />
               )}
               {payslip.totalDeductions === 0 && (
-                <div className="text-xs text-zinc-400 dark:text-zinc-500 italic">
+                <div className="text-xs text-muted-light italic">
                   لا توجد خصومات هذا الشهر
                 </div>
               )}
             </div>
 
-            <div className="border-t border-zinc-200 dark:border-zinc-700" />
+            <div className="border-t border-border-main" />
 
             {/* Net */}
             <div className="flex items-center justify-between">
-              <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+              <span className="text-sm font-bold text-foreground">
                 صافي الراتب
               </span>
-              <span className="text-lg font-bold text-brand-magenta dark:text-brand-magenta">
+              <span className="text-lg font-bold text-brand-primary dark:text-brand-primary">
                 ${formatCurrency(payslip.finalNetSalary)}
               </span>
             </div>
@@ -197,7 +197,7 @@ export default function PayslipModal({
               icon={<Clock className="w-4 h-4" />}
               label="ساعات العمل"
               value={payslip.totalHoursWorked.toFixed(1)}
-              color="text-brand-magenta dark:text-brand-magenta"
+              color="text-brand-primary dark:text-brand-primary"
             />
             <StatBox
               icon={<AlertTriangle className="w-4 h-4" />}
@@ -224,13 +224,13 @@ export default function PayslipModal({
           {/* Shift Details Table */}
           {payslip.shifts.length > 0 && (
             <div>
-              <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-2">
+              <h3 className="text-xs font-bold text-muted uppercase tracking-wider mb-2">
                 تفاصيل كل وردية
               </h3>
-              <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+              <div className="bg-surface rounded-xl border border-border-main overflow-hidden">
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
+                    <tr className="bg-surface-hover/50 border-b border-border-main">
                       <th className="px-3 py-2 text-left font-semibold text-zinc-500">
                         Date
                       </th>
@@ -255,7 +255,7 @@ export default function PayslipModal({
                     {payslip.shifts.map((shift: ShiftReconciliation) => (
                       <tr
                         key={shift.shiftId}
-                        className="border-b border-zinc-100 dark:border-zinc-800"
+                        className="border-b border-border-main"
                       >
                         <td className="px-3 py-2 text-zinc-700 dark:text-zinc-300 font-medium">
                           {new Date(shift.date).toLocaleDateString("en-US", {
@@ -263,14 +263,14 @@ export default function PayslipModal({
                             day: "numeric",
                           })}
                         </td>
-                        <td className="px-3 py-2 text-zinc-500 dark:text-zinc-400 truncate max-w-[100px]">
+                        <td className="px-3 py-2 text-muted truncate max-w-[100px]">
                           {shift.branchName}
                         </td>
-                        <td className="px-3 py-2 text-center text-zinc-500 dark:text-zinc-400">
+                        <td className="px-3 py-2 text-center text-muted">
                           {formatTime(shift.scheduledStart)} –{" "}
                           {formatTime(shift.scheduledEnd)}
                         </td>
-                        <td className="px-3 py-2 text-center text-zinc-600 dark:text-zinc-300">
+                        <td className="px-3 py-2 text-center text-muted">
                           {shift.actualClockIn
                             ? `${formatTime(shift.actualClockIn)} – ${
                                 shift.actualClockOut
@@ -328,7 +328,7 @@ function BreakdownRow({
 
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-zinc-600 dark:text-zinc-400">{label}</span>
+      <span className="text-muted">{label}</span>
       <span className={`font-semibold ${colors[type]}`}>
         {prefix}${formatCurrency(value)}
       </span>
@@ -348,7 +348,7 @@ function StatBox({
   color: string;
 }) {
   return (
-    <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-lg p-2 text-center">
+    <div className="bg-surface-hover/50 rounded-lg p-2 text-center">
       <div className={`${color} mx-auto mb-0.5 flex justify-center`}>
         {icon}
       </div>
@@ -361,7 +361,7 @@ function StatBox({
 function StatusBadge({ status }: { status: string }) {
   const styles = {
     present:
-      "bg-brand-magenta/10 dark:bg-brand-magenta/10 text-brand-magenta dark:text-brand-magenta",
+      "bg-brand-primary/10 dark:bg-brand-primary/10 text-brand-primary dark:text-brand-primary",
     partial:
       "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
     absent:
@@ -378,7 +378,7 @@ function StatusBadge({ status }: { status: string }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${
+      className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-bold uppercase ${
         styles[s] ?? styles.absent
       }`}
     >

@@ -167,19 +167,19 @@ export default function LeavesDashboard({
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
+    <div className="min-h-screen bg-background pb-28">
       {/* ─── Header ─── */}
-      <div className="bg-white dark:bg-zinc-900/80 border-b border-zinc-100 dark:border-zinc-800/40 sticky top-0 z-20">
+      <div className="bg-surface border-b border-border-main sticky top-0 z-20">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-brand-purple/10 dark:bg-brand-purple/20 rounded-2xl flex items-center justify-center">
               <TreePalm className="w-5 h-5 text-brand-purple" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-lg font-bold text-foreground">
                 الإجازات
               </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-muted">
                 {pendingCount > 0
                   ? `${pendingCount} طلب بانتظار الموافقة`
                   : "جميع الطلبات مُعالجة"}
@@ -189,7 +189,7 @@ export default function LeavesDashboard({
 
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-2xl bg-brand-magenta hover:bg-brand-magenta/90 text-white shadow-lg shadow-brand-magenta/20 transition-all active:scale-95"
+            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-2xl bg-brand-primary hover:bg-brand-primary/90 text-white shadow-lg shadow-brand-magenta/20 transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">طلب إجازة</span>
@@ -201,9 +201,9 @@ export default function LeavesDashboard({
       <div className="max-w-2xl mx-auto px-5 py-5 space-y-5">
         {/* ─── Leave Request Form (Bottom Sheet style) ─── */}
         {showForm && (
-          <div className="bg-white dark:bg-zinc-900/80 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800/40">
-              <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+          <div className="bg-surface rounded-3xl border border-border-main shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-border-main">
+              <h3 className="text-base font-bold text-foreground">
                 طلب إجازة جديد
               </h3>
             </div>
@@ -222,7 +222,7 @@ export default function LeavesDashboard({
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                           setFormUserId(e.target.value)
                         }
-                        className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                        className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                       >
                         {employees.map(
                           (emp: { id: string; name: string; role: string }) => (
@@ -235,7 +235,7 @@ export default function LeavesDashboard({
                       <ChevronDown className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
                     </>
                   ) : (
-                    <div className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                    <div className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300">
                       {employees.find(e => e.id === currentUserId)?.name ?? "—"}
                     </div>
                   )}
@@ -256,7 +256,7 @@ export default function LeavesDashboard({
                       className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all ${
                         formType === type
                           ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                          : "bg-zinc-50 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700"
+                          : "bg-surface-hover text-muted hover:bg-surface-hover"
                       }`}
                     >
                       {LEAVE_TYPE_LABELS[type]}
@@ -277,7 +277,7 @@ export default function LeavesDashboard({
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setFormStart(e.target.value)
                     }
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   />
                 </div>
                 <div>
@@ -290,7 +290,7 @@ export default function LeavesDashboard({
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setFormEnd(e.target.value)
                     }
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   />
                 </div>
               </div>
@@ -306,7 +306,7 @@ export default function LeavesDashboard({
                     setFormReason(e.target.value)
                   }
                   rows={2}
-                  className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                  className="w-full text-sm border border-border-main rounded-2xl px-4 py-3 bg-surface-hover text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   placeholder="مثال: إجازة عائلية..."
                 />
               </div>
@@ -315,14 +315,14 @@ export default function LeavesDashboard({
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="flex-1 px-4 py-3.5 text-sm font-bold rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 transition-colors"
+                  className="flex-1 px-4 py-3.5 text-sm font-bold rounded-2xl bg-surface-hover hover:bg-surface-hover text-muted transition-colors"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={isPending}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold rounded-2xl bg-brand-purple hover:bg-brand-purple-dark text-white disabled:opacity-50 transition-all shadow-lg shadow-brand-purple/20"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold rounded-2xl bg-brand-purple hover:bg-brand-primary-dark text-white disabled:opacity-50 transition-all shadow-lg shadow-brand-purple/20"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -354,12 +354,12 @@ export default function LeavesDashboard({
                 className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all ${
                   statusFilter === f.value
                     ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                    : "bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700"
+                    : "bg-surface text-muted border border-border-main"
                 }`}
               >
                 {f.label}
                 {f.value === "PENDING" && pendingCount > 0 && (
-                  <span className="mr-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/20 text-[10px]">
+                  <span className="mr-1 inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/20 text-xs">
                     {pendingCount}
                   </span>
                 )}
@@ -369,7 +369,7 @@ export default function LeavesDashboard({
 
           <button
             onClick={handleExport}
-            className="shrink-0 p-2.5 rounded-2xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-brand-purple transition-colors"
+            className="shrink-0 p-2.5 rounded-2xl bg-surface border border-border-main text-zinc-500 hover:text-brand-purple transition-colors"
             title="تصدير CSV"
           >
             <Download className="w-4 h-4" />
@@ -386,9 +386,9 @@ export default function LeavesDashboard({
         {/* ─── Leave Requests — Card List (mobile) ─── */}
         <div className="space-y-3">
           {filtered.length === 0 ? (
-            <div className="text-center py-16 bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40">
+            <div className="text-center py-16 bg-surface/60 rounded-3xl border border-border-main">
               <Calendar className="w-12 h-12 mx-auto text-zinc-200 dark:text-zinc-700 mb-3" />
-              <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+              <p className="text-sm font-semibold text-muted">
                 لا توجد طلبات إجازة
               </p>
             </div>
@@ -396,24 +396,24 @@ export default function LeavesDashboard({
             filtered.map((r: LeaveRequestItem) => (
               <div
                 key={r.id}
-                className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm overflow-hidden"
+                className="bg-surface/60 rounded-3xl border border-border-main shadow-sm overflow-hidden"
               >
                 {/* Card Header */}
                 <div className="px-5 py-4 flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                      <h4 className="text-sm font-bold text-foreground truncate">
                         {r.userName}
                       </h4>
                       <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${LEAVE_STATUS_COLORS[r.status].bg} ${LEAVE_STATUS_COLORS[r.status].text}`}
+                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${LEAVE_STATUS_COLORS[r.status].bg} ${LEAVE_STATUS_COLORS[r.status].text}`}
                       >
                         {r.status === "PENDING" && <Clock className="w-3 h-3" />}
                         {r.status === "APPROVED" && <Check className="w-3 h-3" />}
                         {LEAVE_STATUS_LABELS[r.status]}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xs text-muted">
                       {r.branchName ?? "بدون فرع"}
                     </p>
                   </div>
@@ -445,22 +445,22 @@ export default function LeavesDashboard({
 
                 {/* Card Body: details in a clean grid */}
                 <div className="px-5 pb-4 grid grid-cols-3 gap-3">
-                  <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl px-3 py-2.5 text-center">
-                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">النوع</span>
+                  <div className="bg-surface-hover/40 rounded-2xl px-3 py-2.5 text-center">
+                    <span className="text-xs text-zinc-400 font-medium block mb-0.5">النوع</span>
                     <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
                       {LEAVE_TYPE_LABELS[r.type]}
                     </span>
                   </div>
-                  <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl px-3 py-2.5 text-center">
-                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">المدة</span>
+                  <div className="bg-surface-hover/40 rounded-2xl px-3 py-2.5 text-center">
+                    <span className="text-xs text-zinc-400 font-medium block mb-0.5">المدة</span>
                     <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300" dir="ltr">
                       {new Date(r.startDate).toLocaleDateString("ar-SA", { month: "short", day: "numeric" })}
                       {" – "}
                       {new Date(r.endDate).toLocaleDateString("ar-SA", { month: "short", day: "numeric" })}
                     </span>
                   </div>
-                  <div className="bg-zinc-50 dark:bg-zinc-800/40 rounded-2xl px-3 py-2.5 text-center">
-                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">الأيام</span>
+                  <div className="bg-surface-hover/40 rounded-2xl px-3 py-2.5 text-center">
+                    <span className="text-xs text-zinc-400 font-medium block mb-0.5">الأيام</span>
                     <span className="text-lg font-bold text-brand-purple">{r.days}</span>
                   </div>
                 </div>
@@ -476,7 +476,7 @@ export default function LeavesDashboard({
                       {r.isPaid ? "مدفوعة" : "بدون راتب"}
                     </span>
                     {r.reason && (
-                      <span className="text-zinc-400 dark:text-zinc-500 truncate flex-1">
+                      <span className="text-muted-light truncate flex-1">
                         {r.reason}
                       </span>
                     )}
@@ -491,10 +491,10 @@ export default function LeavesDashboard({
       {/* ─── Review Modal (Bottom Sheet) ─── */}
       {reviewingId && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-md">
+          <div className="bg-surface rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-md">
             <div className="p-6 space-y-5">
               <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto sm:hidden" />
-              <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              <h3 className="text-base font-bold text-foreground">
                 مراجعة طلب الإجازة
               </h3>
 
@@ -504,7 +504,7 @@ export default function LeavesDashboard({
                   setReviewNote(e.target.value)
                 }
                 rows={3}
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3 bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                className="w-full text-sm border border-border-main rounded-2xl px-4 py-3 bg-surface-hover text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                 placeholder="ملاحظة للموظف (اختياري)..."
               />
 
@@ -527,7 +527,7 @@ export default function LeavesDashboard({
                 </button>
                 <button
                   onClick={() => setReviewingId(null)}
-                  className="px-4 py-3.5 text-sm font-bold rounded-2xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 transition-colors"
+                  className="px-4 py-3.5 text-sm font-bold rounded-2xl bg-surface-hover text-muted hover:bg-zinc-200 transition-colors"
                 >
                   إلغاء
                 </button>

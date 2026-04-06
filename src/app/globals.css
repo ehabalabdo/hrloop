@@ -1,34 +1,104 @@
 @import "tailwindcss";
 
+/* ============================================================
+   HR Loop — Design System v2
+   Clean, professional, Arabic-first UI
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a2e;
-  --brand-purple: #6E329F;
-  --brand-purple-light: #9546C3;
-  --brand-purple-dark: #46176D;
-  --brand-magenta: #EC008C;
-  --brand-orange: #FA9D27;
-  --brand-orange-dark: #E27600;
+  --background: #f5f7fa;
+  --foreground: #1e293b;
+  --surface: #ffffff;
+  --surface-hover: #f8fafc;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --muted: #64748b;
+  --muted-light: #94a3b8;
+
+  /* Brand */
+  --brand-primary: #4f46e5;
+  --brand-primary-light: #6366f1;
+  --brand-primary-dark: #3730a3;
+  --brand-primary-subtle: #eef2ff;
+  --brand-accent: #0ea5e9;
+  --brand-accent-subtle: #e0f2fe;
+
+  /* Legacy aliases for existing components */
+  --brand-purple: #4f46e5;
+  --brand-purple-light: #6366f1;
+  --brand-purple-dark: #312e81;
+  --brand-magenta: #ec4899;
+  --brand-orange: #f59e0b;
+  --brand-orange-dark: #d97706;
+
+  /* Status */
+  --success: #10b981;
+  --success-subtle: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-subtle: #fffbeb;
+  --danger: #ef4444;
+  --danger-subtle: #fef2f2;
+  --info: #0ea5e9;
+  --info-subtle: #e0f2fe;
+
+  /* Sidebar */
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #e2e8f0;
+  --sidebar-text: #475569;
+  --sidebar-active-bg: #eef2ff;
+  --sidebar-active-text: #4f46e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #e2e8f0;
+    --surface: #1e293b;
+    --surface-hover: #243044;
+    --border: #334155;
+    --border-light: #1e293b;
+    --muted: #94a3b8;
+    --muted-light: #64748b;
+
+    --brand-primary-subtle: rgba(79, 70, 229, 0.15);
+    --brand-accent-subtle: rgba(14, 165, 233, 0.15);
+
+    --success-subtle: rgba(16, 185, 129, 0.1);
+    --warning-subtle: rgba(245, 158, 11, 0.1);
+    --danger-subtle: rgba(239, 68, 68, 0.1);
+    --info-subtle: rgba(14, 165, 233, 0.1);
+
+    --sidebar-bg: #1e293b;
+    --sidebar-border: #334155;
+    --sidebar-text: #94a3b8;
+    --sidebar-active-bg: rgba(79, 70, 229, 0.15);
+    --sidebar-active-text: #818cf8;
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+  --color-border-main: var(--border);
+  --color-border-light: var(--border-light);
+  --color-muted: var(--muted);
+  --color-muted-light: var(--muted-light);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-light: var(--brand-primary-light);
+  --color-brand-primary-dark: var(--brand-primary-dark);
+  --color-brand-primary-subtle: var(--brand-primary-subtle);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-subtle: var(--brand-accent-subtle);
   --color-brand-purple: var(--brand-purple);
   --color-brand-purple-light: var(--brand-purple-light);
   --color-brand-purple-dark: var(--brand-purple-dark);
   --color-brand-magenta: var(--brand-magenta);
   --color-brand-orange: var(--brand-orange);
   --color-brand-orange-dark: var(--brand-orange-dark);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-ibm-arabic), var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f0a19;
-    --foreground: #ededed;
-  }
 }
 
 * {
@@ -43,31 +113,33 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-ibm-arabic), var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-/* Prevent pull-to-refresh on mobile */
-body {
   overscroll-behavior-y: contain;
+  line-height: 1.7;
 }
 
-/* Smooth button press animation */
-button:active {
+/* Smooth button press */
+button:active:not(:disabled) {
   transform: scale(0.97);
+}
+
+/* Global input styling */
+input, select, textarea {
+  font-family: inherit;
 }
 
 /* Glassmorphism utility */
 .glass {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 @media (prefers-color-scheme: dark) {
   .glass {
-    background: rgba(15, 10, 25, 0.85);
+    background: rgba(30, 41, 59, 0.85);
   }
 }
 
@@ -83,5 +155,19 @@ button:active {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* Card base utility */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+/* Better focus rings */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 

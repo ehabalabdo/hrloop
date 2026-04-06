@@ -25,7 +25,7 @@ export default async function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 bg-brand-magenta rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-brand-magenta/30">
+          <div className="w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center mb-4 shadow-lg shadow-brand-magenta/30">
             <Clock className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-white">
@@ -37,15 +37,15 @@ export default async function LoginPage() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white dark:bg-zinc-900 rounded-3xl border border-white/20 shadow-2xl shadow-black/20 p-6">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 text-center mb-6">
+        <div className="bg-surface rounded-3xl border border-white/20 shadow-2xl shadow-black/20 p-6">
+          <h2 className="text-lg font-semibold text-foreground text-center mb-6">
             تسجيل الدخول
           </h2>
           <LoginForm />
         </div>
 
         {/* Footer */}
-        <p className="text-center text-[11px] text-white/40 mt-6">
+        <p className="text-center text-xs text-white/40 mt-6">
           HR Loop v1.0 — {new Date().getFullYear()}
         </p>
       </div>

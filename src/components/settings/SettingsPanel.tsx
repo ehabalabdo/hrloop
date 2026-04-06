@@ -123,21 +123,21 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
           (group: { label: string; keys: string[] }) => (
             <div
               key={group.label}
-              className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+              className="bg-surface rounded-xl border border-border-main overflow-hidden"
             >
-              <div className="px-5 py-3 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
+              <div className="px-5 py-3 bg-surface-hover/50 border-b border-border-main">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
                   {group.label}
                 </h2>
               </div>
-              <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+              <div className="divide-y divide-border-main">
                 {group.keys.map((key: string) => (
                   <div
                     key={key}
                     className="px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      <p className="text-sm font-semibold text-foreground">
                         {SETTING_LABELS[key] ?? key}
                       </p>
                       <p className="text-xs text-zinc-400 mt-0.5">
@@ -151,7 +151,7 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
                           onChange={(
                             e: React.ChangeEvent<HTMLSelectElement>
                           ) => handleChange(key, e.target.value)}
-                          className="flex-1 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                          className="flex-1 text-sm border border-border-main rounded-lg px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300"
                         >
                           <option value="true">Yes</option>
                           <option value="false">No</option>
@@ -164,7 +164,7 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
                           onChange={(
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => handleChange(key, e.target.value)}
-                          className="flex-1 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                          className="flex-1 text-sm border border-border-main rounded-lg px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300"
                         />
                       ) : (
                         <input
@@ -179,7 +179,7 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
                           onChange={(
                             e: React.ChangeEvent<HTMLInputElement>
                           ) => handleChange(key, e.target.value)}
-                          className="flex-1 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+                          className="flex-1 text-sm border border-border-main rounded-lg px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300"
                         />
                       )}
                       {isModified(key) && (
@@ -210,7 +210,7 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-brand-magenta text-white"
+              ? "bg-brand-primary text-white"
               : "bg-red-600 text-white"
           }`}
         >

@@ -343,7 +343,7 @@ export default function AttendanceDashboard({
   const getStatusLabel = () => {
     switch (state.status) {
       case "clocked_in":
-        return { text: "في الوردية", color: "bg-brand-magenta", glow: "shadow-brand-magenta/40" };
+        return { text: "في الوردية", color: "bg-brand-primary", glow: "shadow-brand-magenta/40" };
       case "on_break":
         return { text: "في استراحة", color: "bg-brand-orange", glow: "shadow-brand-orange/40" };
       default:
@@ -354,7 +354,7 @@ export default function AttendanceDashboard({
   const statusInfo = getStatusLabel();
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] flex flex-col pb-24">
+    <div className="min-h-screen bg-background flex flex-col pb-24">
       {/* ─── Connectivity Banners ─── */}
       {!isOnline && (
         <div className="bg-red-600 text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
@@ -409,7 +409,7 @@ export default function AttendanceDashboard({
         </div>
 
         {/* Curved bottom edge */}
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-zinc-50 dark:bg-[#0f0a19] rounded-t-[2rem]" />
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
       </div>
 
       {/* ─── Main Content ─── */}
@@ -427,12 +427,12 @@ export default function AttendanceDashboard({
 
         {/* Branch Operating Hours */}
         {state.currentShift && (branchOpenTime || state.currentShift.branchOpenTime) && (
-          <div className="w-full bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm px-5 py-4">
+          <div className="w-full bg-surface/60 rounded-3xl border border-border-main shadow-sm px-5 py-4">
             <div className="flex items-center gap-2.5 mb-2">
               <Store className="w-5 h-5 text-brand-purple/60" />
-              <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">ساعات دوام الفرع</span>
+              <span className="text-sm font-bold text-foreground">ساعات دوام الفرع</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400" dir="ltr">
+            <div className="flex items-center gap-2 text-sm text-muted" dir="ltr">
               <Clock className="w-4 h-4 text-brand-purple/50" />
               <span>
                 {branchOpenTime || state.currentShift.branchOpenTime} – {branchCloseTime || state.currentShift.branchCloseTime}
@@ -443,12 +443,12 @@ export default function AttendanceDashboard({
 
         {/* No Shift Message */}
         {!state.currentShift && (
-          <div className="w-full text-center py-12 bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm">
+          <div className="w-full text-center py-12 bg-surface/60 rounded-3xl border border-border-main shadow-sm">
             <CalendarEmpty />
-            <p className="text-zinc-600 dark:text-zinc-400 font-semibold text-base mt-4">
+            <p className="text-muted font-semibold text-base mt-4">
               لا توجد وردية مجدولة اليوم
             </p>
-            <p className="text-zinc-400 dark:text-zinc-500 text-sm mt-1.5">
+            <p className="text-muted-light text-sm mt-1.5">
               تواصل مع مديرك لمعرفة جدول العمل
             </p>
           </div>
@@ -489,7 +489,7 @@ export default function AttendanceDashboard({
 
         {/* ─── Action Buttons (the hero CTA) ─── */}
         {state.currentShift && (
-          <div className="w-full bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm px-6 py-8">
+          <div className="w-full bg-surface/60 rounded-3xl border border-border-main shadow-sm px-6 py-8">
             <ActionButtons
               status={state.status}
               isWithinFence={geofenceResult?.isWithinFence ?? false}
@@ -504,7 +504,7 @@ export default function AttendanceDashboard({
 
         {/* Biometric Status Footer */}
         <div className="w-full py-4 mt-2">
-          <div className="flex items-center justify-center gap-2 text-xs text-zinc-400 dark:text-zinc-500">
+          <div className="flex items-center justify-center gap-2 text-xs text-muted-light">
             <Fingerprint className="w-3.5 h-3.5" />
             <span>
               {hasBiometric
@@ -518,22 +518,22 @@ export default function AttendanceDashboard({
       {/* ─── Manual Override Modal (Arabic, bottom sheet on mobile) ─── */}
       {showOverrideForm && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center">
-          <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-surface rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
             {/* Modal Header */}
-            <div className="p-6 border-b border-zinc-100 dark:border-zinc-800/40">
+            <div className="p-6 border-b border-border-main">
               <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-4 sm:hidden" />
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2.5">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2.5">
                 <Camera className="w-5 h-5 text-brand-purple" />
                 طلب تجاوز يدوي
               </h2>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1.5 leading-relaxed">
+              <p className="text-sm text-muted mt-1.5 leading-relaxed">
                 أنت خارج نطاق الفرع. التقط صورة حية لتأكيد موقعك.
               </p>
             </div>
 
             <div className="p-6 space-y-5">
               {/* Camera Preview / Captured Photo */}
-              <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 rounded-2xl overflow-hidden">
+              <div className="relative w-full aspect-[4/3] bg-surface-hover rounded-2xl overflow-hidden">
                 {overridePhoto ? (
                   <img
                     src={overridePhoto}
@@ -550,7 +550,7 @@ export default function AttendanceDashboard({
                       className="w-full h-full object-cover"
                     />
                     {!streamRef.current && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-500">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-light">
                         <Camera className="w-10 h-10 mb-2" />
                         <span className="text-sm">الكاميرا غير مفعّلة</span>
                       </div>
@@ -566,7 +566,7 @@ export default function AttendanceDashboard({
                     {!streamRef.current ? (
                       <button
                         onClick={startCamera}
-                        className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-purple-dark transition flex items-center justify-center gap-2"
+                        className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-primary-dark transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
                         تشغيل الكاميرا
@@ -574,7 +574,7 @@ export default function AttendanceDashboard({
                     ) : (
                       <button
                         onClick={capturePhoto}
-                        className="flex-1 bg-brand-magenta text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-magenta/90 transition flex items-center justify-center gap-2"
+                        className="flex-1 bg-brand-primary text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-primary/90 transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
                         التقاط صورة
@@ -587,7 +587,7 @@ export default function AttendanceDashboard({
                       setOverridePhoto(null);
                       startCamera();
                     }}
-                    className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-2xl py-3.5 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                    className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-200 rounded-2xl py-3.5 text-sm font-bold hover:bg-surface-hover transition"
                   >
                     إعادة التصوير
                   </button>
@@ -604,7 +604,7 @@ export default function AttendanceDashboard({
                   onChange={(e) => setOverrideReason(e.target.value)}
                   rows={3}
                   placeholder="مثال: انحراف GPS، مدخل المبنى خارج النطاق..."
-                  className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
+                  className="w-full rounded-2xl border border-border-main bg-surface-hover px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
                 />
               </div>
 
@@ -612,14 +612,14 @@ export default function AttendanceDashboard({
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={cancelOverride}
-                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-2xl py-3.5 text-sm font-bold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition"
+                  className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-2xl py-3.5 text-sm font-bold hover:bg-surface-hover transition"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={submitOverride}
                   disabled={!overridePhoto || !overrideReason.trim() || isLoading}
-                  className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-purple-dark disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                  className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

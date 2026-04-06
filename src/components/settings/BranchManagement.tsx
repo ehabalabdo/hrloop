@@ -167,8 +167,8 @@ export default function BranchManagement({
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium text-white ${
-            toast.type === "success" ? "bg-brand-magenta" : "bg-red-600"
+          className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-lg text-sm font-semibold text-white ${
+            toast.type === "success" ? "bg-emerald-600" : "bg-red-500"
           }`}
         >
           {toast.message}
@@ -177,7 +177,7 @@ export default function BranchManagement({
 
       {/* Header with Add Button */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-zinc-500">
+        <div className="flex items-center gap-2 text-sm text-muted">
           <Building2 className="w-4 h-4" />
           <span>{branches.length} فرع</span>
         </div>
@@ -188,7 +188,7 @@ export default function BranchManagement({
               setEditingId(null);
               setShowForm(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" />
             إضافة فرع
@@ -198,14 +198,14 @@ export default function BranchManagement({
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-violet-200 dark:border-violet-800 p-5 space-y-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+        <div className="bg-surface rounded-2xl border border-brand-primary/20 p-6 space-y-5 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="text-base font-bold text-foreground">
               {editingId ? "تعديل الفرع" : "إضافة فرع جديد"}
             </h3>
             <button
               onClick={resetForm}
-              className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400"
+              className="p-2 rounded-xl hover:bg-surface-hover text-muted transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -214,7 +214,7 @@ export default function BranchManagement({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Branch Name */}
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 اسم الفرع *
               </label>
               <input
@@ -222,19 +222,19 @@ export default function BranchManagement({
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="مثال: فرع الرياض - العليا"
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+                className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground placeholder:text-muted-light focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               />
             </div>
 
             {/* Map Picker */}
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+              <label className="block text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
                 <Map className="w-3.5 h-3.5" />
                 موقع الفرع على الخريطة
               </label>
               <Suspense
                 fallback={
-                  <div className="w-full h-64 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center">
+                  <div className="w-full h-64 rounded-xl border border-border-main bg-surface-hover flex items-center justify-center">
                     <Loader2 className="w-5 h-5 animate-spin text-zinc-400" />
                   </div>
                 }
@@ -256,7 +256,7 @@ export default function BranchManagement({
 
             {/* Address (auto-filled from map, editable) */}
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 العنوان
               </label>
               <input
@@ -264,14 +264,14 @@ export default function BranchManagement({
                 value={form.address || ""}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 placeholder="يتم تعبئته تلقائياً عند اختيار الموقع"
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+                className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground placeholder:text-muted-light focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
                 dir="rtl"
               />
             </div>
 
             {/* Geofence Radius */}
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 نطاق السياج الجغرافي (متر)
               </label>
               <input
@@ -285,13 +285,13 @@ export default function BranchManagement({
                     geofenceRadius: parseInt(e.target.value) || 50,
                   })
                 }
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               />
             </div>
 
             {/* Manager Dropdown */}
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 المدير المسؤول
               </label>
               <select
@@ -299,7 +299,7 @@ export default function BranchManagement({
                 onChange={(e) =>
                   setForm({ ...form, managerId: e.target.value })
                 }
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               >
                 <option value="">— بدون مدير —</option>
                 {managers.map((m) => (
@@ -312,28 +312,28 @@ export default function BranchManagement({
 
             {/* Branch Operating Hours */}
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+              <label className="block text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
                 ساعات فتح وإغلاق الفرع
               </label>
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-[10px] text-zinc-400 mb-0.5">وقت الفتح</label>
+                  <label className="block text-xs text-muted mb-0.5">وقت الفتح</label>
                   <input
                     type="time"
                     value={form.openTime || ""}
                     onChange={(e) => setForm({ ...form, openTime: e.target.value })}
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
                   />
                 </div>
                 <span className="text-zinc-400 mt-4">—</span>
                 <div className="flex-1">
-                  <label className="block text-[10px] text-zinc-400 mb-0.5">وقت الإغلاق</label>
+                  <label className="block text-xs text-muted mb-0.5">وقت الإغلاق</label>
                   <input
                     type="time"
                     value={form.closeTime || ""}
                     onChange={(e) => setForm({ ...form, closeTime: e.target.value })}
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
                   />
                 </div>
               </div>
@@ -341,28 +341,28 @@ export default function BranchManagement({
 
             {/* Employee Shift Hours */}
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+              <label className="block text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
                 <Users className="w-3.5 h-3.5" />
                 ساعات دوام الموظفين
               </label>
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-[10px] text-zinc-400 mb-0.5">بداية الدوام</label>
+                  <label className="block text-xs text-muted mb-0.5">بداية الدوام</label>
                   <input
                     type="time"
                     value={form.shiftStartTime || ""}
                     onChange={(e) => setForm({ ...form, shiftStartTime: e.target.value })}
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
                   />
                 </div>
                 <span className="text-zinc-400 mt-4">—</span>
                 <div className="flex-1">
-                  <label className="block text-[10px] text-zinc-400 mb-0.5">نهاية الدوام</label>
+                  <label className="block text-xs text-muted mb-0.5">نهاية الدوام</label>
                   <input
                     type="time"
                     value={form.shiftEndTime || ""}
                     onChange={(e) => setForm({ ...form, shiftEndTime: e.target.value })}
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
                   />
                 </div>
               </div>
@@ -370,7 +370,7 @@ export default function BranchManagement({
 
             {/* Min Staff */}
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+              <label className="block text-sm font-medium text-foreground mb-1">
                 الحد الأدنى للموظفين
               </label>
               <input
@@ -384,9 +384,9 @@ export default function BranchManagement({
                     minStaff: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               />
-              <p className="text-[10px] text-zinc-400 mt-0.5">عدد الموظفين المطلوب كحد أدنى (تنبيهي فقط)</p>
+              <p className="text-xs text-muted mt-0.5">عدد الموظفين المطلوب كحد أدنى (تنبيهي فقط)</p>
             </div>
           </div>
 
@@ -394,14 +394,14 @@ export default function BranchManagement({
           <div className="flex justify-end gap-2 pt-2">
             <button
               onClick={resetForm}
-              className="px-4 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm text-muted hover:bg-surface-hover rounded-lg transition-colors"
             >
               إلغاء
             </button>
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 transition-colors"
+              className="flex items-center gap-1.5 px-5 py-2.5 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl disabled:opacity-50 transition-colors shadow-sm"
             >
               {isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -426,28 +426,28 @@ export default function BranchManagement({
         {branches.map((branch) => (
           <div
             key={branch.id}
-            className={`bg-white dark:bg-zinc-900 rounded-xl border p-4 transition-colors ${
+            className={`bg-surface rounded-2xl border p-5 transition-colors ${
               branch.isActive
-                ? "border-zinc-200 dark:border-zinc-800"
-                : "border-red-200 dark:border-red-900/50 opacity-60"
+                ? "border-border-main"
+                : "border-red-300 dark:border-red-800 opacity-60"
             }`}
           >
             <div className="flex items-start justify-between gap-3">
               {/* Branch Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                  <h3 className="text-sm font-bold text-foreground truncate">
                     {branch.name}
                   </h3>
                   {!branch.isActive && (
-                    <span className="text-[10px] px-1.5 py-0.5 bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 rounded-full font-medium">
+                    <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded-lg font-semibold">
                       معطّل
                     </span>
                   )}
                 </div>
 
                 {branch.address && (
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-1.5 flex items-center gap-1">
+                  <p className="text-xs text-muted mb-1.5 flex items-center gap-1">
                     <MapPin className="w-3 h-3 flex-shrink-0" />
                     {branch.address}
                   </p>
@@ -496,11 +496,11 @@ export default function BranchManagement({
                 <button
                   onClick={() => handleToggle(branch.id, branch.isActive)}
                   disabled={isPending}
-                  className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-surface-hover text-muted transition-colors"
                   title={branch.isActive ? "تعطيل" : "تفعيل"}
                 >
                   {branch.isActive ? (
-                    <ToggleRight className="w-5 h-5 text-brand-magenta" />
+                    <ToggleRight className="w-5 h-5 text-brand-primary" />
                   ) : (
                     <ToggleLeft className="w-5 h-5 text-zinc-400" />
                   )}
@@ -509,7 +509,7 @@ export default function BranchManagement({
                 <button
                   onClick={() => startEdit(branch)}
                   disabled={isPending}
-                  className="p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-surface-hover text-muted transition-colors"
                   title="تعديل"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -520,13 +520,13 @@ export default function BranchManagement({
                     <button
                       onClick={() => handleDelete(branch.id)}
                       disabled={isPending}
-                      className="px-2 py-1 text-[10px] bg-red-600 text-white rounded font-medium"
+                      className="px-2 py-1 text-xs bg-red-600 text-white rounded font-medium"
                     >
                       {isPending ? "..." : "تأكيد"}
                     </button>
                     <button
                       onClick={() => setConfirmDelete(null)}
-                      className="px-2 py-1 text-[10px] bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 rounded font-medium"
+                      className="px-2 py-1 text-xs bg-zinc-200 dark:bg-zinc-700 text-muted rounded font-medium"
                     >
                       إلغاء
                     </button>

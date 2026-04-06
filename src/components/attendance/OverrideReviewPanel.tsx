@@ -82,9 +82,9 @@ export default function OverrideReviewPanel({
 
   if (overrides.length === 0) {
     return (
-      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-8 text-center">
-        <CheckCircle2 className="w-10 h-10 text-brand-magenta mx-auto mb-2" />
-        <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+      <div className="bg-surface rounded-xl border border-border-main p-8 text-center">
+        <CheckCircle2 className="w-10 h-10 text-brand-primary mx-auto mb-2" />
+        <p className="text-sm font-medium text-muted">
           No pending override requests
         </p>
         <p className="text-xs text-zinc-400 mt-1">
@@ -96,20 +96,20 @@ export default function OverrideReviewPanel({
 
   return (
     <div className="space-y-4">
-      <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+      <div className="text-xs font-medium text-muted">
         {overrides.length} pending override{overrides.length > 1 ? "s" : ""} to review
       </div>
 
       {overrides.map((ov: OverrideRequest) => (
         <div
           key={ov.id}
-          className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
+          className="bg-surface rounded-xl border border-border-main overflow-hidden"
         >
           {/* Header */}
-          <div className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+          <div className="px-5 py-3 border-b border-border-main flex items-center justify-between">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4 text-brand-purple" />
-              <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              <span className="text-sm font-semibold text-foreground">
                 {ov.userName}
               </span>
               <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full font-medium uppercase">
@@ -141,7 +141,7 @@ export default function OverrideReviewPanel({
                   <img
                     src={ov.photoUrl}
                     alt="Override evidence"
-                    className={`rounded-lg border border-zinc-200 dark:border-zinc-700 cursor-pointer hover:opacity-80 transition ${
+                    className={`rounded-lg border border-border-main cursor-pointer hover:opacity-80 transition ${
                       expandedPhoto === ov.id
                         ? "max-h-96"
                         : "h-32 object-cover w-full"
@@ -149,7 +149,7 @@ export default function OverrideReviewPanel({
                   />
                 </button>
               ) : (
-                <div className="h-32 bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center text-xs text-zinc-400">
+                <div className="h-32 bg-surface-hover rounded-lg flex items-center justify-center text-xs text-zinc-400">
                   No photo
                 </div>
               )}
@@ -189,11 +189,11 @@ export default function OverrideReviewPanel({
           </div>
 
           {/* Actions */}
-          <div className="px-5 py-3 border-t border-zinc-100 dark:border-zinc-800 flex gap-3">
+          <div className="px-5 py-3 border-t border-border-main flex gap-3">
             <button
               onClick={() => handleReview(ov.id, "APPROVED")}
               disabled={isPending && processing === ov.id}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-sm font-medium bg-brand-magenta/50 text-white rounded-lg hover:bg-brand-magenta disabled:opacity-50 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 text-sm font-medium bg-brand-primary/50 text-white rounded-lg hover:bg-brand-primary disabled:opacity-50 transition-colors"
             >
               {isPending && processing === ov.id ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -223,7 +223,7 @@ export default function OverrideReviewPanel({
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${
             toast.type === "success"
-              ? "bg-brand-magenta text-white"
+              ? "bg-brand-primary text-white"
               : "bg-red-600 text-white"
           }`}
         >

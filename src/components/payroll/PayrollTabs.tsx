@@ -38,9 +38,9 @@ export default function PayrollTabs({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19]">
+    <div className="min-h-screen bg-background">
       {/* Tab Bar */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
+      <div className="bg-surface border-b border-border-main sticky top-0 z-30">
         <div className="max-w-2xl mx-auto px-4 flex gap-2 overflow-x-auto no-scrollbar py-3">
           {TABS.map((t) => {
             const Icon = t.icon;
@@ -52,13 +52,13 @@ export default function PayrollTabs({
                 className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all active:scale-95 shrink-0 ${
                   tab === t.key
                     ? "bg-brand-purple text-white shadow-sm"
-                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 bg-zinc-100 dark:bg-zinc-800"
+                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 bg-surface-hover"
                 }`}
               >
                 <Icon className="w-4 h-4" />
                 {t.label}
                 {badge > 0 && (
-                  <span className="ml-1 text-[10px] font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                  <span className="ml-1 text-xs font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                     {badge}
                   </span>
                 )}
@@ -72,7 +72,7 @@ export default function PayrollTabs({
       {tab === "payroll" && payrollDashboard}
       {tab === "disputes" && (
         <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">
             اعتراضات العقوبات
           </h2>
           {disputesPanel}
@@ -80,7 +80,7 @@ export default function PayrollTabs({
       )}
       {tab === "overrides" && (
         <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
-          <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+          <h2 className="text-lg font-bold text-foreground mb-4">
             طلبات التعديل اليدوي
           </h2>
           {overridesPanel}

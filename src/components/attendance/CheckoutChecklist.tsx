@@ -76,16 +76,16 @@ export default function CheckoutChecklist({
   }
 
   return (
-    <div className="w-full bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm">
+    <div className="w-full bg-surface/60 rounded-3xl border border-border-main shadow-sm">
       {/* Header */}
-      <div className="px-5 pt-5 pb-3 border-b border-zinc-100 dark:border-zinc-800/40">
+      <div className="px-5 pt-5 pb-3 border-b border-border-main">
         <div className="flex items-center gap-2.5">
           <ClipboardCheck className="w-5 h-5 text-brand-purple" />
-          <h3 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+          <h3 className="text-base font-bold text-foreground">
             لائحة المهام قبل الانصراف
           </h3>
         </div>
-        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
+        <p className="text-xs text-muted-light mt-1">
           يجب إكمال جميع المهام لتتمكن من تسجيل الانصراف
         </p>
       </div>
@@ -129,7 +129,7 @@ export default function CheckoutChecklist({
                 className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
                   newMerchandise === true
                     ? "bg-emerald-500 text-white shadow-md"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    : "bg-surface-hover text-zinc-500 hover:bg-surface-hover"
                 }`}
               >
                 نعم
@@ -139,7 +139,7 @@ export default function CheckoutChecklist({
                 className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
                   newMerchandise === false
                     ? "bg-red-500 text-white shadow-md"
-                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                    : "bg-surface-hover text-zinc-500 hover:bg-surface-hover"
                 }`}
               >
                 لا
@@ -173,7 +173,7 @@ export default function CheckoutChecklist({
         <button
           onClick={handleSave}
           disabled={!allDone || isPending}
-          className="w-full py-3.5 rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed bg-brand-purple text-white shadow-lg shadow-brand-purple/20 hover:bg-brand-purple-dark active:scale-[0.97]"
+          className="w-full py-3.5 rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed bg-brand-purple text-white shadow-lg shadow-brand-purple/20 hover:bg-brand-primary-dark active:scale-[0.97]"
         >
           {isPending ? (
             <Loader2 className="w-4 h-4 animate-spin" />

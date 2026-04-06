@@ -101,7 +101,7 @@ export default function BatchActions({
             }
           }}
           disabled={loading !== null || !hasDrafts}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-white dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-zinc-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 border border-zinc-200 dark:border-zinc-700 hover:border-red-300 dark:hover:border-red-800 rounded-2xl disabled:opacity-50 transition-all active:scale-95"
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-surface hover:bg-red-50 dark:hover:bg-red-900/20 text-zinc-700 dark:text-zinc-300 hover:text-red-600 dark:hover:text-red-400 border border-border-main hover:border-red-300 dark:hover:border-red-800 rounded-2xl disabled:opacity-50 transition-all active:scale-95"
         >
           {loading === "clear" ? (
             <Loader2 className="w-4 h-4 animate-spin" />

@@ -54,28 +54,28 @@ export default function ActivityLogView({
 
   const actionColor = (action: string): string => {
     if (action.includes("CREATE") || action.includes("SUBMIT"))
-      return "text-brand-magenta dark:text-brand-magenta bg-brand-magenta/5 dark:bg-brand-magenta/10";
+      return "text-brand-primary dark:text-brand-primary bg-brand-primary/5 dark:bg-brand-primary/10";
     if (action.includes("DELETE") || action.includes("REJECT") || action.includes("CANCEL"))
       return "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30";
     if (action.includes("UPDATE") || action.includes("REVIEW") || action.includes("APPROVE"))
       return "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30";
-    return "text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800";
+    return "text-muted bg-surface-hover";
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="bg-surface border-b border-border-main">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
               <ClipboardList className="w-5 h-5 text-orange-600 dark:text-orange-400" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-lg font-bold text-foreground">
                 Activity Log
               </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-muted">
                 {logs.length} logged events
               </p>
             </div>
@@ -85,7 +85,7 @@ export default function ActivityLogView({
             <button
               onClick={refresh}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 rounded-lg transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-hover hover:bg-surface-hover text-muted rounded-lg transition-colors disabled:opacity-50"
             >
               {isPending ? (
                 <Loader2 className="w-3 h-3 animate-spin" />
@@ -96,7 +96,7 @@ export default function ActivityLogView({
             </button>
             <button
               onClick={handleExport}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 rounded-lg transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-surface-hover hover:bg-surface-hover text-muted rounded-lg transition-colors"
             >
               <Download className="w-3 h-3" />
               Export CSV
@@ -106,29 +106,29 @@ export default function ActivityLogView({
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
-        <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+        <div className="bg-surface rounded-xl border border-border-main overflow-hidden">
           {logs.length === 0 ? (
             <div className="p-12 text-center text-zinc-400">
               No activity logs yet.
             </div>
           ) : (
-            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="divide-y divide-border-main">
               {logs.map((log: ActivityLogItem) => (
                 <div
                   key={log.id}
-                  className="px-4 sm:px-5 py-3 flex flex-col sm:flex-row sm:items-center gap-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors"
+                  className="px-4 sm:px-5 py-3 flex flex-col sm:flex-row sm:items-center gap-2 hover:bg-surface-hover/30 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                      <span className="text-sm font-semibold text-foreground">
                         {log.actorName}
                       </span>
                       <span
-                        className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${actionColor(log.action)}`}
+                        className={`inline-block px-1.5 py-0.5 rounded text-xs font-bold uppercase ${actionColor(log.action)}`}
                       >
                         {log.action}
                       </span>
-                      <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                      <span className="text-xs text-muted">
                         {log.entityType}
                       </span>
                     </div>
@@ -138,7 +138,7 @@ export default function ActivityLogView({
                       </p>
                     )}
                   </div>
-                  <span className="text-[11px] text-zinc-400 whitespace-nowrap">
+                  <span className="text-xs text-zinc-400 whitespace-nowrap">
                     {timeAgo(log.createdAt)}
                   </span>
                 </div>

@@ -32,7 +32,7 @@ export default function ActionButtons({
   if (!hasBiometric) {
     return (
       <div className="flex flex-col items-center gap-5 w-full px-2">
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center leading-relaxed">
+        <p className="text-sm text-muted text-center leading-relaxed">
           سجّل بصمتك لبدء استخدام نظام الحضور.
           <br />
           <span className="text-xs text-zinc-400">يتم التسجيل مرة واحدة فقط</span>
@@ -65,7 +65,7 @@ export default function ActionButtons({
         >
           {/* Pulse ring animation */}
           {!disabled && (
-            <div className="absolute inset-0 rounded-full bg-brand-magenta/20 animate-ping" />
+            <div className="absolute inset-0 rounded-full bg-brand-primary/20 animate-ping" />
           )}
           <div className="relative z-10 flex flex-col items-center gap-2">
             {isLoading ? (

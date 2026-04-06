@@ -129,13 +129,13 @@ export default function AvailabilityDashboard({
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-3xl p-5">
+      <div className="bg-surface/60 border border-border-main shadow-sm rounded-3xl p-5">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-11 h-11 rounded-2xl bg-brand-purple/10 dark:bg-brand-purple/20 flex items-center justify-center">
             <Clock className="w-5 h-5 text-brand-purple" />
           </div>
           <div>
-            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+            <h2 className="text-base font-bold text-foreground">
               ساعات الدوام المتاحة
             </h2>
             <p className="text-xs text-zinc-500">
@@ -173,11 +173,11 @@ export default function AvailabilityDashboard({
 
       {/* Stats */}
       <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1">
-        <div className="shrink-0 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-surface/60 border border-border-main shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-brand-purple">{activeDaysCount}</div>
           <div className="text-xs text-zinc-500 mt-0.5">أيام الدوام</div>
         </div>
-        <div className="shrink-0 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-surface/60 border border-border-main shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-emerald-600">{totalHours.toFixed(1)}</div>
           <div className="text-xs text-zinc-500 mt-0.5">ساعة / أسبوع</div>
         </div>
@@ -190,16 +190,16 @@ export default function AvailabilityDashboard({
           return (
             <div
               key={slot.dayOfWeek}
-              className={`bg-white dark:bg-zinc-900/60 border shadow-sm rounded-2xl p-4 transition-all ${
+              className={`bg-surface/60 border shadow-sm rounded-2xl p-4 transition-all ${
                 isActive
                   ? "border-brand-purple/30 dark:border-brand-purple/20"
-                  : "border-zinc-100 dark:border-zinc-800/40 opacity-60"
+                  : "border-border-main opacity-60"
               }`}
             >
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2.5">
                   <CalendarDays className={`w-4 h-4 ${isActive ? "text-brand-purple" : "text-zinc-400"}`} />
-                  <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-sm font-bold text-foreground">
                     {slot.dayName}
                   </span>
                   {slot.isLocked && (
@@ -226,7 +226,7 @@ export default function AvailabilityDashboard({
               {isActive && (
                 <div className="flex items-center gap-3">
                   <div className="flex-1">
-                    <label className="block text-[10px] text-zinc-400 mb-0.5">من</label>
+                    <label className="block text-xs text-zinc-400 mb-0.5">من</label>
                     <input
                       type="time"
                       value={slot.startTime}
@@ -234,12 +234,12 @@ export default function AvailabilityDashboard({
                         updateSlot(slot.dayOfWeek, "startTime", e.target.value)
                       }
                       disabled={locked}
-                      className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-sm border border-border-main rounded-xl px-3 py-2 bg-surface-hover text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                   <span className="text-zinc-400 mt-4">—</span>
                   <div className="flex-1">
-                    <label className="block text-[10px] text-zinc-400 mb-0.5">إلى</label>
+                    <label className="block text-xs text-zinc-400 mb-0.5">إلى</label>
                     <input
                       type="time"
                       value={slot.endTime}
@@ -247,7 +247,7 @@ export default function AvailabilityDashboard({
                         updateSlot(slot.dayOfWeek, "endTime", e.target.value)
                       }
                       disabled={locked}
-                      className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-xl px-3 py-2 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full text-sm border border-border-main rounded-xl px-3 py-2 bg-surface-hover text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                     />
                   </div>
                 </div>
@@ -262,7 +262,7 @@ export default function AvailabilityDashboard({
         <button
           onClick={handleSave}
           disabled={isPending || activeDaysCount === 0}
-          className="w-full flex items-center justify-center gap-2 bg-brand-purple hover:bg-brand-purple-dark text-white rounded-2xl py-3.5 text-sm font-bold shadow-lg shadow-brand-purple/20 disabled:opacity-50 transition active:scale-95"
+          className="w-full flex items-center justify-center gap-2 bg-brand-purple hover:bg-brand-primary-dark text-white rounded-2xl py-3.5 text-sm font-bold shadow-lg shadow-brand-purple/20 disabled:opacity-50 transition active:scale-95"
         >
           {isPending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -274,7 +274,7 @@ export default function AvailabilityDashboard({
       )}
 
       {locked && (
-        <div className="flex items-center justify-center gap-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 rounded-2xl py-3.5 text-sm font-bold">
+        <div className="flex items-center justify-center gap-2 bg-surface-hover text-zinc-500 rounded-2xl py-3.5 text-sm font-bold">
           <Lock className="w-4 h-4" />
           الساعات مقفلة — ما تقدر تعدل هسه
         </div>

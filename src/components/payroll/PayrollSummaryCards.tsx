@@ -82,14 +82,14 @@ export default function PayrollSummaryCards({
 
   return (
     <div>
-      <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mb-3">
+      <div className="text-xs font-semibold text-muted mb-3">
         {monthLabel} — الملخص المالي
       </div>
       <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
         {cards.map((card) => (
           <div
             key={card.label}
-            className={`flex items-center gap-2.5 px-3 py-3 bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 rounded-2xl shadow-sm min-w-fit shrink-0 ${
+            className={`flex items-center gap-2.5 px-3 py-3 bg-surface/60 border border-border-main rounded-2xl shadow-sm min-w-fit shrink-0 ${
               card.large ? "min-w-[180px]" : ""
             }`}
           >
@@ -105,7 +105,7 @@ export default function PayrollSummaryCards({
                 )}
                 {card.value}
               </div>
-              <div className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
+              <div className="text-xs text-muted font-medium mt-0.5">
                 {card.label}
               </div>
             </div>

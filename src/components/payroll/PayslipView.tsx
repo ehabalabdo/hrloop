@@ -78,22 +78,22 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="bg-surface border-b border-border-main">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/payroll"
-              className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+              className="p-2 rounded-lg hover:bg-surface-hover transition-colors"
             >
               <ArrowLeft className="w-4 h-4 text-zinc-500" />
             </Link>
             <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-lg font-bold text-foreground">
                 {p.userName}
               </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-muted">
                 {p.monthLabel} — {p.branchName ?? "بدون فرع"} —{" "}
                 <span className="uppercase">{p.userRole === "MANAGER" ? "مدير" : p.userRole === "OWNER" ? "مالك" : "موظف"}</span>
               </p>
@@ -102,7 +102,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-purple-dark text-white rounded-lg transition-colors print:hidden"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-brand-purple hover:bg-brand-primary-dark text-white rounded-lg transition-colors print:hidden"
           >
             <Printer className="w-3 h-3" />
             طباعة
@@ -140,8 +140,8 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
         </div>
 
         {/* Breakdown */}
-        <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm p-5 space-y-4">
-          <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+        <div className="bg-surface/60 rounded-3xl border border-border-main shadow-sm p-5 space-y-4">
+          <h3 className="text-xs font-bold text-muted uppercase tracking-wider">
             تفاصيل الراتب والخصومات
           </h3>
 
@@ -159,7 +159,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             )}
           </div>
 
-          <div className="border-t border-zinc-200 dark:border-zinc-700" />
+          <div className="border-t border-border-main" />
 
           <div className="space-y-2">
             {p.latePenalties > 0 && (
@@ -205,10 +205,10 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
             )}
           </div>
 
-          <div className="border-t border-zinc-200 dark:border-zinc-700" />
+          <div className="border-t border-border-main" />
 
           <div className="flex items-center justify-between">
-            <span className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+            <span className="text-sm font-bold text-foreground">
               صافي الراتب
             </span>
             <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
@@ -255,16 +255,16 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
 
         {/* Shift Table */}
         {p.shifts.length > 0 && (
-          <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-zinc-200 dark:border-zinc-700">
-              <h3 className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+          <div className="bg-surface/60 rounded-3xl border border-border-main shadow-sm overflow-hidden">
+            <div className="px-5 py-3 border-b border-border-main">
+              <h3 className="text-xs font-bold text-muted uppercase tracking-wider">
                 تفاصيل كل وردية
               </h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
+                  <tr className="bg-surface-hover/50 border-b border-border-main">
                     <th className="px-4 py-2.5 text-left font-semibold text-zinc-500">
                       التاريخ
                     </th>
@@ -289,7 +289,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                   {p.shifts.map((shift: ShiftReconciliation) => (
                     <tr
                       key={shift.shiftId}
-                      className="border-b border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/30"
+                      className="border-b border-border-main hover:bg-surface-hover/30"
                     >
                       <td className="px-4 py-2.5 text-zinc-700 dark:text-zinc-300 font-medium">
                         {new Date(shift.date).toLocaleDateString("ar-SA", {
@@ -298,14 +298,14 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                           day: "numeric",
                         })}
                       </td>
-                      <td className="px-4 py-2.5 text-zinc-500 dark:text-zinc-400 truncate max-w-[120px]">
+                      <td className="px-4 py-2.5 text-muted truncate max-w-[120px]">
                         {shift.branchName}
                       </td>
-                      <td className="px-4 py-2.5 text-center text-zinc-500 dark:text-zinc-400">
+                      <td className="px-4 py-2.5 text-center text-muted">
                         {formatTime(shift.scheduledStart)} –{" "}
                         {formatTime(shift.scheduledEnd)}
                       </td>
-                      <td className="px-4 py-2.5 text-center text-zinc-600 dark:text-zinc-300">
+                      <td className="px-4 py-2.5 text-center text-muted">
                         {shift.actualClockIn
                           ? `${formatTime(shift.actualClockIn)} – ${
                               shift.actualClockOut
@@ -337,7 +337,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
         )}
 
         {/* Footer */}
-        <div className="text-center text-xs text-zinc-400 dark:text-zinc-500 py-4 print:py-2">
+        <div className="text-center text-xs text-muted-light py-4 print:py-2">
           HR Loop &bull;{" "}
           {new Date(p.generatedAt).toLocaleDateString("ar-SA")} &bull; كشف راتب إلكتروني
         </div>
@@ -346,9 +346,9 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
       {/* Dispute Form Modal */}
       {disputeForm && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 print:hidden">
-          <div className="bg-white dark:bg-zinc-900 rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
-            <div className="p-5 border-b border-zinc-200 dark:border-zinc-800">
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <div className="bg-surface rounded-t-3xl sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div className="p-5 border-b border-border-main">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-amber-500" />
                 اعتراض على الخصم
               </h2>
@@ -370,7 +370,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                   onChange={(e) => setDisputeReason(e.target.value)}
                   rows={4}
                   placeholder="اشرح لماذا تعتقد أن هذا الخصم غير صحيح..."
-                  className="w-full rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none resize-none"
+                  className="w-full rounded-2xl border border-border-main bg-surface-hover px-3 py-2 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none resize-none"
                 />
               </div>
               <div className="flex gap-3">
@@ -379,7 +379,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
                     setDisputeForm(null);
                     setDisputeReason("");
                   }}
-                  className="flex-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-2xl py-2.5 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition active:scale-95"
+                  className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-2xl py-2.5 text-sm font-medium hover:bg-surface-hover transition active:scale-95"
                 >
                   إلغاء
                 </button>
@@ -439,7 +439,7 @@ function Row({
 
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-zinc-600 dark:text-zinc-400">{label}</span>
+      <span className="text-muted">{label}</span>
       <span className={`font-semibold ${colors[type]}`}>
         {prefix}{formatCurrency(value)} ر.س
       </span>
@@ -459,10 +459,10 @@ function StatBox({
   color: string;
 }) {
   return (
-    <div className="bg-white dark:bg-zinc-900/60 border border-zinc-100 dark:border-zinc-800/40 shadow-sm rounded-2xl p-3 text-center">
+    <div className="bg-surface/60 border border-border-main shadow-sm rounded-2xl p-3 text-center">
       <div className={`${color} mx-auto mb-1 flex justify-center`}>{icon}</div>
       <div className={`text-lg font-bold ${color}`}>{value}</div>
-      <div className="text-[10px] text-zinc-400 font-medium">{label}</div>
+      <div className="text-xs text-zinc-400 font-medium">{label}</div>
     </div>
   );
 }
@@ -493,7 +493,7 @@ function StatusBadge({ status }: { status: string }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold uppercase ${
         styles[s] ?? styles.absent
       }`}
     >
@@ -516,7 +516,7 @@ function DeductionRow({
 }) {
   return (
     <div className="flex items-center justify-between text-sm gap-2">
-      <span className="text-zinc-600 dark:text-zinc-400">{label}</span>
+      <span className="text-muted">{label}</span>
       <div className="flex items-center gap-2">
         <span className="font-semibold text-red-600 dark:text-red-400">
           -{formatCurrency(value)} ر.س
@@ -524,7 +524,7 @@ function DeductionRow({
         {canDispute && (
           <button
             onClick={onDispute}
-            className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 font-medium transition-colors print:hidden"
+            className="text-xs px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-800/50 font-medium transition-colors print:hidden"
             title="اعتراض على هذا الخصم"
           >
             اعتراض

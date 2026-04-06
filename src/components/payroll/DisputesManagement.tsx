@@ -127,7 +127,7 @@ export default function DisputesManagement({
             className={`px-3 py-1.5 text-xs font-medium rounded-full transition-all active:scale-95 ${
               filter === f
                 ? "bg-brand-purple text-white shadow-sm"
-                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
+                : "bg-surface-hover text-muted hover:bg-surface-hover"
             }`}
           >
             {filterLabels[f] ?? f}
@@ -136,9 +136,9 @@ export default function DisputesManagement({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 p-8 text-center">
+        <div className="bg-surface/60 rounded-3xl border border-border-main p-8 text-center">
           <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
-          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <p className="text-sm font-medium text-muted">
             لا توجد اعتراضات {filter !== "ALL" ? filterLabels[filter] : ""}
           </p>
         </div>
@@ -147,17 +147,17 @@ export default function DisputesManagement({
           {filtered.map((d: DisputeItem) => (
             <div
               key={d.id}
-              className="bg-white dark:bg-zinc-900/60 rounded-3xl border border-zinc-100 dark:border-zinc-800/40 overflow-hidden shadow-sm"
+              className="bg-surface/60 rounded-3xl border border-border-main overflow-hidden shadow-sm"
             >
               {/* Header */}
-              <div className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+              <div className="px-5 py-3 border-b border-border-main flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-amber-500" />
-                  <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  <span className="text-sm font-semibold text-foreground">
                     {d.userName}
                   </span>
                   <span
-                    className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase ${
                       statusColors[d.status] ?? statusColors.PENDING
                     }`}
                   >
@@ -198,7 +198,7 @@ export default function DisputesManagement({
                 </div>
 
                 {d.status !== "PENDING" && (
-                  <div className="text-xs text-zinc-400 border-t border-zinc-100 dark:border-zinc-800 pt-2 mt-2">
+                  <div className="text-xs text-zinc-400 border-t border-border-main pt-2 mt-2">
                     راجعه {d.reviewerName} في{" "}
                     {d.reviewedAt
                       ? new Date(d.reviewedAt).toLocaleString("ar-SA")
@@ -214,7 +214,7 @@ export default function DisputesManagement({
 
               {/* Actions (only for pending) */}
               {d.status === "PENDING" && (
-                <div className="px-5 py-3 border-t border-zinc-100 dark:border-zinc-800 space-y-3">
+                <div className="px-5 py-3 border-t border-border-main space-y-3">
                   <input
                     type="text"
                     placeholder="تعليق الإدارة (اختياري)..."
@@ -225,7 +225,7 @@ export default function DisputesManagement({
                         [d.id]: e.target.value,
                       }))
                     }
-                    className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-3 py-2 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    className="w-full text-sm border border-border-main rounded-2xl px-3 py-2 bg-surface-hover text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   />
                   <div className="flex gap-3">
                     <button

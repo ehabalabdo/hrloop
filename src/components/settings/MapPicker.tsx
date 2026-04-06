@@ -227,7 +227,7 @@ export default function MapPicker({
               onChange={(e) => handleSearchInput(e.target.value)}
               onFocus={() => searchResults.length > 0 && setShowResults(true)}
               placeholder="ابحث عن المكان..."
-              className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg pr-9 pl-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400"
+              className="w-full text-sm border border-border-main rounded-lg pr-9 pl-3 py-2 bg-surface text-foreground placeholder:text-zinc-400"
               dir="rtl"
             />
             {isSearching && (
@@ -237,7 +237,7 @@ export default function MapPicker({
           <button
             type="button"
             onClick={getCurrentLocation}
-            className="p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
+            className="p-2 rounded-lg border border-border-main hover:bg-surface-hover text-zinc-500 transition-colors"
             title="موقعي الحالي"
           >
             <LocateFixed className="w-4 h-4" />
@@ -246,13 +246,13 @@ export default function MapPicker({
 
         {/* Search Results Dropdown */}
         {showResults && (
-          <div className="absolute z-[1000] top-full mt-1 w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+          <div className="absolute z-[1000] top-full mt-1 w-full bg-surface border border-border-main rounded-lg shadow-lg max-h-48 overflow-y-auto">
             {searchResults.map((result, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => selectResult(result)}
-                className="w-full text-right px-3 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-violet-50 dark:hover:bg-violet-900/20 border-b border-zinc-100 dark:border-zinc-800 last:border-0 flex items-start gap-2 transition-colors"
+                className="w-full text-right px-3 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-violet-50 dark:hover:bg-violet-900/20 border-b border-border-main last:border-0 flex items-start gap-2 transition-colors"
               >
                 <MapPin className="w-3.5 h-3.5 text-violet-500 mt-0.5 flex-shrink-0" />
                 <span className="line-clamp-2">{result.display_name}</span>
@@ -265,12 +265,12 @@ export default function MapPicker({
       {/* Map Container */}
       <div
         ref={mapContainerRef}
-        className="w-full h-64 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden"
+        className="w-full h-64 rounded-xl border border-border-main overflow-hidden"
         style={{ zIndex: 0 }}
       />
 
       {/* Coordinates display */}
-      <p className="text-[11px] text-zinc-400 text-center" dir="ltr">
+      <p className="text-xs text-zinc-400 text-center" dir="ltr">
         📍 {latitude.toFixed(4)}, {longitude.toFixed(4)}
         <span className="mx-2">|</span>
         <span className="text-zinc-500">اضغط على الخريطة أو اسحب الدبوس لتحديد الموقع</span>

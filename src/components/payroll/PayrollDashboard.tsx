@@ -229,19 +229,19 @@ export default function PayrollDashboard({
     items.length > 0 && items.every((i: PayrollListItem) => i.isLocked);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#0f0a19] pb-28">
+    <div className="min-h-screen bg-background pb-28">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
+      <div className="bg-surface border-b border-border-main sticky top-0 z-30">
         <div className="max-w-2xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-brand-purple/10 rounded-2xl flex items-center justify-center">
               <Wallet className="w-5 h-5 text-brand-purple" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-lg font-bold text-foreground">
                 الرواتب والخصومات
               </h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="text-xs text-muted">
                 محرك تسوية الرواتب الشهري
               </p>
             </div>
@@ -270,7 +270,7 @@ export default function PayrollDashboard({
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setBranchId(e.target.value)
               }
-              className="text-sm border border-zinc-200 dark:border-zinc-700 rounded-2xl px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+              className="text-sm border border-border-main rounded-2xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
             >
               <option value="">جميع الفروع</option>
               {branches.map((b: Branch) => (
@@ -286,7 +286,7 @@ export default function PayrollDashboard({
             <button
               onClick={handleGenerate}
               disabled={isPending}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-brand-magenta hover:bg-brand-magenta/90 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shadow-lg shadow-brand-magenta/25"
+              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-brand-primary hover:bg-brand-primary/90 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 shadow-lg shadow-brand-magenta/25"
             >
               {isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -300,7 +300,7 @@ export default function PayrollDashboard({
               <button
                 onClick={handleLock}
                 disabled={isPending}
-                className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-brand-purple hover:bg-brand-purple-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
+                className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-semibold rounded-2xl bg-brand-purple hover:bg-brand-primary-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
               >
                 <Lock className="w-3.5 h-3.5" />
                 اعتماد وقفل
@@ -322,7 +322,7 @@ export default function PayrollDashboard({
 
         {/* Loading */}
         {isPending && (
-          <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 animate-pulse">
+          <div className="flex items-center gap-2 text-sm text-muted animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin" />
             جاري المعالجة...
           </div>
@@ -335,9 +335,9 @@ export default function PayrollDashboard({
       {/* Payslip Modal */}
       {loadingPayslip && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl p-8 flex items-center gap-3">
+          <div className="bg-surface rounded-3xl p-8 flex items-center gap-3">
             <Loader2 className="w-6 h-6 animate-spin text-brand-purple" />
-            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+            <span className="text-sm text-muted">
               جاري تحميل كشف الراتب...
             </span>
           </div>

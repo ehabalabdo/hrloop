@@ -42,7 +42,7 @@ export default function LoginForm() {
             required
             dir="ltr"
             placeholder="name@company.com"
-            className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface-hover border border-border-main rounded-xl text-sm text-foreground placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple transition-colors"
           />
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function LoginForm() {
             required
             dir="ltr"
             placeholder="••••••••"
-            className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-surface-hover border border-border-main rounded-xl text-sm text-foreground placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple transition-colors"
           />
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full flex items-center justify-center gap-2 py-3 bg-brand-magenta hover:bg-brand-magenta/90 disabled:bg-brand-magenta/60 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-brand-magenta/25"
+        className="w-full flex items-center justify-center gap-2 py-3 bg-brand-primary hover:bg-brand-primary/90 disabled:bg-brand-primary/60 text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-brand-magenta/25"
       >
         {isPending ? (
           <>
