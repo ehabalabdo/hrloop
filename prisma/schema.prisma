@@ -104,6 +104,7 @@ model Branch {
   shiftStartTime String?  @map("shift_start_time") @db.VarChar(5) // e.g. "09:00"
   shiftEndTime   String?  @map("shift_end_time") @db.VarChar(5)   // e.g. "17:00"
 
+  minStaff       Int      @default(0) @map("min_staff")
   isActive       Boolean  @default(true) @map("is_active")
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
@@ -133,6 +134,7 @@ model User {
   phoneNumber          String?  @map("phone_number") @db.VarChar(20)
   socialSecurityNumber  String?  @map("social_security_number") @db.VarChar(20)
   employmentType       EmploymentType @default(FULL_TIME) @map("employment_type")
+  isFlexibleSchedule   Boolean  @default(false) @map("is_flexible_schedule")
   isActive             Boolean  @default(true) @map("is_active")
 
   // WebAuthn biometric fields

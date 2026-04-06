@@ -18,6 +18,7 @@ export interface BranchFormData {
   closeTime?: string;
   shiftStartTime?: string;
   shiftEndTime?: string;
+  minStaff?: number;
 }
 
 export interface BranchWithManager {
@@ -32,6 +33,7 @@ export interface BranchWithManager {
   closeTime: string | null;
   shiftStartTime: string | null;
   shiftEndTime: string | null;
+  minStaff: number;
   isActive: boolean;
   createdAt: Date;
   manager: { id: string; fullName: string } | null;
@@ -102,6 +104,7 @@ export async function createBranch(
         closeTime: data.closeTime || null,
         shiftStartTime: data.shiftStartTime || null,
         shiftEndTime: data.shiftEndTime || null,
+        minStaff: data.minStaff ?? 0,
       },
     });
 
@@ -141,6 +144,7 @@ export async function updateBranch(
         closeTime: data.closeTime || null,
         shiftStartTime: data.shiftStartTime || null,
         shiftEndTime: data.shiftEndTime || null,
+        minStaff: data.minStaff ?? 0,
       },
     });
 

@@ -85,6 +85,8 @@ export default function ScheduleDashboard({
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [showWarnings, setShowWarnings] = useState(false);
 
   // Selected day logic
   const todayStr = new Date().toISOString().split("T")[0];
@@ -177,12 +179,16 @@ export default function ScheduleDashboard({
   // Actions
   const handleAction = async (
     actionName: string,
-    actionFn: () => Promise<{ success: boolean; message: string }>
+    actionFn: () => Promise<{ success: boolean; message: string; warnings?: string[] }>
   ) => {
     setActionLoading(actionName);
     try {
       const r = await actionFn();
       showToast(r.message, r.success ? "success" : "error");
+      if (r.warnings && r.warnings.length > 0) {
+        setWarnings(r.warnings);
+        setShowWarnings(true);
+      }
       await refreshData();
     } catch {
       showToast("حدث خطأ", "error");
@@ -250,7 +256,7 @@ export default function ScheduleDashboard({
               {hasShifts && !hasDrafts && (
                 <button
                   onClick={() => {
-                    if (window.confirm("سيتم إعادة توليد الورديات للأماكن غير المغطاة. هل تريد الاستمرار؟")) {
+                    if (window.confirm("سيتم إعادة توليد الورديات لأسبوعين للأماكن غير المغطاة. هل تريد الاستمرار؟")) {
                       handleAction("generate", () => generateWeeklySchedule(weekStart));
                     }
                   }}
@@ -501,7 +507,7 @@ export default function ScheduleDashboard({
               ) : (
                 <Wand2 className="w-5 h-5" />
               )}
-              توليد الورديات تلقائياً
+              توليد الورديات لأسبوعين
             </button>
           )}
 
@@ -523,7 +529,7 @@ export default function ScheduleDashboard({
 
               <button
                 onClick={() => {
-                  if (window.confirm("هل أنت متأكد من حذف جميع المسودات لهذا الأسبوع؟")) {
+                  if (window.confirm("هل أنت متأكد من حذف جميع المسودات لهذين الأسبوعين؟")) {
                     handleAction("clear", () => clearWeekDrafts(weekStart));
                   }
                 }}
@@ -541,6 +547,33 @@ export default function ScheduleDashboard({
 
         </div>
       </div>
+      )}
+
+      {/* ── WARNINGS MODAL ── */}
+      {showWarnings && warnings.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl max-w-md w-full p-6 border border-zinc-200 dark:border-zinc-700">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5 text-amber-500" />
+                <h3 className="font-bold text-lg text-zinc-900 dark:text-white">تنبيهات الحد الأدنى</h3>
+              </div>
+              <button onClick={() => setShowWarnings(false)} className="p-1.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                <X className="w-5 h-5 text-zinc-500" />
+              </button>
+            </div>
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {warnings.map((w, i) => (
+                <div key={i} className="text-[13px] text-zinc-700 dark:text-zinc-300 bg-amber-50 dark:bg-amber-500/10 px-3 py-2 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                  {w}
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setShowWarnings(false)} className="mt-4 w-full py-2.5 bg-zinc-900 dark:bg-brand-purple text-white rounded-xl font-bold text-[14px]">
+              حسناً
+            </button>
+          </div>
+        </div>
       )}
 
       {/* ── TOAST MESSAGES ── */}

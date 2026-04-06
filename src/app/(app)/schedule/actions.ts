@@ -72,6 +72,23 @@ function getWeekDates(monday: Date): Date[] {
   });
 }
 
+/** Build array of 14 Date objects for Mon–Sun x 2 weeks */
+function getBiweeklyDates(monday: Date): Date[] {
+  return Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(d.getDate() + i);
+    return d;
+  });
+}
+
+/** Get end of biweekly period (Sunday of 2nd week) */
+function getBiweeklyEnd(monday: Date): Date {
+  const d = new Date(monday);
+  d.setDate(d.getDate() + 13);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
 /** dayOfWeek in our DB: 0=Sunday, 6=Saturday. JS Date.getDay() is same. */
 function dateToDayOfWeek(date: Date): number {
   return date.getDay();
@@ -218,7 +235,7 @@ export async function getWeeklySchedule(
 }
 
 // ============================================================
-// GENERATE WEEKLY SCHEDULE (The Algorithm)
+// GENERATE BIWEEKLY SCHEDULE (The Algorithm — 2-week cycle)
 // ============================================================
 
 export async function generateWeeklySchedule(
@@ -227,13 +244,13 @@ export async function generateWeeklySchedule(
   try {
     const monday = new Date(weekStartISO);
     monday.setHours(0, 0, 0, 0);
-    const sunday = getWeekEnd(monday);
-    const weekDates = getWeekDates(monday);
+    const biweeklyEnd = getBiweeklyEnd(monday);
+    const allDates = getBiweeklyDates(monday);
 
-    // 1. Check for existing drafts (prevent duplicates)
+    // 1. Check for existing drafts in the 2-week range (prevent duplicates)
     const existingDrafts = await prisma.shift.count({
       where: {
-        date: { gte: monday, lte: sunday },
+        date: { gte: monday, lte: biweeklyEnd },
         status: "DRAFT",
       },
     });
@@ -241,13 +258,14 @@ export async function generateWeeklySchedule(
     if (existingDrafts > 0) {
       return {
         success: false,
-        message: `There are already ${existingDrafts} draft shifts for this week. Clear them first before regenerating.`,
+        message: `يوجد ${existingDrafts} مسودة وردية لهذه الفترة. امسحها أولاً قبل إعادة التوليد.`,
         totalShiftsCreated: 0,
         understaffedSlots: 0,
+        warnings: [],
       };
     }
 
-    // 2. Fetch all active branches with requirements
+    // 2. Fetch all active branches with requirements + minStaff
     const branches = await prisma.branch.findMany({
       where: { isActive: true },
       include: { requirements: true },
@@ -265,20 +283,20 @@ export async function generateWeeklySchedule(
       },
     });
 
-    // 4. Fetch already-published shifts for the week (to not double-book)
+    // 4. Fetch already-published shifts for the 2-week range (to not double-book)
     const existingPublished = await prisma.shift.findMany({
       where: {
-        date: { gte: monday, lte: sunday },
+        date: { gte: monday, lte: biweeklyEnd },
         status: "PUBLISHED",
       },
       select: { userId: true, date: true },
     });
 
-    // 4b. Fetch approved leaves that overlap this week
+    // 4b. Fetch approved leaves that overlap the 2-week range
     const approvedLeaves = await prisma.leaveRequest.findMany({
       where: {
         status: "APPROVED",
-        startDate: { lte: sunday },
+        startDate: { lte: biweeklyEnd },
         endDate: { gte: monday },
       },
       select: { userId: true, startDate: true, endDate: true },
@@ -289,7 +307,7 @@ export async function generateWeeklySchedule(
     for (const leave of approvedLeaves) {
       const leaveStart = new Date(leave.startDate);
       const leaveEnd = new Date(leave.endDate);
-      for (const date of weekDates) {
+      for (const date of allDates) {
         if (date >= leaveStart && date <= leaveEnd) {
           leaveSet.add(`${leave.userId}:${toDateStr(date)}`);
         }
@@ -302,11 +320,16 @@ export async function generateWeeklySchedule(
       existingPublished.map((s: PublishedShift) => `${s.userId}:${toDateStr(new Date(s.date))}`)
     );
 
-    // Track per-employee weekly hours during assignment
-    const employeeHours: Map<string, number> = new Map();
+    // Per-week hour tracking (reset each 7-day week)
+    // Week 1: days 0-6, Week 2: days 7-13
+    const employeeHoursWeek1: Map<string, number> = new Map();
+    const employeeHoursWeek2: Map<string, number> = new Map();
     type EmployeeWithIncludes = (typeof employees)[number];
     type BranchGenWithIncludes = (typeof branches)[number];
-    employees.forEach((e: EmployeeWithIncludes) => employeeHours.set(e.id, 0));
+    employees.forEach((e: EmployeeWithIncludes) => {
+      employeeHoursWeek1.set(e.id, 0);
+      employeeHoursWeek2.set(e.id, 0);
+    });
 
     // Track per-employee per-day assignments (prevent same day double booking)
     const employeeDayAssigned: Set<string> = new Set();
@@ -321,12 +344,16 @@ export async function generateWeeklySchedule(
     }[] = [];
 
     let understaffedSlots = 0;
+    const warnings: string[] = [];
     const MAX_WEEKLY_HOURS = 40;
 
-    // 5. For each day, for each branch, assign employees
-    for (const date of weekDates) {
+    // 5. For each day (14 days), for each branch, assign employees
+    for (let dayIdx = 0; dayIdx < allDates.length; dayIdx++) {
+      const date = allDates[dayIdx];
       const dow = dateToDayOfWeek(date);
       const dateStr = toDateStr(date);
+      const isWeek2 = dayIdx >= 7;
+      const employeeHours = isWeek2 ? employeeHoursWeek2 : employeeHoursWeek1;
 
       // Get all branch slots for this day
       interface BranchSlot {
@@ -336,6 +363,7 @@ export async function generateWeeklySchedule(
         longitude: number;
         managerId: string | null;
         requiredStaff: number;
+        minStaff: number;
       }
 
       const branchSlots: BranchSlot[] = branches
@@ -350,6 +378,7 @@ export async function generateWeeklySchedule(
             longitude: branch.longitude,
             managerId: branch.managerId,
             requiredStaff: req?.requiredStaff ?? 0,
+            minStaff: branch.minStaff ?? 0,
           };
         })
         .filter((slot: BranchSlot) => slot.requiredStaff > 0);
@@ -367,15 +396,16 @@ export async function generateWeeklySchedule(
         // Find available candidates for this day
         const candidates = employees
           .filter((emp: EmployeeWithIncludes) => {
-            // Check availability: if employee has availability records,
-            // they must have one for this day. If NO records at all,
-            // treat as available every day (default hours).
-            const hasAnyAvailability = emp.availability.length > 0;
-            if (hasAnyAvailability) {
-              const avail = emp.availability.find(
-                (a: { dayOfWeek: number }) => a.dayOfWeek === dow
-              );
-              if (!avail) return false;
+            // Flexible employees are available every day
+            // Non-flexible: check availability records
+            if (!emp.isFlexibleSchedule) {
+              const hasAnyAvailability = emp.availability.length > 0;
+              if (hasAnyAvailability) {
+                const avail = emp.availability.find(
+                  (a: { dayOfWeek: number }) => a.dayOfWeek === dow
+                );
+                if (!avail) return false;
+              }
             }
 
             // Not already assigned this day
@@ -394,16 +424,17 @@ export async function generateWeeklySchedule(
             return true;
           })
           .map((emp: EmployeeWithIncludes) => {
-            // Use explicit availability if exists, otherwise default 9-17
-            const avail = emp.availability.find(
-              (a: { dayOfWeek: number }) => a.dayOfWeek === dow
-            ) ?? { startTime: defaultStart, endTime: defaultEnd };
+            // If flexible or no explicit availability, use default 9-17
+            const avail = emp.isFlexibleSchedule
+              ? { startTime: defaultStart, endTime: defaultEnd }
+              : emp.availability.find(
+                  (a: { dayOfWeek: number }) => a.dayOfWeek === dow
+                ) ?? { startTime: defaultStart, endTime: defaultEnd };
 
             // ---- SCORING ----
             let score = 0;
 
             // Geographic Proximity (40% weight) - max 40 points
-            // Max distance = 100km, closer = higher score
             const empLat = emp.primaryBranch?.latitude ?? 0;
             const empLon = emp.primaryBranch?.longitude ?? 0;
             if (empLat !== 0 && empLon !== 0) {
@@ -417,7 +448,6 @@ export async function generateWeeklySchedule(
             }
 
             // Weekly Hours Balance (30% weight) - max 30 points
-            // Fewer hours = higher score (fairness)
             const currentHours = employeeHours.get(emp.id) ?? 0;
             score += 30 * (1 - currentHours / MAX_WEEKLY_HOURS);
 
@@ -427,7 +457,6 @@ export async function generateWeeklySchedule(
             }
 
             // Role Match (10% weight) - max 10 points
-            // Manager assigned to their managed branch gets bonus
             if (
               emp.role === "MANAGER" &&
               emp.managedBranches.some(
@@ -499,6 +528,14 @@ export async function generateWeeklySchedule(
         if (assigned < slot.requiredStaff) {
           understaffedSlots++;
         }
+
+        // Check minStaff warning
+        if (slot.minStaff > 0 && assigned < slot.minStaff) {
+          const dayName = DAY_NAMES[dow];
+          warnings.push(
+            `\u26A0\uFE0F ${slot.branchName} — ${dayName} ${dateStr}: تم تعيين ${assigned} من أصل ${slot.minStaff} كحد أدنى`
+          );
+        }
       }
     }
 
@@ -518,21 +555,23 @@ export async function generateWeeklySchedule(
 
     return {
       success: true,
-      message: `Successfully generated ${shiftsToCreate.length} draft shifts for the week.${
+      message: `تم توليد ${shiftsToCreate.length} وردية مسودة لأسبوعين.${
         understaffedSlots > 0
-          ? ` Warning: ${understaffedSlots} branch-day slots are understaffed.`
+          ? ` تنبيه: ${understaffedSlots} فرع-يوم يعاني من نقص موظفين.`
           : ""
       }`,
       totalShiftsCreated: shiftsToCreate.length,
       understaffedSlots,
+      warnings,
     };
   } catch (error) {
     console.error("Schedule generation failed:", error);
     return {
       success: false,
-      message: "Failed to generate schedule. See server logs.",
+      message: "فشل توليد الجدول. راجع سجلات الخادم.",
       totalShiftsCreated: 0,
       understaffedSlots: 0,
+      warnings: [],
       error: String(error),
     };
   }
@@ -548,29 +587,26 @@ export async function publishSchedule(
   try {
     const monday = new Date(weekStartISO);
     monday.setHours(0, 0, 0, 0);
-    const sunday = getWeekEnd(monday);
+    const biweeklyEnd = getBiweeklyEnd(monday);
 
     const result = await prisma.shift.updateMany({
       where: {
-        date: { gte: monday, lte: sunday },
+        date: { gte: monday, lte: biweeklyEnd },
         status: "DRAFT",
       },
       data: { status: "PUBLISHED" },
     });
 
-    // TODO: In production, trigger push notifications to employees here
-    // For now, this is a mock notification
-
     return {
       success: true,
-      message: `Published ${result.count} shifts. Employees have been notified.`,
+      message: `تم نشر ${result.count} وردية. تم إشعار الموظفين.`,
       count: result.count,
     };
   } catch (error) {
     console.error("Publish failed:", error);
     return {
       success: false,
-      message: "Failed to publish schedule.",
+      message: "فشل نشر الجدول.",
       count: 0,
     };
   }
@@ -586,25 +622,25 @@ export async function clearWeekDrafts(
   try {
     const monday = new Date(weekStartISO);
     monday.setHours(0, 0, 0, 0);
-    const sunday = getWeekEnd(monday);
+    const biweeklyEnd = getBiweeklyEnd(monday);
 
     const result = await prisma.shift.deleteMany({
       where: {
-        date: { gte: monday, lte: sunday },
+        date: { gte: monday, lte: biweeklyEnd },
         status: "DRAFT",
       },
     });
 
     return {
       success: true,
-      message: `Cleared ${result.count} draft shifts.`,
+      message: `تم مسح ${result.count} مسودة وردية.`,
       count: result.count,
     };
   } catch (error) {
     console.error("Clear drafts failed:", error);
     return {
       success: false,
-      message: "Failed to clear drafts.",
+      message: "فشل مسح المسودات.",
       count: 0,
     };
   }

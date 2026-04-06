@@ -48,6 +48,7 @@ const emptyForm: BranchFormData = {
   closeTime: "",
   shiftStartTime: "",
   shiftEndTime: "",
+  minStaff: 0,
 };
 
 export default function BranchManagement({
@@ -88,6 +89,7 @@ export default function BranchManagement({
       closeTime: branch.closeTime || "",
       shiftStartTime: branch.shiftStartTime || "",
       shiftEndTime: branch.shiftEndTime || "",
+      minStaff: branch.minStaff ?? 0,
     });
     setEditingId(branch.id);
     setShowForm(true);
@@ -106,8 +108,8 @@ export default function BranchManagement({
         longitude: Number(form.longitude),
         geofenceRadius: Number(form.geofenceRadius),
         managerId: form.managerId || undefined,
+        minStaff: Number(form.minStaff) || 0,
       };
-
       const result = editingId
         ? await updateBranch(editingId, data)
         : await createBranch(data);
@@ -365,6 +367,27 @@ export default function BranchManagement({
                 </div>
               </div>
             </div>
+
+            {/* Min Staff */}
+            <div>
+              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+                الحد الأدنى للموظفين
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                value={form.minStaff ?? 0}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    minStaff: parseInt(e.target.value) || 0,
+                  })
+                }
+                className="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+              />
+              <p className="text-[10px] text-zinc-400 mt-0.5">عدد الموظفين المطلوب كحد أدنى (تنبيهي فقط)</p>
+            </div>
           </div>
 
           {/* Save / Cancel */}
@@ -442,6 +465,11 @@ export default function BranchManagement({
                   {branch.manager && (
                     <span className="text-violet-600 dark:text-violet-400 font-medium">
                       👤 {branch.manager.fullName}
+                    </span>
+                  )}
+                  {branch.minStaff > 0 && (
+                    <span className="text-amber-600 dark:text-amber-400">
+                      ⚠️ حد أدنى: {branch.minStaff} موظف
                     </span>
                   )}
                 </div>

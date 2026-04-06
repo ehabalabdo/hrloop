@@ -31,6 +31,7 @@ import {
   ExternalLink,
   Hash,
   Clock,
+  CalendarDays,
   Briefcase,
   Paperclip,
   DollarSign,
@@ -53,6 +54,10 @@ interface EmployeeManagementProps {
   initialEmployees: EmployeeWithBranch[];
   branches: { id: string; name: string }[];
 }
+
+const DAY_LABELS = [
+  "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت",
+];
 
 const ROLE_LABELS: Record<string, string> = {
   OWNER: "مالك",
@@ -80,6 +85,8 @@ const emptyForm: EmployeeFormData = {
   hourlyRate: 0,
   baseSalary: 0,
   transportationAllowance: 0,
+  isFlexibleSchedule: false,
+  availability: [],
 };
 
 export default function EmployeeManagement({
@@ -130,6 +137,12 @@ export default function EmployeeManagement({
       hourlyRate: emp.payrollProfile?.hourlyRate ?? 0,
       baseSalary: emp.payrollProfile?.baseSalary ?? 0,
       transportationAllowance: emp.payrollProfile?.transportationAllowance ?? 0,
+      isFlexibleSchedule: emp.isFlexibleSchedule ?? false,
+      availability: emp.availability?.map((a) => ({
+        dayOfWeek: a.dayOfWeek,
+        startTime: new Date(a.startTime).toTimeString().slice(0, 5),
+        endTime: new Date(a.endTime).toTimeString().slice(0, 5),
+      })) || [],
     });
     setEditingId(emp.id);
     setShowForm(true);
@@ -675,6 +688,112 @@ export default function EmployeeManagement({
             </div>
           </div>
 
+          {/* Schedule Type Toggle */}
+          <div className="sm:col-span-2 border-t border-zinc-100 dark:border-zinc-800 pt-4">
+            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-2 flex items-center gap-1.5">
+              <CalendarDays className="w-3.5 h-3.5" />
+              نوع الجدول
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, isFlexibleSchedule: false })}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  !form.isFlexibleSchedule
+                    ? "bg-brand-purple text-white shadow-lg shadow-brand-purple/20"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
+                }`}
+              >
+                أيام وساعات محددة
+              </button>
+              <button
+                type="button"
+                onClick={() => setForm({ ...form, isFlexibleSchedule: true, availability: [] })}
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                  form.isFlexibleSchedule
+                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
+                }`}
+              >
+                مرن - أي وقت
+              </button>
+            </div>
+          </div>
+
+          {/* Availability Picker (when not flexible) */}
+          {!form.isFlexibleSchedule && (
+            <div className="sm:col-span-2 space-y-2">
+              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">
+                أيام وساعات الدوام
+              </label>
+              {DAY_LABELS.map((label, dayIdx) => {
+                const existing = form.availability?.find((a) => a.dayOfWeek === dayIdx);
+                const isActive = !!existing;
+                return (
+                  <div key={dayIdx} className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isActive) {
+                          setForm({
+                            ...form,
+                            availability: (form.availability || []).filter((a) => a.dayOfWeek !== dayIdx),
+                          });
+                        } else {
+                          setForm({
+                            ...form,
+                            availability: [
+                              ...(form.availability || []),
+                              { dayOfWeek: dayIdx, startTime: "09:00", endTime: "17:00" },
+                            ],
+                          });
+                        }
+                      }}
+                      className={`w-20 py-1.5 rounded-lg text-[11px] font-bold transition-all ${
+                        isActive
+                          ? "bg-brand-purple text-white"
+                          : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                    {isActive && (
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="time"
+                          value={existing.startTime}
+                          onChange={(e) => {
+                            setForm({
+                              ...form,
+                              availability: (form.availability || []).map((a) =>
+                                a.dayOfWeek === dayIdx ? { ...a, startTime: e.target.value } : a
+                              ),
+                            });
+                          }}
+                          className="text-xs border border-zinc-200 dark:border-zinc-700 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                        />
+                        <span className="text-zinc-400 text-xs">—</span>
+                        <input
+                          type="time"
+                          value={existing.endTime}
+                          onChange={(e) => {
+                            setForm({
+                              ...form,
+                              availability: (form.availability || []).map((a) =>
+                                a.dayOfWeek === dayIdx ? { ...a, endTime: e.target.value } : a
+                              ),
+                            });
+                          }}
+                          className="text-xs border border-zinc-200 dark:border-zinc-700 rounded-lg px-2 py-1.5 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
           {/* Save / Cancel */}
           <div className="flex gap-3 pt-2">
             <button
@@ -824,6 +943,28 @@ export default function EmployeeManagement({
                   </div>
                 </div>
               )}
+
+              {/* Schedule Info */}
+              <div className="mb-3">
+                {emp.isFlexibleSchedule ? (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
+                    مرن - أي وقت
+                  </span>
+                ) : emp.availability && emp.availability.length > 0 ? (
+                  <div className="flex flex-wrap gap-1">
+                    {emp.availability.map((a) => (
+                      <span
+                        key={a.dayOfWeek}
+                        className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400"
+                      >
+                        {DAY_LABELS[a.dayOfWeek]}
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-[10px] text-zinc-400">لم يتم تحديد جدول</span>
+                )}
+              </div>
 
               {/* Stats Row */}
               <div className="flex items-center gap-3 mb-3">

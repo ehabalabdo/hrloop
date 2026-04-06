@@ -27,6 +27,8 @@ export interface EmployeeFormData {
   hourlyRate?: number;
   baseSalary?: number;
   transportationAllowance?: number;
+  isFlexibleSchedule?: boolean;
+  availability?: { dayOfWeek: number; startTime: string; endTime: string }[];
 }
 
 export interface EmployeeDocument {
@@ -46,6 +48,7 @@ export interface EmployeeWithBranch {
   phoneNumber: string | null;
   socialSecurityNumber: string | null;
   employmentType: "FULL_TIME" | "HOURLY";
+  isFlexibleSchedule: boolean;
   primaryBranchId: string | null;
   isActive: boolean;
   createdAt: Date;
@@ -53,6 +56,7 @@ export interface EmployeeWithBranch {
   managedBranches: { id: string; name: string }[];
   assignedBranches: { branch: { id: string; name: string } }[];
   documents: EmployeeDocument[];
+  availability: { dayOfWeek: number; startTime: string; endTime: string }[];
   payrollProfile: { baseSalary: number; hourlyRate: number; transportationAllowance: number } | null;
   _count: { shifts: number; attendanceLogs: number };
 }
@@ -84,6 +88,9 @@ export async function getEmployees(): Promise<EmployeeWithBranch[]> {
           uploadedAt: true,
         },
         orderBy: { uploadedAt: "desc" },
+      },
+      availability: {
+        select: { dayOfWeek: true, startTime: true, endTime: true },
       },
       payrollProfile: {
         select: { baseSalary: true, hourlyRate: true, transportationAllowance: true },
@@ -148,6 +155,7 @@ export async function createEmployee(
         phoneNumber: data.phoneNumber?.trim() || null,
         socialSecurityNumber: data.socialSecurityNumber?.trim() || null,
         employmentType: data.employmentType || "FULL_TIME",
+        isFlexibleSchedule: data.isFlexibleSchedule ?? false,
       },
     });
 
@@ -157,6 +165,18 @@ export async function createEmployee(
         data: data.assignedBranchIds.map((branchId) => ({
           userId: newUser.id,
           branchId,
+        })),
+      });
+    }
+
+    // Create availability records (for non-flexible employees)
+    if (!data.isFlexibleSchedule && data.availability && data.availability.length > 0) {
+      await prisma.availability.createMany({
+        data: data.availability.map((a) => ({
+          userId: newUser.id,
+          dayOfWeek: a.dayOfWeek,
+          startTime: a.startTime,
+          endTime: a.endTime,
         })),
       });
     }
@@ -210,6 +230,7 @@ export async function updateEmployee(
       phoneNumber: data.phoneNumber?.trim() || null,
       socialSecurityNumber: data.socialSecurityNumber?.trim() || null,
       employmentType: data.employmentType || "FULL_TIME",
+      isFlexibleSchedule: data.isFlexibleSchedule ?? false,
     };
 
     // Only update password if provided
@@ -250,6 +271,19 @@ export async function updateEmployee(
           })),
         });
       }
+    }
+
+    // Update availability records
+    await prisma.availability.deleteMany({ where: { userId: id } });
+    if (!data.isFlexibleSchedule && data.availability && data.availability.length > 0) {
+      await prisma.availability.createMany({
+        data: data.availability.map((a) => ({
+          userId: id,
+          dayOfWeek: a.dayOfWeek,
+          startTime: a.startTime,
+          endTime: a.endTime,
+        })),
+      });
     }
 
     return { success: true };

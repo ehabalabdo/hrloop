@@ -93,6 +93,7 @@ export interface GenerateResult {
   message: string;
   totalShiftsCreated: number;
   understaffedSlots: number;
+  warnings: string[];
   error?: string;
 }
 
