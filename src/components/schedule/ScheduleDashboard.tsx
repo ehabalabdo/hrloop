@@ -446,10 +446,10 @@ export default function ScheduleDashboard({
         )}
       </div>
 
-      {/* ── ACTION BAR ── */}
+      {/* ── ACTION BAR (inline) ── */}
       {(!hasShifts || hasDrafts) && (
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40">
-        <div className="flex gap-2 bg-white p-2 rounded-xl shadow-lg border border-zinc-200">
+      <div className="page-container mt-4 mb-8">
+        <div className="flex gap-2">
           
           {/* Generate Button */}
           {!hasShifts && (
