@@ -214,7 +214,7 @@ export default function SwapDashboard({
   };
 
   return (
-    <div className="min-h-screen pb-28">
+    <div className="min-h-screen pb-20">
       {/* ─── Toast ─── */}
       {toast && (
         <div
@@ -229,7 +229,7 @@ export default function SwapDashboard({
       )}
 
       {/* ─── Header ─── */}
-      <div className="page-container pt-6 pb-2 flex items-center justify-between">
+      <div className="page-container pt-4 pb-1 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-extrabold text-foreground">تبديل الورديات</h1>
           <p className="text-xs text-zinc-400 mt-0.5">
@@ -248,7 +248,7 @@ export default function SwapDashboard({
         </button>
       </div>
 
-      <div className="page-container py-8 section-gap">
+      <div className="page-container py-4 section-gap">
         {/* ─── Create Form ─── */}
         {showForm && (
           <div className="bg-white rounded-2xl border border-zinc-200/50 overflow-hidden">

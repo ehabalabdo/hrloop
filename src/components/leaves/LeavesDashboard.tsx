@@ -167,9 +167,9 @@ export default function LeavesDashboard({
   ];
 
   return (
-    <div className="min-h-screen pb-28">
+    <div className="min-h-screen pb-20">
       {/* ─── Header ─── */}
-      <div className="page-container pt-6 pb-2 flex items-center justify-between">
+      <div className="page-container pt-4 pb-1 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-extrabold text-foreground">الإجازات</h1>
           <p className="text-zinc-400 text-sm">
@@ -188,7 +188,7 @@ export default function LeavesDashboard({
         </button>
       </div>
 
-      <div className="page-container py-6 section-gap">
+      <div className="page-container py-4 section-gap">
         {/* ─── Leave Request Form ─── */}
         {showForm && (
           <div className="bg-white rounded-2xl border border-zinc-200/50 shadow-sm overflow-hidden">

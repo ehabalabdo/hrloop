@@ -65,7 +65,7 @@ export default function ActivityLogView({
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-extrabold text-foreground">Activity Log</h1>
           <p className="text-xs text-zinc-400">
@@ -96,7 +96,7 @@ export default function ActivityLogView({
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4">
         <div className="bg-white rounded-xl border border-zinc-200/50 overflow-hidden">
           {logs.length === 0 ? (
             <div className="p-12 text-center text-zinc-400">

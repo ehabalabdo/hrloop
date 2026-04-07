@@ -229,9 +229,9 @@ export default function PayrollDashboard({
     items.length > 0 && items.every((i: PayrollListItem) => i.isLocked);
 
   return (
-    <div className="min-h-screen pb-28">
+    <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className="page-container pt-6 pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="page-container pt-4 pb-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <p className="text-zinc-400 text-xs font-bold mb-0.5">المحاسبة</p>
           <h1 className="text-xl font-extrabold text-foreground">الرواتب والخصومات</h1>
@@ -245,7 +245,7 @@ export default function PayrollDashboard({
       </div>
 
       {/* Content */}
-      <div className="page-container py-8 section-gap">
+      <div className="page-container py-4 section-gap">
         {/* Summary Cards */}
         <PayrollSummaryCards summary={summary} monthLabel={monthLabel} />
 

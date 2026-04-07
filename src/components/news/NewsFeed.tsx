@@ -171,9 +171,9 @@ export default function NewsFeed({
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className="px-5 pt-6 pb-2">
+      <div className="px-5 pt-4 pb-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Megaphone className="w-5 h-5 text-brand-primary" />

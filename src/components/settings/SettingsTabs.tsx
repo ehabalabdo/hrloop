@@ -35,9 +35,9 @@ export default function SettingsTabs({
   const [tab, setTab] = useState<TabKey>("employees");
 
   return (
-    <div className="min-h-screen pb-28">
+    <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className="page-container pt-6 pb-2">
+      <div className="page-container pt-4 pb-1">
         <h1 className="text-xl font-extrabold text-foreground">إعدادات النظام</h1>
         <p className="text-zinc-400 text-sm">إدارة الموظفين، الفروع والإعدادات العامة</p>
       </div>
@@ -69,7 +69,7 @@ export default function SettingsTabs({
       </div>
 
       {/* Content */}
-      <div className="page-container py-6">
+      <div className="page-container py-4">
         {tab === "employees" && employeeManagement}
         {tab === "settings" && settingsPanel}
         {tab === "branches" && branchManagement}

@@ -114,9 +114,9 @@ export default function DashboardView({
   };
 
   return (
-    <div className="min-h-screen pb-28">
+    <div className="min-h-screen pb-20">
       {/* ─── Page Title ─── */}
-      <div className="page-container pt-6 pb-2 flex items-center justify-between">
+      <div className="page-container pt-4 pb-1 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-extrabold text-foreground">لوحة التحكم</h1>
           <p className="text-zinc-400 text-sm">نظرة شاملة على أداء جميع الفروع</p>
@@ -131,10 +131,10 @@ export default function DashboardView({
         </div>
       </div>
 
-      <div className="page-container mt-6 relative z-10">
+      <div className="page-container mt-3 relative z-10">
 
         {/* ─── KPI Strip ─── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
           <KpiCard
             icon={Users}
             value={metrics.totalStaff}
@@ -170,7 +170,7 @@ export default function DashboardView({
 
         {/* ─── Overtime Alerts ─── */}
         {overtimeAlerts.length > 0 && (
-          <div className="mb-6 rounded-2xl overflow-hidden border border-amber-200/60">
+          <div className="mb-4 rounded-2xl overflow-hidden border border-amber-200/60">
             <div className="bg-amber-50 px-5 py-3.5 flex items-center gap-3 border-b border-amber-200/40">
               <div className="w-8 h-8 rounded-xl bg-amber-500 flex items-center justify-center">
                 <AlertTriangle className="w-4 h-4 text-white" />
@@ -205,7 +205,7 @@ export default function DashboardView({
 
         {/* ─── Top Branches Podium ─── */}
         {metrics.topPerfectBranches.length > 0 && (
-          <div className="mb-6">
+          <div className="mb-4">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center">
                 <Trophy className="w-4 h-4 text-amber-600" />
@@ -247,7 +247,7 @@ export default function DashboardView({
         )}
 
         {/* ─── Tab Switcher ─── */}
-        <div className="flex items-center gap-1 p-1 rounded-2xl bg-zinc-100 border border-zinc-200 mb-5 w-fit">
+        <div className="flex items-center gap-1 p-1 rounded-2xl bg-zinc-100 border border-zinc-200 mb-4 w-fit">
           <button
             onClick={() => setActiveTab("branches")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${

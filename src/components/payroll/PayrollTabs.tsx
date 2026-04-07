@@ -71,7 +71,7 @@ export default function PayrollTabs({
       {/* Content */}
       {tab === "payroll" && payrollDashboard}
       {tab === "disputes" && (
-        <div className="page-container py-8 pb-28">
+        <div className="page-container py-4 pb-20">
           <h2 className="text-xl font-bold text-foreground mb-5">
             اعتراضات العقوبات
           </h2>
@@ -79,7 +79,7 @@ export default function PayrollTabs({
         </div>
       )}
       {tab === "overrides" && (
-        <div className="page-container py-8 pb-28">
+        <div className="page-container py-4 pb-20">
           <h2 className="text-xl font-bold text-foreground mb-5">
             طلبات التعديل اليدوي
           </h2>

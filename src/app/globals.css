@@ -196,7 +196,7 @@ input, select, textarea { font-family: inherit; }
 .section-gap {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1rem;
 }
 
 /* ============================================================

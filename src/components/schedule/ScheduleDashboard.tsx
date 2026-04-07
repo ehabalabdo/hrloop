@@ -236,10 +236,10 @@ export default function ScheduleDashboard({
   const hasDrafts = stats.draftShifts > 0;
 
   return (
-    <div className="min-h-screen pb-36">
+    <div className="min-h-screen pb-20">
       
       {/* ── HEADER ── */}
-      <div className="page-container pt-6 pb-4">
+      <div className="page-container pt-4 pb-3">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-xl font-extrabold text-foreground">جدول الورديات</h1>
@@ -396,7 +396,7 @@ export default function ScheduleDashboard({
       </div>
 
       {/* ── DAY OVERVIEW & BRANCHES ── */}
-      <div className="page-container py-6">
+      <div className="page-container py-4">
         
         {/* Selected Day Header */}
         <div className="flex items-center justify-between mb-5 px-1">

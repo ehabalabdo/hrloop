@@ -78,7 +78,7 @@ export default function AppSidebar({
   return (
     <div className="min-h-screen relative">
       {/* ===== Main Content ===== */}
-      <main className="pb-24">
+      <main className="pb-20">
         {children}
       </main>
 

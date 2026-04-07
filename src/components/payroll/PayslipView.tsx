@@ -111,7 +111,7 @@ export default function PayslipView({ payslip }: { payslip: PayslipData }) {
       </div>
 
       {/* Content */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 space-y-4">
         {/* Financial Summary */}
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 dark:border-brand-purple/20 rounded-2xl p-4 text-center">
