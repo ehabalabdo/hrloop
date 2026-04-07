@@ -453,7 +453,6 @@ export default function ScheduleDashboard({
       </div>
 
       {/* ── ACTION BAR (inline) ── */}
-      {(!hasShifts || hasDrafts) && (
       <div className="page-container mt-4 mb-8">
         <div className="bg-white rounded-xl border border-zinc-200 p-4">
           {/* Date Range Picker */}
@@ -489,20 +488,26 @@ export default function ScheduleDashboard({
           <div className="flex gap-2">
           
           {/* Generate Button */}
-          {!hasShifts && (
-            <button
-              onClick={() => handleAction("generate", () => generateWeeklySchedule(genStart, genEnd))}
-              disabled={actionLoading !== null}
-              className="flex items-center gap-2 px-5 py-2.5 gradient-purple text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
-            >
-              {actionLoading === "generate" ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Wand2 className="w-4 h-4" />
-              )}
-              توليد الورديات
-            </button>
-          )}
+          <button
+            onClick={() => {
+              if (hasShifts) {
+                if (window.confirm("سيتم توليد ورديات جديدة للفترة المحددة. هل تريد الاستمرار؟")) {
+                  handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
+                }
+              } else {
+                handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
+              }
+            }}
+            disabled={actionLoading !== null}
+            className="flex items-center gap-2 px-5 py-2.5 gradient-purple text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
+          >
+            {actionLoading === "generate" ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Wand2 className="w-4 h-4" />
+            )}
+            توليد الورديات
+          </button>
 
           {/* Publish and Clear */}
           {hasDrafts && (
@@ -541,7 +546,6 @@ export default function ScheduleDashboard({
           </div>
         </div>
       </div>
-      )}
 
       {/* ── WARNINGS MODAL ── */}
       {showWarnings && warnings.length > 0 && (
