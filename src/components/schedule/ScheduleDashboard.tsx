@@ -87,6 +87,12 @@ export default function ScheduleDashboard({
   } | null>(null);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [showWarnings, setShowWarnings] = useState(false);
+  const [genStart, setGenStart] = useState(initialWeekStart);
+  const [genEnd, setGenEnd] = useState(() => {
+    const d = new Date(initialWeekStart);
+    d.setDate(d.getDate() + 13);
+    return d.toISOString().split("T")[0];
+  });
 
   // Selected day logic
   const todayStr = new Date().toISOString().split("T")[0];
@@ -246,7 +252,7 @@ export default function ScheduleDashboard({
                 <button
                   onClick={() => {
                     if (window.confirm("سيتم إعادة توليد الورديات لأسبوعين للأماكن غير المغطاة. هل تريد الاستمرار؟")) {
-                      handleAction("generate", () => generateWeeklySchedule(weekStart));
+                      handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
                     }
                   }}
                   disabled={actionLoading !== null}
@@ -449,12 +455,43 @@ export default function ScheduleDashboard({
       {/* ── ACTION BAR (inline) ── */}
       {(!hasShifts || hasDrafts) && (
       <div className="page-container mt-4 mb-8">
-        <div className="flex gap-2">
+        <div className="bg-white rounded-xl border border-zinc-200 p-4">
+          {/* Date Range Picker */}
+          <div className="flex flex-wrap items-center gap-3 mb-3">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-bold text-zinc-500">من</label>
+              <input
+                type="date"
+                value={genStart}
+                onChange={(e) => setGenStart(e.target.value)}
+                className="px-3 py-2 text-sm border border-zinc-200 rounded-lg bg-zinc-50 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-bold text-zinc-500">إلى</label>
+              <input
+                type="date"
+                value={genEnd}
+                onChange={(e) => setGenEnd(e.target.value)}
+                min={genStart}
+                className="px-3 py-2 text-sm border border-zinc-200 rounded-lg bg-zinc-50 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+              />
+            </div>
+            <span className="text-xs text-zinc-400">
+              {(() => {
+                const diff = Math.round((new Date(genEnd).getTime() - new Date(genStart).getTime()) / 86400000) + 1;
+                return `${diff} يوم`;
+              })()}
+            </span>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-2">
           
           {/* Generate Button */}
           {!hasShifts && (
             <button
-              onClick={() => handleAction("generate", () => generateWeeklySchedule(weekStart))}
+              onClick={() => handleAction("generate", () => generateWeeklySchedule(genStart, genEnd))}
               disabled={actionLoading !== null}
               className="flex items-center gap-2 px-5 py-2.5 gradient-purple text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
             >
@@ -471,7 +508,7 @@ export default function ScheduleDashboard({
           {hasDrafts && (
             <>
               <button
-                onClick={() => handleAction("publish", () => publishSchedule(weekStart))}
+                onClick={() => handleAction("publish", () => publishSchedule(genStart, genEnd))}
                 disabled={actionLoading !== null}
                 className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
               >
@@ -486,7 +523,7 @@ export default function ScheduleDashboard({
               <button
                 onClick={() => {
                   if (window.confirm("هل أنت متأكد من حذف جميع المسودات لهذين الأسبوعين؟")) {
-                    handleAction("clear", () => clearWeekDrafts(weekStart));
+                    handleAction("clear", () => clearWeekDrafts(genStart, genEnd));
                   }
                 }}
                 disabled={actionLoading !== null}
@@ -501,6 +538,7 @@ export default function ScheduleDashboard({
             </>
           )}
 
+          </div>
         </div>
       </div>
       )}

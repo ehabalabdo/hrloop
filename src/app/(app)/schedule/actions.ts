@@ -89,6 +89,20 @@ function getBiweeklyEnd(monday: Date): Date {
   return d;
 }
 
+/** Build array of Date objects from start to end (inclusive) */
+function getDateRange(start: Date, end: Date): Date[] {
+  const dates: Date[] = [];
+  const current = new Date(start);
+  current.setHours(0, 0, 0, 0);
+  const endTime = new Date(end);
+  endTime.setHours(23, 59, 59, 999);
+  while (current <= endTime) {
+    dates.push(new Date(current));
+    current.setDate(current.getDate() + 1);
+  }
+  return dates;
+}
+
 /** dayOfWeek in our DB: 0=Sunday, 6=Saturday. JS Date.getDay() is same. */
 function dateToDayOfWeek(date: Date): number {
   return date.getDay();
@@ -239,13 +253,18 @@ export async function getWeeklySchedule(
 // ============================================================
 
 export async function generateWeeklySchedule(
-  weekStartISO: string
+  weekStartISO: string,
+  endDateISO?: string
 ): Promise<GenerateResult> {
   try {
     const monday = new Date(weekStartISO);
     monday.setHours(0, 0, 0, 0);
-    const biweeklyEnd = getBiweeklyEnd(monday);
-    const allDates = getBiweeklyDates(monday);
+    const biweeklyEnd = endDateISO
+      ? (() => { const d = new Date(endDateISO); d.setHours(23, 59, 59, 999); return d; })()
+      : getBiweeklyEnd(monday);
+    const allDates = endDateISO
+      ? getDateRange(monday, biweeklyEnd)
+      : getBiweeklyDates(monday);
 
     // 1. Check for existing drafts in the 2-week range (prevent duplicates)
     const existingDrafts = await prisma.shift.count({
@@ -321,15 +340,19 @@ export async function generateWeeklySchedule(
     );
 
     // Per-week hour tracking (reset each 7-day week)
-    // Week 1: days 0-6, Week 2: days 7-13
-    const employeeHoursWeek1: Map<string, number> = new Map();
-    const employeeHoursWeek2: Map<string, number> = new Map();
+    // Dynamic: group days into 7-day weeks
+    const employeeHoursPerWeek: Map<number, Map<string, number>> = new Map();
     type EmployeeWithIncludes = (typeof employees)[number];
     type BranchGenWithIncludes = (typeof branches)[number];
-    employees.forEach((e: EmployeeWithIncludes) => {
-      employeeHoursWeek1.set(e.id, 0);
-      employeeHoursWeek2.set(e.id, 0);
-    });
+    const getWeekIndex = (dayIdx: number) => Math.floor(dayIdx / 7);
+    const getEmployeeHoursMap = (weekIdx: number): Map<string, number> => {
+      if (!employeeHoursPerWeek.has(weekIdx)) {
+        const m = new Map<string, number>();
+        employees.forEach((e: EmployeeWithIncludes) => m.set(e.id, 0));
+        employeeHoursPerWeek.set(weekIdx, m);
+      }
+      return employeeHoursPerWeek.get(weekIdx)!;
+    };
 
     // Track per-employee per-day assignments (prevent same day double booking)
     const employeeDayAssigned: Set<string> = new Set();
@@ -352,8 +375,7 @@ export async function generateWeeklySchedule(
       const date = allDates[dayIdx];
       const dow = dateToDayOfWeek(date);
       const dateStr = toDateStr(date);
-      const isWeek2 = dayIdx >= 7;
-      const employeeHours = isWeek2 ? employeeHoursWeek2 : employeeHoursWeek1;
+      const employeeHours = getEmployeeHoursMap(getWeekIndex(dayIdx));
 
       // Get all branch slots for this day
       interface BranchSlot {
@@ -582,12 +604,15 @@ export async function generateWeeklySchedule(
 // ============================================================
 
 export async function publishSchedule(
-  weekStartISO: string
+  weekStartISO: string,
+  endDateISO?: string
 ): Promise<{ success: boolean; message: string; count: number }> {
   try {
     const monday = new Date(weekStartISO);
     monday.setHours(0, 0, 0, 0);
-    const biweeklyEnd = getBiweeklyEnd(monday);
+    const biweeklyEnd = endDateISO
+      ? (() => { const d = new Date(endDateISO); d.setHours(23, 59, 59, 999); return d; })()
+      : getBiweeklyEnd(monday);
 
     const result = await prisma.shift.updateMany({
       where: {
@@ -617,12 +642,15 @@ export async function publishSchedule(
 // ============================================================
 
 export async function clearWeekDrafts(
-  weekStartISO: string
+  weekStartISO: string,
+  endDateISO?: string
 ): Promise<{ success: boolean; message: string; count: number }> {
   try {
     const monday = new Date(weekStartISO);
     monday.setHours(0, 0, 0, 0);
-    const biweeklyEnd = getBiweeklyEnd(monday);
+    const biweeklyEnd = endDateISO
+      ? (() => { const d = new Date(endDateISO); d.setHours(23, 59, 59, 999); return d; })()
+      : getBiweeklyEnd(monday);
 
     const result = await prisma.shift.deleteMany({
       where: {
