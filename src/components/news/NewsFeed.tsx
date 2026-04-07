@@ -70,6 +70,7 @@ export default function NewsFeed({
   const [content, setContent] = useState("");
   const [mediaUrl, setMediaUrl] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
@@ -103,6 +104,7 @@ export default function NewsFeed({
 
       const data = await res.json();
       setMediaUrl(data.url);
+      setPreviewUrl(data.previewUrl || data.url);
       setMediaType(data.mediaType);
     } catch {
       alert("فشل رفع الملف");
@@ -124,6 +126,7 @@ export default function NewsFeed({
       if (result.success) {
         setContent("");
         setMediaUrl(null);
+        setPreviewUrl(null);
         setMediaType(null);
         setShowComposer(false);
         // Refresh
@@ -212,9 +215,9 @@ export default function NewsFeed({
               {mediaUrl && (
                 <div className="relative mt-3 rounded-2xl overflow-hidden bg-surface-hover">
                   {mediaType === "image" ? (
-                    <img src={mediaUrl} alt="مرفق" className="w-full max-h-64 object-cover" />
+                    <img src={previewUrl || mediaUrl} alt="مرفق" className="w-full max-h-64 object-cover" />
                   ) : mediaType === "video" ? (
-                    <video src={mediaUrl} controls className="w-full max-h-64" />
+                    <video src={previewUrl || mediaUrl} controls className="w-full max-h-64" />
                   ) : (
                     <div className="flex items-center gap-3 p-4" dir="rtl">
                       <FileText className="w-8 h-8 text-brand-purple" />
@@ -222,7 +225,7 @@ export default function NewsFeed({
                     </div>
                   )}
                   <button
-                    onClick={() => { setMediaUrl(null); setMediaType(null); }}
+                    onClick={() => { setMediaUrl(null); setPreviewUrl(null); setMediaType(null); }}
                     className="absolute top-2 left-2 bg-black/60 text-white rounded-full p-1.5 hover:bg-black/80 transition"
                   >
                     <X className="w-4 h-4" />
@@ -277,7 +280,7 @@ export default function NewsFeed({
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => { setShowComposer(false); setContent(""); setMediaUrl(null); setMediaType(null); }}
+                  onClick={() => { setShowComposer(false); setContent(""); setMediaUrl(null); setPreviewUrl(null); setMediaType(null); }}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:bg-zinc-50 transition"
                 >
                   إلغاء

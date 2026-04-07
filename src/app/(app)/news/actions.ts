@@ -6,6 +6,7 @@
 
 import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { getDownloadUrl } from "@vercel/blob";
 
 export interface AnnouncementItem {
   id: string;
@@ -46,19 +47,21 @@ export async function getAnnouncements(page = 1, limit = 20): Promise<{
   ]);
 
   return {
-    items: items.map((a: typeof items[number]) => ({
-      id: a.id,
-      content: a.content,
-      mediaUrl: a.mediaUrl,
-      mediaType: a.mediaType,
-      isPinned: a.isPinned,
-      createdAt: a.createdAt.toISOString(),
-      author: {
-        id: a.author.id,
-        fullName: a.author.fullName,
-        role: a.author.role,
-      },
-    })),
+    items: await Promise.all(
+      items.map(async (a: typeof items[number]) => ({
+        id: a.id,
+        content: a.content,
+        mediaUrl: a.mediaUrl ? await getDownloadUrl(a.mediaUrl) : null,
+        mediaType: a.mediaType,
+        isPinned: a.isPinned,
+        createdAt: a.createdAt.toISOString(),
+        author: {
+          id: a.author.id,
+          fullName: a.author.fullName,
+          role: a.author.role,
+        },
+      }))
+    ),
     total,
   };
 }
