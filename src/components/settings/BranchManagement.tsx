@@ -468,7 +468,7 @@ export default function BranchManagement({
                     {branch.geofenceRadius}م
                   </span>
                   {branch.manager && (
-                    <span className="text-violet-600 font-medium flex items-center gap-1.5">
+                    <span className="text-[#E20074] font-medium flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5" />
                       {branch.manager.fullName}
                     </span>

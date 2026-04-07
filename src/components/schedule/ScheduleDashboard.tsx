@@ -562,7 +562,7 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
       {/* Avatar */}
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
         isManager 
-          ? "bg-gradient-to-br from-violet-500 to-purple-600 text-white" 
+          ? "bg-gradient-to-br from-[#702F8A] to-[#E20074] text-white" 
           : "bg-gradient-to-br from-blue-500 to-indigo-600 text-white"
       }`}>
         {getInitials(entry.userName)}

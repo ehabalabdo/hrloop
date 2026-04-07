@@ -93,8 +93,8 @@ export default async function Home() {
           </div>
 
           <div className="bg-background rounded-2xl p-5 text-center">
-            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
-              <Clock className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <div className="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Clock className="w-5 h-5 text-pink-600 dark:text-pink-400" />
             </div>
             <h3 className="font-semibold text-foreground text-sm mb-1">
               Smart Scheduling

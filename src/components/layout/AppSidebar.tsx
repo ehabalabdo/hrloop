@@ -45,8 +45,8 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  OWNER: "from-violet-500 to-purple-600",
-  MANAGER: "from-blue-500 to-indigo-600",
+  OWNER: "from-[#702F8A] to-[#E20074]",
+  MANAGER: "from-[#E20074] to-[#FF2D9B]",
   STAFF: "from-emerald-500 to-teal-600",
 };
 

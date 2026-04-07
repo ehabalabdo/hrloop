@@ -186,7 +186,7 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
                         <button
                           onClick={() => handleSave(key)}
                           disabled={isPending && savingKey === key}
-                          className="p-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-50 transition-colors"
+                          className="p-2 rounded-lg bg-[#E20074] hover:bg-[#B8005D] text-white disabled:opacity-50 transition-colors"
                           title="Save"
                         >
                           {isPending && savingKey === key ? (

@@ -88,8 +88,8 @@ export default function AuditTrailViewer({
     DISPUTE_SUBMITTED: "bg-brand-purple/10 text-brand-purple dark:text-brand-purple",
     DISPUTE_APPROVED: "bg-brand-primary/10 dark:bg-brand-primary/10 text-brand-primary dark:text-brand-primary",
     DISPUTE_REJECTED: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
-    OFFLINE_SYNC: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
-    SETTING_UPDATE: "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400",
+    OFFLINE_SYNC: "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400",
+    SETTING_UPDATE: "bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-400",
   };
 
   const defaultBadge = "bg-surface-hover text-muted";
@@ -105,14 +105,14 @@ export default function AuditTrailViewer({
             placeholder="Search logs..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm border border-border-main rounded-xl bg-surface text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
+            className="w-full pl-9 pr-4 py-2 text-sm border border-border-main rounded-xl bg-surface text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none"
           />
         </div>
 
         <select
           value={filterAction}
           onChange={(e) => setFilterAction(e.target.value)}
-          className="text-sm border border-border-main rounded-xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-violet-500 outline-none"
+          className="text-sm border border-border-main rounded-xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-pink-500 outline-none"
         >
           <option value="">All Actions</option>
           {actionTypes.map((a: string) => (
@@ -125,7 +125,7 @@ export default function AuditTrailViewer({
         <select
           value={filterActor}
           onChange={(e) => setFilterActor(e.target.value)}
-          className="text-sm border border-border-main rounded-xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-violet-500 outline-none"
+          className="text-sm border border-border-main rounded-xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-pink-500 outline-none"
         >
           <option value="">All Actors</option>
           {actors.map((a: { id: string; name: string }) => (
@@ -138,7 +138,7 @@ export default function AuditTrailViewer({
         <button
           onClick={applyFilters}
           disabled={isPending}
-          className="p-2 rounded-xl bg-violet-600 text-white hover:bg-violet-700 disabled:opacity-50 transition-colors"
+          className="p-2 rounded-xl bg-[#E20074] text-white hover:bg-[#B8005D] disabled:opacity-50 transition-colors"
           title="Refresh"
         >
           {isPending ? (

@@ -252,9 +252,9 @@ export default function MapPicker({
                 key={idx}
                 type="button"
                 onClick={() => selectResult(result)}
-                className="w-full text-right px-3 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-violet-50 dark:hover:bg-violet-900/20 border-b border-border-main last:border-0 flex items-start gap-2 transition-colors"
+                className="w-full text-right px-3 py-2.5 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-pink-50 dark:hover:bg-pink-900/20 border-b border-border-main last:border-0 flex items-start gap-2 transition-colors"
               >
-                <MapPin className="w-3.5 h-3.5 text-violet-500 mt-0.5 flex-shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-pink-500 mt-0.5 flex-shrink-0" />
                 <span className="line-clamp-2">{result.display_name}</span>
               </button>
             ))}

@@ -955,7 +955,7 @@ export default function EmployeeManagement({
                     {emp.availability.map((a) => (
                       <span
                         key={a.dayOfWeek}
-                        className="px-2 py-0.5 rounded-full text-xs font-medium bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400"
+                        className="px-2 py-0.5 rounded-full text-xs font-medium bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
                       >
                         {DAY_LABELS[a.dayOfWeek]}
                       </span>

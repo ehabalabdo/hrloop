@@ -152,7 +152,7 @@ export default function DashboardView({
             icon={Users}
             value={metrics.totalStaff}
             label="إجمالي الموظفين"
-            gradient="from-violet-500 to-purple-600"
+            gradient="from-[#702F8A] to-[#E20074]"
           />
           <KpiCard
             icon={Timer}
