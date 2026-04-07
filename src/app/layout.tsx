@@ -35,10 +35,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f5f7fa" },
-    { media: "(prefers-color-scheme: dark)", color: "#0f172a" },
-  ],
+  themeColor: "#f5f7fa",
 };
 
 export default function RootLayout({
@@ -47,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" suppressHydrationWarning style={{ colorScheme: 'light' }}>
       <body
         className={`${ibmArabic.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >

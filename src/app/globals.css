@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Force light mode — dark: prefixes only activate via .dark class (never added) */
+@custom-variant dark (&:is(.dark *));
+
 /* ============================================================
    HR Loop — Design System v2
    Clean, professional, Arabic-first UI
@@ -49,32 +52,7 @@
   --sidebar-active-text: #4f46e5;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f172a;
-    --foreground: #e2e8f0;
-    --surface: #1e293b;
-    --surface-hover: #243044;
-    --border: #334155;
-    --border-light: #1e293b;
-    --muted: #94a3b8;
-    --muted-light: #64748b;
-
-    --brand-primary-subtle: rgba(79, 70, 229, 0.15);
-    --brand-accent-subtle: rgba(14, 165, 233, 0.15);
-
-    --success-subtle: rgba(16, 185, 129, 0.1);
-    --warning-subtle: rgba(245, 158, 11, 0.1);
-    --danger-subtle: rgba(239, 68, 68, 0.1);
-    --info-subtle: rgba(14, 165, 233, 0.1);
-
-    --sidebar-bg: #1e293b;
-    --sidebar-border: #334155;
-    --sidebar-text: #94a3b8;
-    --sidebar-active-bg: rgba(79, 70, 229, 0.15);
-    --sidebar-active-text: #818cf8;
-  }
-}
+/* Dark mode disabled — app always uses light theme */
 
 @theme inline {
   --color-background: var(--background);
@@ -137,11 +115,7 @@ input, select, textarea {
   -webkit-backdrop-filter: blur(20px);
 }
 
-@media (prefers-color-scheme: dark) {
-  .glass {
-    background: rgba(30, 41, 59, 0.85);
-  }
-}
+/* Glass always uses light variant */
 
 /* Safe area padding for bottom nav (iPhone notch) */
 .safe-area-pb {
@@ -167,11 +141,7 @@ input, select, textarea {
 .elevation-2 { box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03); }
 .elevation-3 { box-shadow: 0 12px 40px -8px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); }
 
-@media (prefers-color-scheme: dark) {
-  .elevation-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.12); }
-  .elevation-2 { box-shadow: 0 4px 16px -4px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.15); }
-  .elevation-3 { box-shadow: 0 12px 40px -8px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.2); }
-}
+/* Elevation always uses light variant */
 
 /* Card base utility */
 .card {
