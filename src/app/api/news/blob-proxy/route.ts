@@ -15,8 +15,23 @@ export async function GET(request: NextRequest) {
 
   try {
     const downloadUrl = await getDownloadUrl(url);
-    // Redirect to the signed URL — browser will load directly
-    return NextResponse.redirect(downloadUrl);
+    const res = await fetch(downloadUrl, { cache: "no-store" });
+
+    if (!res.ok) {
+      console.error("Blob fetch failed:", res.status, res.statusText);
+      return NextResponse.json({ error: "فشل تحميل الملف" }, { status: 502 });
+    }
+
+    const buffer = Buffer.from(await res.arrayBuffer());
+    const contentType = res.headers.get("content-type") || "application/octet-stream";
+
+    return new NextResponse(buffer, {
+      headers: {
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=3600, s-maxage=3600",
+        "Content-Length": String(buffer.length),
+      },
+    });
   } catch (error) {
     console.error("Blob proxy error:", error);
     return NextResponse.json({ error: "فشل تحميل الملف" }, { status: 500 });
