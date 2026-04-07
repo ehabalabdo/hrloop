@@ -69,8 +69,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("News upload error:", error);
+    const message = error instanceof Error ? error.message : "فشل رفع الملف";
     return NextResponse.json(
-      { error: "فشل رفع الملف" },
+      { error: `فشل رفع الملف: ${message}` },
       { status: 500 }
     );
   }
