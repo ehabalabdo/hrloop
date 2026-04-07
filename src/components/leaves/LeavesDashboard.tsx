@@ -168,50 +168,43 @@ export default function LeavesDashboard({
 
   return (
     <div className="min-h-screen pb-28">
-      {/* ─── Header ─── */}
-      <div className="glass-strong sticky top-0 z-20">
-        <div className="page-container py-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm">
-              <TreePalm className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-foreground">
-                الإجازات
-              </h1>
-              <p className="text-sm text-muted mt-0.5">
-                {pendingCount > 0
-                  ? `${pendingCount} طلب بانتظار الموافقة`
-                  : "جميع الطلبات مُعالجة"}
-              </p>
-            </div>
+      {/* ─── Header Banner ─── */}
+      <div className="gradient-purple px-6 py-7 sm:py-8 relative overflow-hidden">
+        <div className="page-container relative z-10 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-extrabold text-white mb-0.5">الإجازات</h1>
+            <p className="text-white/60 text-sm">
+              {pendingCount > 0
+                ? `${pendingCount} طلب بانتظار الموافقة`
+                : "جميع الطلبات مُعالجة"}
+            </p>
           </div>
-
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-2xl bg-brand-primary hover:bg-brand-primary/90 text-white shadow-lg shadow-brand-magenta/20 transition-all active:scale-95"
+            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-xl bg-white text-brand-purple shadow-lg transition-all active:scale-95"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">طلب إجازة</span>
             <span className="sm:hidden">جديد</span>
           </button>
         </div>
+        <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
       </div>
 
-      <div className="page-container py-8 section-gap">
-        {/* ─── Leave Request Form (Bottom Sheet style) ─── */}
+      <div className="page-container py-6 section-gap">
+        {/* ─── Leave Request Form ─── */}
         {showForm && (
-          <div className="bg-surface rounded-3xl border border-border-main shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-border-main">
-              <h3 className="text-base font-bold text-foreground">
+          <div className="bg-white rounded-2xl border border-zinc-200/50 shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-zinc-100">
+              <h3 className="text-sm font-bold text-foreground">
                 طلب إجازة جديد
               </h3>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-5 space-y-4">
               {/* Employee */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   الموظف
                 </label>
                 <div className="relative">
@@ -222,7 +215,7 @@ export default function LeavesDashboard({
                         onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                           setFormUserId(e.target.value)
                         }
-                        className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                        className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                       >
                         {employees.map(
                           (emp: { id: string; name: string; role: string }) => (
@@ -235,7 +228,7 @@ export default function LeavesDashboard({
                       <ChevronDown className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" />
                     </>
                   ) : (
-                    <div className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300">
+                    <div className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground">
                       {employees.find(e => e.id === currentUserId)?.name ?? "—"}
                     </div>
                   )}
@@ -244,7 +237,7 @@ export default function LeavesDashboard({
 
               {/* Leave Type */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   نوع الإجازة
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -253,10 +246,10 @@ export default function LeavesDashboard({
                       key={type}
                       type="button"
                       onClick={() => setFormType(type)}
-                      className={`px-4 py-3 rounded-2xl text-sm font-semibold transition-all ${
+                      className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
                         formType === type
-                          ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                          : "bg-surface-hover text-muted hover:bg-surface-hover"
+                          ? "gradient-purple text-white shadow-purple-sm"
+                          : "bg-zinc-50 text-zinc-600 border border-zinc-200 hover:bg-zinc-100"
                       }`}
                     >
                       {LEAVE_TYPE_LABELS[type]}
@@ -268,61 +261,51 @@ export default function LeavesDashboard({
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
-                    من تاريخ
-                  </label>
+                  <label className="block text-xs font-bold text-zinc-500 mb-1.5">من تاريخ</label>
                   <input
                     type="date"
                     value={formStart}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setFormStart(e.target.value)
-                    }
-                    className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormStart(e.target.value)}
+                    className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
-                    إلى تاريخ
-                  </label>
+                  <label className="block text-xs font-bold text-zinc-500 mb-1.5">إلى تاريخ</label>
                   <input
                     type="date"
                     value={formEnd}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      setFormEnd(e.target.value)
-                    }
-                    className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormEnd(e.target.value)}
+                    className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   />
                 </div>
               </div>
 
               {/* Reason */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   السبب <span className="text-zinc-400 font-normal">(اختياري)</span>
                 </label>
                 <textarea
                   value={formReason}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setFormReason(e.target.value)
-                  }
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormReason(e.target.value)}
                   rows={2}
-                  className="w-full text-sm border border-border-main rounded-2xl px-4 py-3 bg-surface-hover text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                  className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   placeholder="مثال: إجازة عائلية..."
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 pt-1">
+              <div className="flex gap-2 pt-1">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="flex-1 px-4 py-3.5 text-sm font-bold rounded-2xl bg-surface-hover hover:bg-surface-hover text-muted transition-colors"
+                  className="flex-1 px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={isPending}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold rounded-2xl bg-brand-purple hover:bg-brand-primary-dark text-white disabled:opacity-50 transition-all shadow-lg shadow-brand-purple/20"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl gradient-purple text-white disabled:opacity-50 transition-all shadow-purple-sm"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -351,10 +334,10 @@ export default function LeavesDashboard({
                     setRequests(data);
                   });
                 }}
-                className={`shrink-0 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                className={`shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                   statusFilter === f.value
-                    ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                    : "bg-surface text-muted border border-border-main"
+                    ? "gradient-purple text-white shadow-purple-sm"
+                    : "bg-white text-zinc-500 border border-zinc-200/50 hover:bg-zinc-50"
                 }`}
               >
                 {f.label}
@@ -369,7 +352,7 @@ export default function LeavesDashboard({
 
           <button
             onClick={handleExport}
-            className="shrink-0 p-2.5 rounded-2xl bg-surface border border-border-main text-zinc-500 hover:text-brand-purple transition-colors"
+            className="shrink-0 p-2.5 rounded-xl bg-white border border-zinc-200/50 text-zinc-400 hover:text-brand-purple transition-colors"
             title="تصدير CSV"
           >
             <Download className="w-4 h-4" />
@@ -386,9 +369,9 @@ export default function LeavesDashboard({
         {/* ─── Leave Requests — Card List (mobile) ─── */}
         <div className="space-y-3">
           {filtered.length === 0 ? (
-            <div className="text-center py-16 bg-surface/60 rounded-3xl border border-border-main">
-              <Calendar className="w-12 h-12 mx-auto text-zinc-200 dark:text-zinc-700 mb-3" />
-              <p className="text-sm font-semibold text-muted">
+            <div className="text-center py-16 bg-white rounded-2xl border border-zinc-200/50">
+              <Calendar className="w-10 h-10 mx-auto text-zinc-200 mb-3" />
+              <p className="text-sm font-bold text-zinc-400">
                 لا توجد طلبات إجازة
               </p>
             </div>
@@ -396,71 +379,76 @@ export default function LeavesDashboard({
             filtered.map((r: LeaveRequestItem) => (
               <div
                 key={r.id}
-                className="bg-surface/60 rounded-3xl border border-border-main shadow-sm overflow-hidden"
+                className="bg-white rounded-2xl border border-zinc-200/50 overflow-hidden"
               >
                 {/* Card Header */}
-                <div className="px-5 py-4 flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-sm font-bold text-foreground truncate">
-                        {r.userName}
-                      </h4>
-                      <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${LEAVE_STATUS_COLORS[r.status].bg} ${LEAVE_STATUS_COLORS[r.status].text}`}
-                      >
-                        {r.status === "PENDING" && <Clock className="w-3 h-3" />}
-                        {r.status === "APPROVED" && <Check className="w-3 h-3" />}
-                        {LEAVE_STATUS_LABELS[r.status]}
-                      </span>
+                <div className="px-4 py-3.5 flex items-start justify-between">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-9 h-9 rounded-xl gradient-purple flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      {r.userName?.slice(0, 2)}
                     </div>
-                    <p className="text-xs text-muted">
-                      {r.branchName ?? "بدون فرع"}
-                    </p>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <h4 className="text-sm font-bold text-foreground truncate">
+                          {r.userName}
+                        </h4>
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${LEAVE_STATUS_COLORS[r.status].bg} ${LEAVE_STATUS_COLORS[r.status].text}`}
+                        >
+                          {r.status === "PENDING" && <Clock className="w-2.5 h-2.5" />}
+                          {r.status === "APPROVED" && <Check className="w-2.5 h-2.5" />}
+                          {LEAVE_STATUS_LABELS[r.status]}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-zinc-400">
+                        {r.branchName ?? "بدون فرع"}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Actions */}
                   {r.status === "PENDING" && (
-                    <div className="flex items-center gap-1.5 shrink-0 mr-2">
+                    <div className="flex items-center gap-1 shrink-0 mr-2">
                       <button
                         onClick={() => {
                           setReviewingId(r.id);
                           setReviewNote("");
                         }}
-                        className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition-colors"
+                        className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors"
                         title="مراجعة"
                       >
-                        <Check className="w-4 h-4" />
+                        <Check className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleCancel(r.id, r.userId)}
                         disabled={isPending}
-                        className="p-2 rounded-xl bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 hover:bg-red-100 transition-colors"
+                        className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                         title="إلغاء"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   )}
                 </div>
 
                 {/* Card Body: details in a clean grid */}
-                <div className="px-5 pb-4 grid grid-cols-3 gap-3">
-                  <div className="bg-surface-hover/40 rounded-2xl px-3 py-2.5 text-center">
-                    <span className="text-xs text-zinc-400 font-medium block mb-0.5">النوع</span>
-                    <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                <div className="px-4 pb-3.5 grid grid-cols-3 gap-2">
+                  <div className="bg-zinc-50 rounded-xl px-3 py-2 text-center">
+                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">النوع</span>
+                    <span className="text-xs font-bold text-zinc-700">
                       {LEAVE_TYPE_LABELS[r.type]}
                     </span>
                   </div>
-                  <div className="bg-surface-hover/40 rounded-2xl px-3 py-2.5 text-center">
-                    <span className="text-xs text-zinc-400 font-medium block mb-0.5">المدة</span>
-                    <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300" dir="ltr">
+                  <div className="bg-zinc-50 rounded-xl px-3 py-2 text-center">
+                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">المدة</span>
+                    <span className="text-[11px] font-bold text-zinc-700" dir="ltr">
                       {new Date(r.startDate).toLocaleDateString("ar-SA", { month: "short", day: "numeric" })}
                       {" – "}
                       {new Date(r.endDate).toLocaleDateString("ar-SA", { month: "short", day: "numeric" })}
                     </span>
                   </div>
-                  <div className="bg-surface-hover/40 rounded-2xl px-3 py-2.5 text-center">
-                    <span className="text-xs text-zinc-400 font-medium block mb-0.5">الأيام</span>
+                  <div className="bg-zinc-50 rounded-xl px-3 py-2 text-center">
+                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">الأيام</span>
                     <span className="text-lg font-bold text-brand-purple">{r.days}</span>
                   </div>
                 </div>
@@ -468,10 +456,10 @@ export default function LeavesDashboard({
                 {/* Paid / Reason strip */}
                 {(r.reason || true) && (
                   <div className="px-5 pb-4 flex items-center gap-3 text-xs">
-                    <span className={`px-2.5 py-1 rounded-full font-bold ${
+                    <span className={`px-2.5 py-1 rounded-lg font-bold ${
                       r.isPaid
-                        ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400"
-                        : "bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400"
+                        ? "bg-emerald-50 text-emerald-600"
+                        : "bg-red-50 text-red-600"
                     }`}>
                       {r.isPaid ? "مدفوعة" : "بدون راتب"}
                     </span>
@@ -491,10 +479,10 @@ export default function LeavesDashboard({
       {/* ─── Review Modal (Bottom Sheet) ─── */}
       {reviewingId && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-surface rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-md">
-            <div className="p-6 space-y-5">
-              <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto sm:hidden" />
-              <h3 className="text-base font-bold text-foreground">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md">
+            <div className="p-5 space-y-4">
+              <div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto sm:hidden" />
+              <h3 className="text-sm font-bold text-foreground">
                 مراجعة طلب الإجازة
               </h3>
 
@@ -504,15 +492,15 @@ export default function LeavesDashboard({
                   setReviewNote(e.target.value)
                 }
                 rows={3}
-                className="w-full text-sm border border-border-main rounded-2xl px-4 py-3 bg-surface-hover text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                 placeholder="ملاحظة للموظف (اختياري)..."
               />
 
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 <button
                   onClick={() => handleReview("APPROVED")}
                   disabled={isPending}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 transition-colors"
                 >
                   <Check className="w-4 h-4" />
                   قبول
@@ -520,14 +508,14 @@ export default function LeavesDashboard({
                 <button
                   onClick={() => handleReview("REJECTED")}
                   disabled={isPending}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold rounded-2xl bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 transition-colors"
                 >
                   <X className="w-4 h-4" />
                   رفض
                 </button>
                 <button
                   onClick={() => setReviewingId(null)}
-                  className="px-4 py-3.5 text-sm font-bold rounded-2xl bg-surface-hover text-muted hover:bg-zinc-200 transition-colors"
+                  className="px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
                 >
                   إلغاء
                 </button>

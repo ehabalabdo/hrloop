@@ -70,9 +70,9 @@ export default function PayrollTable({
 
   if (sorted.length === 0) {
     return (
-      <div className="bg-surface/60 border border-border-main rounded-3xl p-8 text-center">
-        <AlertTriangle className="w-8 h-8 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
-        <p className="text-sm text-muted-light">
+      <div className="bg-white border border-zinc-200/50 rounded-2xl p-8 text-center">
+        <AlertTriangle className="w-8 h-8 text-zinc-200 mx-auto mb-3" />
+        <p className="text-sm font-bold text-zinc-400">
           لا توجد بيانات رواتب. قم بتوليد كشوفات الرواتب أولاً.
         </p>
       </div>
@@ -87,10 +87,10 @@ export default function PayrollTable({
           <button
             key={opt.key}
             onClick={() => handleSort(opt.key)}
-            className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border transition-all active:scale-95 shrink-0 ${
+            className={`flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl border transition-all active:scale-95 shrink-0 ${
               sortField === opt.key
-                ? "bg-brand-purple text-white border-brand-purple shadow-sm"
-                : "bg-surface text-muted border-border-main"
+                ? "gradient-purple text-white border-transparent shadow-purple-sm"
+                : "bg-white text-zinc-500 border-zinc-200/50"
             }`}
           >
             {opt.label}
@@ -103,7 +103,7 @@ export default function PayrollTable({
       {sorted.map((item) => (
         <div
           key={item.userId}
-          className="bg-surface/60 border border-border-main rounded-3xl p-4 shadow-sm"
+          className="bg-white border border-zinc-200/50 rounded-2xl p-4"
         >
           {/* Header: name + status + view button */}
           <div className="flex items-center justify-between mb-3">
@@ -134,24 +134,24 @@ export default function PayrollTable({
             <div className="flex items-center gap-2 shrink-0">
               {/* Status */}
               {item.isLocked ? (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold">
                   <Lock className="w-3 h-3" />
                   مقفل
                 </span>
               ) : item.payslipId ? (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-xs font-bold">
                   <Unlock className="w-3 h-3" />
                   مسودة
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-surface-hover text-zinc-400 text-xs font-bold">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-50 text-zinc-400 text-xs font-bold">
                   بدون
                 </span>
               )}
 
               <button
                 onClick={() => onViewPayslip(item.userId)}
-                className="p-2 rounded-2xl bg-brand-purple/10 hover:bg-brand-purple/15 text-brand-purple transition-colors active:scale-95"
+                className="p-2 rounded-xl bg-brand-purple/10 hover:bg-brand-purple/15 text-brand-purple transition-colors active:scale-95"
                 title="عرض كشف الراتب"
               >
                 <Eye className="w-4 h-4" />
@@ -161,23 +161,23 @@ export default function PayrollTable({
 
           {/* Stats grid */}
           <div className="grid grid-cols-4 gap-2">
-            <div className="text-center p-2 bg-surface-hover/40 rounded-2xl">
-              <div className="text-sm font-bold text-zinc-700 dark:text-zinc-300">{item.totalShifts}</div>
+            <div className="text-center p-2 bg-zinc-50 rounded-xl">
+              <div className="text-sm font-bold text-zinc-700">{item.totalShifts}</div>
               <div className="text-[9px] text-zinc-400">الورديات</div>
             </div>
-            <div className="text-center p-2 bg-surface-hover/40 rounded-2xl">
-              <div className={`text-sm font-bold ${item.totalLateMinutes > 0 ? "text-red-600 dark:text-red-400" : "text-zinc-400"}`}>
+            <div className="text-center p-2 bg-zinc-50 rounded-xl">
+              <div className={`text-sm font-bold ${item.totalLateMinutes > 0 ? "text-red-600" : "text-zinc-400"}`}>
                 {item.totalLateMinutes > 0 ? item.totalLateMinutes.toFixed(0) : "0"}
               </div>
               <div className="text-[9px] text-zinc-400">تأخير (د)</div>
             </div>
-            <div className="text-center p-2 bg-surface-hover/40 rounded-2xl">
-              <div className={`text-sm font-bold ${item.totalDeductions > 0 ? "text-red-600 dark:text-red-400" : "text-zinc-400"}`}>
+            <div className="text-center p-2 bg-zinc-50 rounded-xl">
+              <div className={`text-sm font-bold ${item.totalDeductions > 0 ? "text-red-600" : "text-zinc-400"}`}>
                 {item.totalDeductions > 0 ? `-$${formatCurrency(item.totalDeductions)}` : "$0"}
               </div>
               <div className="text-[9px] text-zinc-400">الخصومات</div>
             </div>
-            <div className="text-center p-2 bg-brand-purple/5 dark:bg-brand-purple/10 rounded-2xl">
+            <div className="text-center p-2 bg-brand-purple/5 rounded-xl">
               <div className="text-sm font-bold text-brand-purple">${formatCurrency(item.finalNetSalary)}</div>
               <div className="text-[9px] text-zinc-400">صافي الراتب</div>
             </div>

@@ -44,7 +44,7 @@ export default function PayrollSummaryCards({
       icon: Users,
       label: "الموظفين",
       value: summary.totalEmployees.toString(),
-      color: "text-brand-purple dark:text-brand-purple-light",
+      color: "text-brand-purple",
       iconBg: "bg-brand-purple/10",
     },
     {
@@ -52,7 +52,7 @@ export default function PayrollSummaryCards({
       label: "متوسط الراتب",
       value: formatCurrency(summary.averageSalary),
       prefix: "$",
-      color: "text-brand-purple dark:text-brand-purple-light",
+      color: "text-brand-purple",
       iconBg: "bg-brand-purple/10",
     },
     {
@@ -60,23 +60,23 @@ export default function PayrollSummaryCards({
       label: "إجمالي الخصومات",
       value: formatCurrency(summary.totalDeductions),
       prefix: "-$",
-      color: "text-red-600 dark:text-red-400",
-      iconBg: "bg-red-100 dark:bg-red-950/40",
+      color: "text-red-600",
+      iconBg: "bg-red-50",
     },
     {
       icon: TrendingUp,
       label: "إجمالي المكافآت",
       value: formatCurrency(summary.totalBonuses),
       prefix: "+$",
-      color: "text-emerald-600 dark:text-emerald-400",
-      iconBg: "bg-emerald-100 dark:bg-emerald-950/40",
+      color: "text-emerald-600",
+      iconBg: "bg-emerald-50",
     },
     {
       icon: Clock,
       label: "العمل الإضافي (ساعات)",
       value: summary.totalOvertimePay.toFixed(1),
-      color: "text-amber-600 dark:text-amber-400",
-      iconBg: "bg-amber-100 dark:bg-amber-950/40",
+      color: "text-amber-600",
+      iconBg: "bg-amber-50",
     },
   ];
 
@@ -89,7 +89,7 @@ export default function PayrollSummaryCards({
         {cards.map((card) => (
           <div
             key={card.label}
-            className={`flex items-center gap-2.5 px-3 py-3 bg-surface/60 border border-border-main rounded-2xl shadow-sm min-w-fit shrink-0 ${
+            className={`flex items-center gap-2.5 px-3 py-3 bg-white border border-zinc-200/50 rounded-xl min-w-fit shrink-0 ${
               card.large ? "min-w-[180px]" : ""
             }`}
           >

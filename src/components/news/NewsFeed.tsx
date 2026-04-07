@@ -39,9 +39,9 @@ interface NewsFeedProps {
 }
 
 const ROLE_BADGE: Record<string, { label: string; color: string }> = {
-  OWNER: { label: "مالك", color: "bg-brand-purple text-white" },
-  MANAGER: { label: "مدير", color: "bg-brand-primary text-white" },
-  STAFF: { label: "موظف", color: "bg-zinc-200 dark:bg-zinc-700 text-muted" },
+  OWNER: { label: "مالك", color: "bg-brand-purple/10 text-brand-purple" },
+  MANAGER: { label: "مدير", color: "bg-blue-50 text-blue-600" },
+  STAFF: { label: "موظف", color: "bg-zinc-100 text-zinc-500" },
 };
 
 function timeAgo(dateStr: string): string {
@@ -173,43 +173,42 @@ export default function NewsFeed({
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
-      <div className="bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-purple-light px-5 pt-8 pb-10 relative overflow-hidden">
-        <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full" />
-        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full" />
-        <div className="relative z-10">
+      <div className="gradient-purple relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-10 w-20 h-20 bg-white/5 rounded-full translate-y-1/2" />
+        <div className="px-5 pt-8 pb-10 relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Megaphone className="w-7 h-7 text-white/80" />
-              <h1 className="text-2xl font-bold text-white">الأخبار</h1>
+              <Megaphone className="w-6 h-6 text-white/80" />
+              <h1 className="text-lg font-bold text-white">الأخبار</h1>
             </div>
             {canPost && (
               <button
                 onClick={() => setShowComposer(!showComposer)}
-                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-2xl px-4 py-2.5 text-sm font-bold transition-all active:scale-95"
+                className="flex items-center gap-2 bg-white text-brand-purple rounded-xl px-4 py-2.5 text-xs font-bold transition-all active:scale-95"
               >
                 <Plus className="w-4 h-4" />
                 منشور جديد
               </button>
             )}
           </div>
-          <p className="text-sm text-white/50 mt-2">
+          <p className="text-xs text-white/60 mt-2">
             {total} منشور
           </p>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
       </div>
 
       {/* Composer */}
       {showComposer && canPost && (
         <div className="px-5 -mt-1 mb-4">
-          <div className="bg-surface/60 rounded-3xl border border-border-main shadow-lg overflow-hidden">
+          <div className="bg-white rounded-2xl border border-zinc-200/50 overflow-hidden">
             <div className="p-5">
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="اكتب منشوراً..."
                 rows={3}
-                className="w-full rounded-2xl border border-border-main bg-surface-hover px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none resize-none"
+                className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none resize-none"
                 dir="rtl"
               />
 
@@ -223,7 +222,7 @@ export default function NewsFeed({
                   ) : (
                     <div className="flex items-center gap-3 p-4" dir="rtl">
                       <FileText className="w-8 h-8 text-brand-purple" />
-                      <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">ملف مرفق</span>
+                      <span className="text-sm font-medium text-zinc-700">ملف مرفق</span>
                     </div>
                   )}
                   <button
@@ -245,7 +244,7 @@ export default function NewsFeed({
             </div>
 
             {/* Actions Bar */}
-            <div className="flex items-center justify-between border-t border-border-main px-5 py-3">
+            <div className="flex items-center justify-between border-t border-zinc-100 px-5 py-3">
               <div className="flex items-center gap-2">
                 <input
                   ref={fileRef}
@@ -257,7 +256,7 @@ export default function NewsFeed({
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted hover:bg-surface-hover transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:bg-zinc-50 transition disabled:opacity-50"
                 >
                   <ImageIcon className="w-4 h-4" />
                   صورة
@@ -265,7 +264,7 @@ export default function NewsFeed({
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted hover:bg-surface-hover transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:bg-zinc-50 transition disabled:opacity-50"
                 >
                   <Video className="w-4 h-4" />
                   فيديو
@@ -273,7 +272,7 @@ export default function NewsFeed({
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-muted hover:bg-surface-hover transition disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:bg-zinc-50 transition disabled:opacity-50"
                 >
                   <Paperclip className="w-4 h-4" />
                   ملف
@@ -283,7 +282,7 @@ export default function NewsFeed({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setShowComposer(false); setContent(""); setMediaUrl(null); setMediaType(null); }}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 hover:bg-surface-hover transition"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-500 hover:bg-zinc-50 transition"
                 >
                   إلغاء
                 </button>
@@ -309,8 +308,8 @@ export default function NewsFeed({
       <div className="px-5 -mt-1 space-y-4">
         {items.length === 0 && (
           <div className="text-center py-20">
-            <Megaphone className="w-14 h-14 mx-auto text-zinc-200 dark:text-zinc-700 mb-4" />
-            <p className="text-muted font-semibold">لا توجد منشورات بعد</p>
+            <Megaphone className="w-12 h-12 mx-auto text-zinc-200 mb-4" />
+            <p className="font-bold text-zinc-400">لا توجد منشورات بعد</p>
             {canPost && (
               <p className="text-muted-light text-sm mt-1">
                 كن أول من ينشر خبراً!
@@ -326,15 +325,15 @@ export default function NewsFeed({
           return (
             <article
               key={item.id}
-              className={`bg-surface/60 rounded-3xl border shadow-sm overflow-hidden ${
+              className={`bg-white rounded-2xl border overflow-hidden ${
                 item.isPinned
-                  ? "border-brand-purple/30 dark:border-brand-purple/20 ring-1 ring-brand-purple/10"
-                  : "border-border-main"
+                  ? "border-brand-purple/30 ring-1 ring-brand-purple/10"
+                  : "border-zinc-200/50"
               }`}
             >
               {/* Pinned badge */}
               {item.isPinned && (
-                <div className="bg-brand-purple/5 dark:bg-brand-purple/10 px-5 py-2 flex items-center gap-2 text-xs font-bold text-brand-purple">
+                <div className="bg-brand-purple/5 px-5 py-2 flex items-center gap-2 text-xs font-bold text-brand-purple">
                   <Pin className="w-3.5 h-3.5" />
                   مثبّت
                 </div>
@@ -344,7 +343,7 @@ export default function NewsFeed({
               <div className="px-5 pt-4 pb-2 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {/* Avatar */}
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-purple to-brand-magenta flex items-center justify-center text-white font-bold text-sm shrink-0">
+                  <div className="w-9 h-9 rounded-xl gradient-purple flex items-center justify-center text-white font-bold text-sm shrink-0">
                     {item.author.fullName.charAt(0)}
                   </div>
                   <div>
@@ -352,7 +351,7 @@ export default function NewsFeed({
                       <span className="text-sm font-bold text-foreground">
                         {item.author.fullName}
                       </span>
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${badge.color}`}>
+                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-bold ${badge.color}`}>
                         {badge.label}
                       </span>
                     </div>
@@ -365,16 +364,16 @@ export default function NewsFeed({
                   <div className="relative">
                     <button
                       onClick={() => setMenuOpen(menuOpen === item.id ? null : item.id)}
-                      className="p-2 rounded-xl hover:bg-surface-hover transition"
+                      className="p-2 rounded-xl hover:bg-zinc-50 transition"
                     >
                       <MoreVertical className="w-4 h-4 text-zinc-400" />
                     </button>
                     {menuOpen === item.id && (
-                      <div className="absolute left-0 top-10 z-10 w-40 bg-surface rounded-2xl shadow-xl border border-border-main overflow-hidden">
+                      <div className="absolute left-0 top-10 z-10 w-40 bg-white rounded-xl shadow-xl border border-zinc-200/50 overflow-hidden">
                         {isOwner && (
                           <button
                             onClick={() => { handlePin(item.id); setMenuOpen(null); }}
-                            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-surface-hover transition"
+                            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-zinc-700 hover:bg-zinc-50 transition"
                           >
                             {item.isPinned ? <PinOff className="w-4 h-4" /> : <Pin className="w-4 h-4" />}
                             {item.isPinned ? "إلغاء التثبيت" : "تثبيت"}
@@ -383,7 +382,7 @@ export default function NewsFeed({
                         {canDelete && (
                           <button
                             onClick={() => { handleDelete(item.id); setMenuOpen(null); }}
-                            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition"
+                            className="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition"
                           >
                             <Trash2 className="w-4 h-4" />
                             حذف
@@ -397,7 +396,7 @@ export default function NewsFeed({
 
               {/* Content */}
               <div className="px-5 pb-3">
-                <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed whitespace-pre-wrap" dir="rtl">
+                <p className="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap" dir="rtl">
                   {item.content}
                 </p>
               </div>
@@ -422,11 +421,11 @@ export default function NewsFeed({
                       href={item.mediaUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-4 rounded-2xl bg-surface-hover/60 hover:bg-surface-hover transition" dir="rtl"
+                      className="flex items-center gap-3 p-4 rounded-2xl bg-zinc-50 hover:bg-zinc-100 transition" dir="rtl"
                     >
                       <FileText className="w-8 h-8 text-brand-purple shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">ملف مرفق</span>
+                        <span className="text-sm font-medium text-zinc-700">ملف مرفق</span>
                       </div>
                       <Download className="w-5 h-5 text-zinc-400" />
                     </a>

@@ -129,10 +129,10 @@ export default function AvailabilityDashboard({
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="bg-surface/60 border border-border-main shadow-sm rounded-3xl p-5">
+      <div className="bg-white border border-zinc-200/50 rounded-2xl p-5">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-11 h-11 rounded-2xl bg-brand-purple/10 dark:bg-brand-purple/20 flex items-center justify-center">
-            <Clock className="w-5 h-5 text-brand-purple" />
+          <div className="w-10 h-10 rounded-xl gradient-purple flex items-center justify-center">
+            <Clock className="w-5 h-5 text-white" />
           </div>
           <div>
             <h2 className="text-base font-bold text-foreground">
@@ -160,10 +160,10 @@ export default function AvailabilityDashboard({
         )}
 
         {!locked && (
-          <div className="flex items-start gap-2 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/40 rounded-2xl p-3.5">
-            <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 shrink-0" />
+          <div className="flex items-start gap-2 bg-blue-50 border border-blue-200 rounded-xl p-3.5">
+            <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
             <div>
-              <div className="text-xs text-blue-700 dark:text-blue-300">
+              <div className="text-xs text-blue-700">
                 بعد الحفظ، الساعات بتنقفل لمدة <strong>أسبوع كامل</strong> ما بتقدر تعدلها. تأكد من اختياراتك!
               </div>
             </div>
@@ -173,11 +173,11 @@ export default function AvailabilityDashboard({
 
       {/* Stats */}
       <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1">
-        <div className="shrink-0 bg-surface/60 border border-border-main shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-white border border-zinc-200/50 rounded-xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-brand-purple">{activeDaysCount}</div>
           <div className="text-xs text-zinc-500 mt-0.5">أيام الدوام</div>
         </div>
-        <div className="shrink-0 bg-surface/60 border border-border-main shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
+        <div className="shrink-0 bg-white border border-zinc-200/50 rounded-xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-emerald-600">{totalHours.toFixed(1)}</div>
           <div className="text-xs text-zinc-500 mt-0.5">ساعة / أسبوع</div>
         </div>
@@ -262,7 +262,7 @@ export default function AvailabilityDashboard({
         <button
           onClick={handleSave}
           disabled={isPending || activeDaysCount === 0}
-          className="w-full flex items-center justify-center gap-2 bg-brand-purple hover:bg-brand-primary-dark text-white rounded-2xl py-3.5 text-sm font-bold shadow-lg shadow-brand-purple/20 disabled:opacity-50 transition active:scale-95"
+          className="w-full flex items-center justify-center gap-2 gradient-purple text-white rounded-xl py-3.5 text-sm font-bold shadow-purple-sm disabled:opacity-50 transition active:scale-95"
         >
           {isPending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -274,7 +274,7 @@ export default function AvailabilityDashboard({
       )}
 
       {locked && (
-        <div className="flex items-center justify-center gap-2 bg-surface-hover text-zinc-500 rounded-2xl py-3.5 text-sm font-bold">
+        <div className="flex items-center justify-center gap-2 bg-zinc-100 text-zinc-500 rounded-xl py-3.5 text-sm font-bold">
           <Lock className="w-4 h-4" />
           الساعات مقفلة — ما تقدر تعدل هسه
         </div>

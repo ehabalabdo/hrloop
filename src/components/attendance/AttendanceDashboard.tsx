@@ -376,7 +376,7 @@ export default function AttendanceDashboard({
       )}
 
       {/* ─── Hero Section: Timer + Greeting ─── */}
-      <div className="relative bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-purple-light overflow-hidden">
+      <div className="relative gradient-purple overflow-hidden">
         {/* Decorative circles */}
         <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full" />
         <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full" />
@@ -386,7 +386,7 @@ export default function AttendanceDashboard({
           <div className="flex items-center justify-between mb-8">
             <div>
               <p className="text-sm text-white/60 font-medium">{getGreeting()}</p>
-              <h1 className="text-2xl font-bold text-white mt-0.5">{userName}</h1>
+              <h1 className="text-lg font-bold text-white mt-0.5">{userName}</h1>
             </div>
             <div className="flex items-center gap-2">
               {isOnline ? (
@@ -409,7 +409,7 @@ export default function AttendanceDashboard({
         </div>
 
         {/* Curved bottom edge */}
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
+        <div className="absolute bottom-0 left-0 right-0 h-4 bg-background rounded-t-2xl" />
       </div>
 
       {/* ─── Main Content ─── */}
@@ -427,7 +427,7 @@ export default function AttendanceDashboard({
 
         {/* Branch Operating Hours */}
         {state.currentShift && (branchOpenTime || state.currentShift.branchOpenTime) && (
-          <div className="w-full bg-surface/60 rounded-3xl border border-border-main shadow-sm px-5 py-4">
+          <div className="w-full bg-white rounded-2xl border border-zinc-200/50 px-5 py-4">
             <div className="flex items-center gap-2.5 mb-2">
               <Store className="w-5 h-5 text-brand-purple/60" />
               <span className="text-sm font-bold text-foreground">ساعات دوام الفرع</span>
@@ -443,12 +443,12 @@ export default function AttendanceDashboard({
 
         {/* No Shift Message */}
         {!state.currentShift && (
-          <div className="w-full text-center py-12 bg-surface/60 rounded-3xl border border-border-main shadow-sm">
+          <div className="w-full text-center py-12 bg-white rounded-2xl border border-zinc-200/50">
             <CalendarEmpty />
-            <p className="text-muted font-semibold text-base mt-4">
+            <p className="text-zinc-500 font-bold text-base mt-4">
               لا توجد وردية مجدولة اليوم
             </p>
-            <p className="text-muted-light text-sm mt-1.5">
+            <p className="text-zinc-400 text-sm mt-1.5">
               تواصل مع مديرك لمعرفة جدول العمل
             </p>
           </div>
@@ -467,10 +467,10 @@ export default function AttendanceDashboard({
         {/* Message Banner */}
         {message && (
           <div
-            className={`w-full rounded-2xl px-5 py-3.5 text-sm font-medium ${
+            className={`w-full rounded-xl px-5 py-3.5 text-sm font-medium ${
               message.type === "success"
-                ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40"
-                : "bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 border border-red-200/60 dark:border-red-800/40"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
+                : "bg-red-50 text-red-700 border border-red-200/60"
             }`}
           >
             {message.text}
@@ -489,7 +489,7 @@ export default function AttendanceDashboard({
 
         {/* ─── Action Buttons (the hero CTA) ─── */}
         {state.currentShift && (
-          <div className="w-full bg-surface/60 rounded-3xl border border-border-main shadow-sm px-6 py-8">
+          <div className="w-full bg-white rounded-2xl border border-zinc-200/50 px-6 py-8">
             <ActionButtons
               status={state.status}
               isWithinFence={geofenceResult?.isWithinFence ?? false}
@@ -518,10 +518,10 @@ export default function AttendanceDashboard({
       {/* ─── Manual Override Modal (Arabic, bottom sheet on mobile) ─── */}
       {showOverrideForm && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center">
-          <div className="bg-surface rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-2xl">
             {/* Modal Header */}
-            <div className="p-6 border-b border-border-main">
-              <div className="w-10 h-1 bg-zinc-200 dark:bg-zinc-700 rounded-full mx-auto mb-4 sm:hidden" />
+            <div className="p-5 border-b border-zinc-100">
+              <div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-lg font-bold text-foreground flex items-center gap-2.5">
                 <Camera className="w-5 h-5 text-brand-purple" />
                 طلب تجاوز يدوي
@@ -531,9 +531,9 @@ export default function AttendanceDashboard({
               </p>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-5 space-y-4">
               {/* Camera Preview / Captured Photo */}
-              <div className="relative w-full aspect-[4/3] bg-surface-hover rounded-2xl overflow-hidden">
+              <div className="relative w-full aspect-[4/3] bg-zinc-50 rounded-xl overflow-hidden">
                 {overridePhoto ? (
                   <img
                     src={overridePhoto}
@@ -566,7 +566,7 @@ export default function AttendanceDashboard({
                     {!streamRef.current ? (
                       <button
                         onClick={startCamera}
-                        className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-primary-dark transition flex items-center justify-center gap-2"
+                        className="flex-1 gradient-purple text-white rounded-xl py-3.5 text-sm font-bold transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
                         تشغيل الكاميرا
@@ -574,7 +574,7 @@ export default function AttendanceDashboard({
                     ) : (
                       <button
                         onClick={capturePhoto}
-                        className="flex-1 bg-brand-primary text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-primary/90 transition flex items-center justify-center gap-2"
+                        className="flex-1 gradient-purple text-white rounded-xl py-3.5 text-sm font-bold transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
                         التقاط صورة
@@ -587,7 +587,7 @@ export default function AttendanceDashboard({
                       setOverridePhoto(null);
                       startCamera();
                     }}
-                    className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-200 rounded-2xl py-3.5 text-sm font-bold hover:bg-surface-hover transition"
+                    className="flex-1 bg-zinc-100 text-zinc-700 rounded-xl py-3.5 text-sm font-bold hover:bg-zinc-200 transition"
                   >
                     إعادة التصوير
                   </button>
@@ -596,7 +596,7 @@ export default function AttendanceDashboard({
 
               {/* Reason */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   سبب التجاوز
                 </label>
                 <textarea
@@ -604,7 +604,7 @@ export default function AttendanceDashboard({
                   onChange={(e) => setOverrideReason(e.target.value)}
                   rows={3}
                   placeholder="مثال: انحراف GPS، مدخل المبنى خارج النطاق..."
-                  className="w-full rounded-2xl border border-border-main bg-surface-hover px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
                 />
               </div>
 
@@ -612,14 +612,14 @@ export default function AttendanceDashboard({
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={cancelOverride}
-                  className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-2xl py-3.5 text-sm font-bold hover:bg-surface-hover transition"
+                  className="flex-1 bg-zinc-100 text-zinc-600 rounded-xl py-3.5 text-sm font-bold hover:bg-zinc-200 transition"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={submitOverride}
                   disabled={!overridePhoto || !overrideReason.trim() || isLoading}
-                  className="flex-1 bg-brand-purple text-white rounded-2xl py-3.5 text-sm font-bold hover:bg-brand-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+                  className="flex-1 gradient-purple text-white rounded-xl py-3.5 text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />

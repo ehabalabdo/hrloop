@@ -43,12 +43,12 @@ const SWAP_STATUS_LABELS: Record<string, string> = {
 };
 
 const SWAP_STATUS_COLORS: Record<string, string> = {
-  PENDING_REPLACEMENT: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  PENDING_MANAGER: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  APPROVED: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  REJECTED_REPLACEMENT: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  REJECTED_MANAGER: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  CANCELLED: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
+  PENDING_REPLACEMENT: "bg-yellow-50 text-yellow-700",
+  PENDING_MANAGER: "bg-blue-50 text-blue-700",
+  APPROVED: "bg-green-50 text-green-700",
+  REJECTED_REPLACEMENT: "bg-red-50 text-red-700",
+  REJECTED_MANAGER: "bg-red-50 text-red-700",
+  CANCELLED: "bg-zinc-100 text-zinc-500",
 };
 
 const STATUS_FILTERS = [
@@ -229,56 +229,55 @@ export default function SwapDashboard({
       )}
 
       {/* ─── Header ─── */}
-      <div className="glass-strong sticky top-0 z-20">
-        <div className="page-container py-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm">
-              <ArrowLeftRight className="w-6 h-6 text-white" />
-            </div>
+      <div className="gradient-purple relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-10 w-20 h-20 bg-white/5 rounded-full translate-y-1/2" />
+        <div className="page-container py-6 relative">
+          <p className="text-white/70 text-xs font-bold mb-1">إدارة التبديلات</p>
+          <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold text-foreground">
+              <h1 className="text-lg font-bold text-white">
                 تبديل الورديات
               </h1>
-              <p className="text-sm text-muted mt-0.5">
+              <p className="text-xs text-white/60 mt-0.5">
                 {pendingCount > 0
                   ? `${pendingCount} طلب بانتظار ردك`
                   : "لا توجد طلبات معلّقة"}
               </p>
             </div>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-purple transition-all active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">طلب تبديل</span>
+              <span className="sm:hidden">جديد</span>
+            </button>
           </div>
-
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-2xl bg-brand-primary hover:bg-brand-primary/90 text-white shadow-lg shadow-brand-magenta/20 transition-all active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">طلب تبديل</span>
-            <span className="sm:hidden">جديد</span>
-          </button>
         </div>
       </div>
 
       <div className="page-container py-8 section-gap">
         {/* ─── Create Form ─── */}
         {showForm && (
-          <div className="bg-surface rounded-3xl border border-border-main shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-border-main">
-              <h3 className="text-base font-bold text-foreground">
+          <div className="bg-white rounded-2xl border border-zinc-200/50 overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-zinc-100">
+              <h3 className="text-sm font-bold text-foreground">
                 طلب تبديل جديد
               </h3>
             </div>
 
-            <div className="p-6 space-y-5">
+            <div className="p-5 space-y-4">
               {/* Select Shift */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   اختر الوردية
                 </label>
                 <div className="relative">
                   <select
                     value={selectedShift}
                     onChange={(e) => setSelectedShift(e.target.value)}
-                    className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   >
                     <option value="">— اختر وردية —</option>
                     {myShifts.map((s) => (
@@ -296,14 +295,14 @@ export default function SwapDashboard({
 
               {/* Select Replacement */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   اختر الموظف البديل
                 </label>
                 <div className="relative">
                   <select
                     value={selectedReplacement}
                     onChange={(e) => setSelectedReplacement(e.target.value)}
-                    className="w-full text-sm border border-border-main rounded-2xl px-4 py-3.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                    className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground appearance-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   >
                     <option value="">— اختر موظف —</option>
                     {eligibleReplacements.map((u) => (
@@ -318,30 +317,30 @@ export default function SwapDashboard({
 
               {/* Reason */}
               <div>
-                <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                   السبب <span className="text-zinc-400 font-normal">(اختياري)</span>
                 </label>
                 <textarea
                   value={formReason}
                   onChange={(e) => setFormReason(e.target.value)}
                   rows={2}
-                  className="w-full text-sm border border-border-main rounded-2xl px-4 py-3 bg-surface-hover text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                  className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                   placeholder="مثال: لدي موعد شخصي..."
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex gap-3 pt-1">
+              <div className="flex gap-2 pt-1">
                 <button
                   onClick={() => setShowForm(false)}
-                  className="flex-1 px-4 py-3.5 text-sm font-bold rounded-2xl bg-surface-hover hover:bg-surface-hover text-muted transition-colors"
+                  className="flex-1 px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
                 >
                   إلغاء
                 </button>
                 <button
                   onClick={handleCreate}
                   disabled={isPending}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-bold rounded-2xl bg-brand-purple hover:bg-brand-primary-dark text-white disabled:opacity-50 transition-all shadow-lg shadow-brand-purple/20"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl gradient-purple text-white disabled:opacity-50 transition-all shadow-purple-sm"
                 >
                   {isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -371,10 +370,10 @@ export default function SwapDashboard({
                   setSwaps(data);
                 });
               }}
-              className={`px-4 py-2 text-xs font-bold rounded-full whitespace-nowrap transition-all ${
+              className={`px-3.5 py-2 text-xs font-bold rounded-xl whitespace-nowrap transition-all ${
                 statusFilter === f.value
-                  ? "bg-brand-purple text-white shadow-md shadow-brand-purple/20"
-                  : "bg-surface text-muted border border-border-main hover:bg-surface-hover"
+                  ? "gradient-purple text-white shadow-purple-sm"
+                  : "bg-white text-zinc-500 border border-zinc-200/50 hover:bg-zinc-50"
               }`}
             >
               {f.label}
@@ -385,8 +384,8 @@ export default function SwapDashboard({
         {/* ─── Swap Cards ─── */}
         {filtered.length === 0 ? (
           <div className="text-center py-16">
-            <ArrowLeftRight className="w-12 h-12 mx-auto text-zinc-300 dark:text-zinc-600 mb-3" />
-            <p className="text-sm text-muted-light">
+            <ArrowLeftRight className="w-10 h-10 mx-auto text-zinc-200 mb-3" />
+            <p className="text-sm font-bold text-zinc-400">
               لا توجد طلبات تبديل
             </p>
           </div>
@@ -406,14 +405,14 @@ export default function SwapDashboard({
               return (
                 <div
                   key={swap.id}
-                  className="bg-surface rounded-3xl border border-border-main shadow-sm overflow-hidden"
+                  className="bg-white rounded-2xl border border-zinc-200/50 overflow-hidden"
                 >
                   {/* Card Header */}
-                  <div className="px-5 py-4 flex items-start justify-between gap-3">
+                  <div className="px-4 py-3.5 flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold ${
                             SWAP_STATUS_COLORS[swap.status] ?? "bg-zinc-100 text-zinc-500"
                           }`}
                         >
@@ -430,8 +429,8 @@ export default function SwapDashboard({
                       </div>
 
                       {/* Shift info */}
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-sm text-zinc-700">
                           <Calendar className="w-3.5 h-3.5 text-zinc-400" />
                           <span className="font-semibold">{formatDate(swap.shiftDate)}</span>
                           <span className="text-zinc-400">
@@ -490,7 +489,7 @@ export default function SwapDashboard({
 
                   {/* Action Buttons */}
                   {(canReplacementRespond || canManagerReview || canCancel) && (
-                    <div className="px-5 py-3 border-t border-border-main flex items-center gap-2">
+                    <div className="px-4 py-3 border-t border-zinc-100 flex items-center gap-2">
                       {/* Replacement can accept/reject */}
                       {canReplacementRespond && (
                         <>
@@ -499,7 +498,7 @@ export default function SwapDashboard({
                               setReviewingSwap(swap);
                               setReviewNote("");
                             }}
-                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-2xl bg-green-500 hover:bg-green-600 text-white transition-colors"
+                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-xl bg-green-500 hover:bg-green-600 text-white transition-colors"
                           >
                             <Check className="w-3.5 h-3.5" />
                             قبول
@@ -507,7 +506,7 @@ export default function SwapDashboard({
                           <button
                             onClick={() => handleReplacementResponse(swap.id, "REJECT")}
                             disabled={isPending}
-                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-2xl bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
                           >
                             <X className="w-3.5 h-3.5" />
                             رفض
@@ -523,7 +522,7 @@ export default function SwapDashboard({
                               setReviewingSwap(swap);
                               setReviewNote("");
                             }}
-                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-2xl bg-green-500 hover:bg-green-600 text-white transition-colors"
+                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-xl bg-green-500 hover:bg-green-600 text-white transition-colors"
                           >
                             <Check className="w-3.5 h-3.5" />
                             موافقة
@@ -531,7 +530,7 @@ export default function SwapDashboard({
                           <button
                             onClick={() => handleManagerReview(swap.id, "REJECTED")}
                             disabled={isPending}
-                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-2xl bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
                           >
                             <X className="w-3.5 h-3.5" />
                             رفض
@@ -544,7 +543,7 @@ export default function SwapDashboard({
                         <button
                           onClick={() => handleCancel(swap.id)}
                           disabled={isPending}
-                          className="px-4 py-2.5 text-xs font-bold rounded-2xl bg-surface-hover hover:bg-surface-hover text-muted transition-colors disabled:opacity-50"
+                          className="px-4 py-2.5 text-xs font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors disabled:opacity-50"
                         >
                           إلغاء الطلب
                         </button>
@@ -565,8 +564,8 @@ export default function SwapDashboard({
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setReviewingSwap(null)}
           />
-          <div className="relative bg-surface rounded-3xl shadow-2xl w-full max-w-md p-6 space-y-4">
-            <h3 className="text-base font-bold text-foreground">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-5 space-y-4">
+            <h3 className="text-sm font-bold text-foreground">
               {reviewingSwap.status === "PENDING_REPLACEMENT"
                 ? "قبول طلب التبديل"
                 : "الموافقة على التبديل"}
@@ -593,22 +592,22 @@ export default function SwapDashboard({
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300 mb-2">
+              <label className="block text-xs font-bold text-zinc-500 mb-1.5">
                 ملاحظة <span className="text-zinc-400 font-normal">(اختياري)</span>
               </label>
               <textarea
                 value={reviewNote}
                 onChange={(e) => setReviewNote(e.target.value)}
                 rows={2}
-                className="w-full text-sm border border-border-main rounded-2xl px-4 py-3 bg-surface-hover text-zinc-700 dark:text-zinc-300 resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
+                className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
                 placeholder="أضف ملاحظة..."
               />
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <button
                 onClick={() => setReviewingSwap(null)}
-                className="flex-1 px-4 py-3 text-sm font-bold rounded-2xl bg-surface-hover hover:bg-surface-hover text-muted transition-colors"
+                className="flex-1 px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
               >
                 رجوع
               </button>
@@ -621,7 +620,7 @@ export default function SwapDashboard({
                   }
                 }}
                 disabled={isPending}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-2xl bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 transition-all shadow-lg shadow-green-500/20"
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 transition-all"
               >
                 {isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
