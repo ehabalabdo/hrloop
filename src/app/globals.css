@@ -1,58 +1,52 @@
 @import "tailwindcss";
 
-/* Force light mode — dark: prefixes only activate via .dark class (never added) */
+/* Force light mode */
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   HR Loop — Design System v2
-   Clean, professional, Arabic-first UI
+   HR Loop — Glassmorphism Design System
+   Purple-accent · Frosted glass · Arabic-first modern UI
    ============================================================ */
 
 :root {
-  --background: #f5f7fa;
-  --foreground: #1e293b;
-  --surface: #ffffff;
-  --surface-hover: #f8fafc;
-  --border: #e2e8f0;
-  --border-light: #f1f5f9;
-  --muted: #64748b;
-  --muted-light: #94a3b8;
+  --background: #ede9fe;
+  --foreground: #1e1b4b;
 
-  /* Brand */
-  --brand-primary: #4f46e5;
-  --brand-primary-light: #6366f1;
-  --brand-primary-dark: #3730a3;
-  --brand-primary-subtle: #eef2ff;
-  --brand-accent: #0ea5e9;
-  --brand-accent-subtle: #e0f2fe;
+  --surface: rgba(255, 255, 255, 0.6);
+  --surface-hover: rgba(255, 255, 255, 0.78);
 
-  /* Legacy aliases for existing components */
-  --brand-purple: #4f46e5;
-  --brand-purple-light: #6366f1;
-  --brand-purple-dark: #312e81;
+  --border: rgba(255, 255, 255, 0.55);
+  --border-light: rgba(255, 255, 255, 0.35);
+
+  --muted: #6b7280;
+  --muted-light: #9ca3af;
+
+  /* Brand Purple */
+  --brand-primary: #7c3aed;
+  --brand-primary-light: #a855f7;
+  --brand-primary-dark: #6d28d9;
+  --brand-primary-subtle: rgba(139, 92, 246, 0.12);
+  --brand-accent: #3b82f6;
+  --brand-accent-subtle: rgba(59, 130, 246, 0.1);
+
+  /* Legacy aliases */
+  --brand-purple: #7c3aed;
+  --brand-purple-light: #a855f7;
+  --brand-purple-dark: #6d28d9;
   --brand-magenta: #ec4899;
   --brand-orange: #f59e0b;
   --brand-orange-dark: #d97706;
 
   /* Status */
   --success: #10b981;
-  --success-subtle: #ecfdf5;
+  --success-subtle: rgba(16, 185, 129, 0.1);
   --warning: #f59e0b;
-  --warning-subtle: #fffbeb;
+  --warning-subtle: rgba(245, 158, 11, 0.08);
   --danger: #ef4444;
-  --danger-subtle: #fef2f2;
-  --info: #0ea5e9;
-  --info-subtle: #e0f2fe;
-
-  /* Sidebar */
-  --sidebar-bg: #ffffff;
-  --sidebar-border: #e2e8f0;
-  --sidebar-text: #475569;
-  --sidebar-active-bg: #eef2ff;
-  --sidebar-active-text: #4f46e5;
+  --danger-subtle: rgba(239, 68, 68, 0.08);
+  --info: #3b82f6;
+  --info-subtle: rgba(59, 130, 246, 0.1);
 }
-
-/* Dark mode disabled — app always uses light theme */
 
 @theme inline {
   --color-background: var(--background);
@@ -75,13 +69,23 @@
   --color-brand-magenta: var(--brand-magenta);
   --color-brand-orange: var(--brand-orange);
   --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-success: var(--success);
+  --color-success-subtle: var(--success-subtle);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
   --font-sans: var(--font-ibm-arabic), var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
-* {
-  -webkit-tap-highlight-color: transparent;
-}
+/* ============================================================
+   Base
+   ============================================================ */
+
+* { -webkit-tap-highlight-color: transparent; }
 
 html {
   scroll-behavior: smooth;
@@ -89,85 +93,128 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 35%, #dbeafe 65%, #ede9fe 100%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-ibm-arabic), var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: contain;
   line-height: 1.7;
+  min-height: 100vh;
+  position: relative;
 }
 
-/* Smooth button press */
-button:active:not(:disabled) {
-  transform: scale(0.97);
+/* Decorative gradient blobs behind glass */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+body::before {
+  top: -12%;
+  right: -8%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.12), transparent 70%);
+}
+body::after {
+  bottom: -8%;
+  left: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08), transparent 70%);
 }
 
-/* Global input styling */
-input, select, textarea {
-  font-family: inherit;
-}
+button:active:not(:disabled) { transform: scale(0.97); }
+input, select, textarea { font-family: inherit; }
 
-/* Glassmorphism utility */
+/* ============================================================
+   Glass Utilities — The core of the design
+   ============================================================ */
+
 .glass {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
 }
 
-/* Glass always uses light variant */
-
-/* Safe area padding for bottom nav (iPhone notch) */
-.safe-area-pb {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+.glass-strong {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
-/* Hide scrollbar for filter chips */
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.glass-subtle {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+
+.glass-purple {
+  background: rgba(124, 58, 237, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(124, 58, 237, 0.1);
 }
 
 /* ============================================================
-   Spatial Design System — Elevation, Spacing, Cards
+   Gradient & Shadow Utilities
    ============================================================ */
 
-/* Elevation layers */
-.elevation-0 { box-shadow: none; }
-.elevation-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02); }
-.elevation-2 { box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03); }
-.elevation-3 { box-shadow: 0 12px 40px -8px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04); }
+.gradient-purple {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+}
 
-/* Elevation always uses light variant */
+.gradient-purple-soft {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(168, 85, 247, 0.06) 100%);
+}
 
-/* Card base utility */
+.shadow-purple {
+  box-shadow: 0 8px 24px -4px rgba(124, 58, 237, 0.3);
+}
+
+.shadow-purple-sm {
+  box-shadow: 0 4px 14px -2px rgba(124, 58, 237, 0.25);
+}
+
+.divider-glass {
+  height: 1px;
+  background: linear-gradient(to left, transparent, rgba(139, 92, 246, 0.2), transparent);
+}
+
+/* ============================================================
+   Card Utilities
+   ============================================================ */
+
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  box-shadow: 0 4px 24px -8px rgba(124, 58, 237, 0.06);
 }
+
 .card-lg {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 24px;
-  box-shadow: 0 4px 16px -4px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.03);
+  box-shadow: 0 8px 32px -8px rgba(124, 58, 237, 0.08);
 }
 
-/* Section containers */
-.section-header {
-  margin-bottom: 1.5rem;
-}
-.section-gap {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
+/* ============================================================
+   Layout Utilities
+   ============================================================ */
 
-/* Page container utility — consistent wide layout */
 .page-container {
   max-width: 960px;
   margin-inline: auto;
@@ -180,7 +227,28 @@ input, select, textarea {
   }
 }
 
-/* Better focus rings */
+.section-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ============================================================
+   Helpers
+   ============================================================ */
+
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 :focus-visible {
   outline: 2px solid var(--brand-primary);
   outline-offset: 2px;

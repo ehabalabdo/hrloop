@@ -171,7 +171,7 @@ export default function NewsFeed({
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="bg-gradient-to-br from-brand-purple-dark via-brand-purple to-brand-purple-light px-5 pt-8 pb-10 relative overflow-hidden">
         <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/5 rounded-full" />

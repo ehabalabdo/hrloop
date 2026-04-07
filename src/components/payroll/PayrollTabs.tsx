@@ -38,9 +38,9 @@ export default function PayrollTabs({
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Tab Bar */}
-        <div className="bg-surface border-b border-border-main sticky top-0 z-30 elevation-2">
+        <div className="glass-strong sticky top-0 z-30">
         <div className="page-container flex gap-2 overflow-x-auto no-scrollbar py-4">
           {TABS.map((t) => {
             const Icon = t.icon;
@@ -51,8 +51,8 @@ export default function PayrollTabs({
                 onClick={() => setTab(t.key)}
                 className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full transition-all active:scale-95 shrink-0 ${
                   tab === t.key
-                    ? "bg-brand-purple text-white shadow-sm"
-                    : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 bg-surface-hover"
+                    ? "gradient-purple text-white shadow-purple-sm"
+                    : "text-zinc-500 hover:text-zinc-700 bg-white/40"
                 }`}
               >
                 <Icon className="w-4 h-4" />

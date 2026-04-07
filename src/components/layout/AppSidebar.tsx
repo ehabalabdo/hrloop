@@ -130,15 +130,15 @@ export default function AppSidebar({
   const mobileItems = visibleItems.slice(0, 5);
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen relative z-[1]">
       {/* ===== Desktop Sidebar ===== */}
-      <aside className="hidden lg:flex flex-col w-[280px] bg-surface border-e border-border-main shrink-0 min-h-screen sticky top-0">
+      <aside className="hidden lg:flex flex-col w-[280px] glass-strong shrink-0 min-h-screen sticky top-0 z-10">
         {/* Logo */}
         <Link
           href="/dashboard"
-          className="flex items-center gap-4 px-7 py-7 border-b border-border-main"
+          className="flex items-center gap-4 px-7 py-7"
         >
-          <div className="w-11 h-11 bg-brand-primary rounded-2xl flex items-center justify-center shadow-md shadow-brand-primary/20">
+          <div className="w-11 h-11 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm">
             <Clock className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -148,6 +148,8 @@ export default function AppSidebar({
             <p className="text-xs text-muted font-medium mt-0.5">نظام إدارة الموظفين</p>
           </div>
         </Link>
+
+        <div className="divider-glass mx-6" />
 
         {/* Nav */}
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
@@ -159,14 +161,14 @@ export default function AppSidebar({
                 href={item.href}
                 className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl text-sm font-medium transition-all duration-150 ${
                   active
-                    ? "bg-brand-primary-subtle text-brand-primary font-semibold elevation-1"
-                    : "text-muted hover:text-foreground hover:bg-surface-hover"
+                    ? "gradient-purple text-white font-semibold shadow-purple-sm"
+                    : "text-muted hover:text-foreground hover:bg-white/40"
                 }`}
               >
-                <item.icon className={`w-5 h-5 shrink-0 ${active ? "text-brand-primary" : ""}`} />
+                <item.icon className="w-5 h-5 shrink-0" />
                 <span>{item.label}</span>
                 {active && (
-                  <div className="ms-auto w-2 h-2 rounded-full bg-brand-primary" />
+                  <div className="ms-auto w-2 h-2 rounded-full bg-white/80" />
                 )}
               </Link>
             );
@@ -174,10 +176,11 @@ export default function AppSidebar({
         </nav>
 
         {/* User Info & Logout */}
-        <div className="px-4 py-5 border-t border-border-main">
-          <div className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-surface-hover">
-            <div className="w-10 h-10 bg-brand-primary/10 rounded-xl flex items-center justify-center shrink-0">
-              <User className="w-5 h-5 text-brand-primary" />
+        <div className="px-4 py-5">
+          <div className="divider-glass mx-2 mb-4" />
+          <div className="flex items-center gap-3.5 px-4 py-3.5 rounded-2xl bg-white/40">
+            <div className="w-10 h-10 gradient-purple rounded-xl flex items-center justify-center shrink-0">
+              <User className="w-5 h-5 text-white" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-foreground truncate">
@@ -201,9 +204,9 @@ export default function AppSidebar({
       </aside>
 
       {/* ===== Mobile Top Bar ===== */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-border-main px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 glass-strong px-4 py-3 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 gradient-purple rounded-lg flex items-center justify-center shadow-purple-sm">
             <Clock className="w-4 h-4 text-white" />
           </div>
           <span className="text-sm font-bold text-foreground tracking-tight">
@@ -214,7 +217,7 @@ export default function AppSidebar({
         {/* Profile Toggle */}
         <button
           onClick={() => setShowProfile(!showProfile)}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-surface-hover border border-border-main text-foreground"
+          className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/40 border border-white/30 text-foreground"
         >
           <User className="w-4 h-4 text-muted" />
           <span className="text-xs font-semibold max-w-[80px] truncate">{user.fullName}</span>
@@ -229,13 +232,13 @@ export default function AppSidebar({
             className="lg:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm"
             onClick={() => setShowProfile(false)}
           />
-          <div className="lg:hidden fixed top-14 left-4 z-50 w-64 bg-surface rounded-2xl shadow-xl border border-border-main overflow-hidden">
-            <div className="p-4 border-b border-border-main">
+          <div className="lg:hidden fixed top-14 left-4 z-50 w-64 glass-strong rounded-2xl shadow-xl overflow-hidden">
+            <div className="p-4 border-b border-white/30">
               <p className="text-sm font-bold text-foreground">
                 {user.fullName}
               </p>
               <p className="text-xs text-muted mt-1">{user.email}</p>
-              <span className="inline-block mt-2 text-xs font-semibold px-2.5 py-1 rounded-lg bg-brand-primary-subtle text-brand-primary">
+              <span className="inline-block mt-2 text-xs font-semibold px-2.5 py-1 rounded-lg gradient-purple-soft text-brand-purple">
                 {ROLE_LABELS[user.role]}
               </span>
             </div>
@@ -258,7 +261,7 @@ export default function AppSidebar({
       </main>
 
       {/* ===== Mobile Bottom Nav ===== */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/90 backdrop-blur-xl border-t border-border-main safe-area-pb">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 glass-strong safe-area-pb">
         <div className="flex items-stretch justify-around px-2">
           {mobileItems.map((item) => {
             const active = isActive(item.href);
@@ -273,7 +276,7 @@ export default function AppSidebar({
                 }`}
               >
                 {active && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-brand-primary" />
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full gradient-purple" />
                 )}
                 <item.icon className={`w-5 h-5 ${active ? "text-brand-primary" : ""}`} />
                 <span className={`text-xs font-semibold truncate max-w-full ${active ? "text-brand-primary" : ""}`}>

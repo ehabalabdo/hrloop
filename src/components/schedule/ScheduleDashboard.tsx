@@ -230,16 +230,16 @@ export default function ScheduleDashboard({
   const hasDrafts = stats.draftShifts > 0;
 
   return (
-    <div className="min-h-screen bg-zinc-50/50 dark:bg-zinc-950 pb-36 font-sans">
+    <div className="min-h-screen pb-36 font-sans">
       
       {/* ── STICKY TOP NAVIGATION & CALENDAR ── */}
-      <div className="bg-surface elevation-2 border-b border-zinc-200/50 dark:border-zinc-800/80 sticky top-0 z-30">
+      <div className="glass-strong sticky top-0 z-30">
         <div className="page-container pt-7 pb-7">
           
           {/* Header Row */}
           <div className="flex items-center justify-between mb-7">
             <div className="flex items-center gap-4">
-              <div className="w-13 h-13 bg-gradient-to-br from-brand-purple to-brand-purple-dark rounded-2xl flex items-center justify-center shadow-lg shadow-brand-purple/20" style={{ width: '52px', height: '52px' }}>
+              <div className="w-13 h-13 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm" style={{ width: '52px', height: '52px' }}>
                 <CalendarDays className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -261,7 +261,7 @@ export default function ScheduleDashboard({
                     }
                   }}
                   disabled={actionLoading !== null}
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-surface-hover text-zinc-700 dark:text-zinc-200 rounded-xl text-[12px] font-bold shadow-sm disabled:opacity-50 transition-all active:scale-95 border border-border-main hover:bg-surface-hover"
+                  className="flex items-center gap-1.5 px-3.5 py-2 bg-white/40 text-zinc-700 rounded-xl text-[12px] font-bold shadow-sm disabled:opacity-50 transition-all active:scale-95 border border-white/30 hover:bg-white/60"
                 >
                   {actionLoading === "generate" ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -275,10 +275,10 @@ export default function ScheduleDashboard({
           </div>
 
           {/* Week Selector */}
-          <div className="flex items-center bg-surface-hover/50 rounded-2xl p-2 mb-7 border border-border-main/50 relative overflow-hidden gap-2">
+          <div className="flex items-center bg-white/30 rounded-2xl p-2 mb-7 border border-white/30 relative overflow-hidden gap-2">
             <button
               onClick={() => shiftWeek(-7)}
-              className="p-3 bg-white dark:bg-zinc-700 shadow-sm rounded-xl active:scale-95 transition-transform"
+              className="p-3 bg-white/60 shadow-sm rounded-xl active:scale-95 transition-transform"
             >
               <ChevronRight className="w-4 h-4 text-muted" />
             </button>
@@ -301,14 +301,14 @@ export default function ScheduleDashboard({
 
             <button
               onClick={() => shiftWeek(7)}
-              className="p-3 bg-white dark:bg-zinc-700 shadow-sm rounded-xl active:scale-95 transition-transform"
+              className="p-3 bg-white/60 shadow-sm rounded-xl active:scale-95 transition-transform"
             >
               <ChevronLeft className="w-4 h-4 text-muted" />
             </button>
             
             <button 
               onClick={goToCurrentWeek}
-              className="mr-2 px-4 py-3 bg-brand-purple/10 text-brand-purple dark:bg-brand-purple/20 font-bold text-xs rounded-xl active:scale-95 transition-all outline-dashed outline-1 outline-brand-purple/20 flex-1 hover:bg-brand-purple/15"
+              className="mr-2 px-4 py-3 bg-brand-purple/10 text-brand-purple font-bold text-xs rounded-xl active:scale-95 transition-all outline-dashed outline-1 outline-brand-purple/20 flex-1 hover:bg-brand-purple/15"
             >
               اليوم
             </button>
@@ -336,10 +336,10 @@ export default function ScheduleDashboard({
                   onClick={() => setSelectedDay(i)}
                   className={`relative flex-shrink-0 snap-center flex flex-col items-center justify-center w-[72px] h-[86px] rounded-2xl transition-all duration-200 ${
                     isSelected
-                      ? "bg-brand-purple text-white shadow-xl shadow-brand-purple/25 scale-105 z-10"
+                      ? "gradient-purple text-white shadow-purple scale-105 z-10"
                       : isDayToday
                       ? "bg-brand-purple/5 border border-brand-purple/30 text-brand-purple"
-                      : "bg-surface/40 border border-border-main/50 text-muted hover:bg-surface-hover elevation-1"
+                      : "glass border border-white/40 text-muted hover:bg-white/50"
                   }`}
                 >
                   <span className={`text-xs font-semibold mb-1.5 ${isSelected ? "opacity-90" : ""}`}>
@@ -376,7 +376,7 @@ export default function ScheduleDashboard({
             </span>
           </div>
           {isToday && (
-            <span className="px-3.5 py-1.5 bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xs font-extrabold rounded-full uppercase tracking-wider border border-emerald-100 dark:border-emerald-800/50 shadow-sm">
+            <span className="px-3.5 py-1.5 bg-emerald-50/70 text-emerald-700 text-xs font-extrabold rounded-full uppercase tracking-wider border border-emerald-100/50 shadow-sm">
               اليوم الحالي
             </span>
           )}
@@ -384,8 +384,8 @@ export default function ScheduleDashboard({
 
         {/* Branches Feed */}
         {data.branches.length === 0 ? (
-          <div className="bg-surface border border-dashed border-zinc-300 dark:border-zinc-700 rounded-2xl p-12 flex flex-col items-center text-center elevation-1">
-            <div className="w-18 h-18 bg-surface-hover rounded-full flex items-center justify-center mb-5 border border-border-main/50" style={{ width: '72px', height: '72px' }}>
+          <div className="card p-12 flex flex-col items-center text-center">
+            <div className="w-18 h-18 bg-white/50 rounded-full flex items-center justify-center mb-5 border border-white/40" style={{ width: '72px', height: '72px' }}>
               <Briefcase className="w-9 h-9 text-muted-light" />
             </div>
             <h3 className="text-lg text-foreground font-bold mb-2">لا توجد فروع</h3>
@@ -409,12 +409,12 @@ export default function ScheduleDashboard({
               return (
                 <div 
                   key={branch.id}
-                  className={`bg-surface rounded-2xl overflow-visible border transition-all duration-300 relative elevation-1 ${
+                  className={`card overflow-visible transition-all duration-300 relative ${
                     isUnderstaffed 
-                      ? "border-orange-200 dark:border-orange-900/50" 
+                      ? "border-orange-200/50" 
                       : isFull || isOverstaffed
-                      ? "border-emerald-200 dark:border-emerald-900/50"
-                      : "border-zinc-200/70 dark:border-zinc-800/80"
+                      ? "border-emerald-200/50"
+                      : ""
                   }`}
                 >
                   {/* Decorative Status Accent */}
@@ -428,10 +428,10 @@ export default function ScheduleDashboard({
                       {/* Branch Icon */}
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border ${
                         isUnderstaffed 
-                          ? "bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 text-orange-600 dark:from-orange-950/40 dark:to-orange-900/20 dark:border-orange-800/50 dark:text-orange-400" 
+                          ? "bg-gradient-to-br from-orange-50/70 to-orange-100/70 border-orange-200/50 text-orange-600" 
                           : isFull || isOverstaffed 
-                          ? "bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 text-emerald-600 dark:from-emerald-950/40 dark:to-emerald-900/20 dark:border-emerald-800/50 dark:text-emerald-400"
-                          : "bg-gradient-to-br from-zinc-50 to-zinc-100 border-zinc-200 text-zinc-500 dark:from-zinc-800/50 dark:to-zinc-800/20 dark:border-zinc-700/50 dark:text-zinc-400"
+                          ? "bg-gradient-to-br from-emerald-50/70 to-emerald-100/70 border-emerald-200/50 text-emerald-600"
+                          : "bg-gradient-to-br from-white/60 to-white/30 border-white/40 text-zinc-500"
                       }`}>
                         <Building2 className="w-6 h-6" strokeWidth={2.5} />
                       </div>
@@ -461,10 +461,10 @@ export default function ScheduleDashboard({
                   </div>
 
                   {/* Employees Workspace */}
-                  <div className="bg-zinc-50/50 dark:bg-zinc-950/30 p-5 sm:p-6 border-t border-zinc-100/80 dark:border-zinc-800/80 min-h-[7rem] rounded-b-2xl">
+                  <div className="bg-white/30 p-5 sm:p-6 border-t border-white/30 min-h-[7rem] rounded-b-2xl">
                     {assigned === 0 ? (
                       <div className="h-full flex flex-col items-center justify-center py-8 opacity-60">
-                        <div className="w-14 h-14 bg-surface rounded-full flex items-center justify-center mb-3.5 elevation-1 border border-border-main">
+                        <div className="w-14 h-14 bg-white/50 rounded-full flex items-center justify-center mb-3.5 border border-white/40">
                           <Users className="w-6 h-6 text-muted-light" />
                         </div>
                         <span className="text-sm font-semibold text-zinc-500">
@@ -493,14 +493,14 @@ export default function ScheduleDashboard({
       {/* ── FLOATING ACTION BAR ── */}
       {(!hasShifts || hasDrafts) && (
       <div className="fixed bottom-6 left-0 right-0 z-40 px-5 pointer-events-none">
-        <div className="page-container flex gap-3 pointer-events-auto bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl p-3.5 rounded-2xl elevation-3 border border-white/60 dark:border-zinc-700/60 ring-1 ring-black/5 dark:ring-white/5">
+        <div className="page-container flex gap-3 pointer-events-auto glass-strong p-3.5 rounded-2xl shadow-purple">
           
           {/* Generate Button (When 0 shifts) */}
           {!hasShifts && (
             <button
               onClick={() => handleAction("generate", () => generateWeeklySchedule(weekStart))}
               disabled={actionLoading !== null}
-              className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-zinc-900 dark:bg-brand-purple text-white rounded-xl text-base font-bold shadow-lg shadow-zinc-900/20 dark:shadow-brand-purple/30 disabled:opacity-50 transition-all hover:scale-[1.01] active:scale-95"
+              className="flex-1 flex items-center justify-center gap-2.5 py-4 gradient-purple text-white rounded-xl text-base font-bold shadow-purple disabled:opacity-50 transition-all hover:scale-[1.01] active:scale-95"
             >
               {actionLoading === "generate" ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -534,7 +534,7 @@ export default function ScheduleDashboard({
                   }
                 }}
                 disabled={actionLoading !== null}
-                className="flex-1 flex items-center justify-center bg-rose-50 dark:bg-rose-500/10 text-rose-600 rounded-xl shadow-sm disabled:opacity-50 transition-all hover:bg-rose-100 hover:scale-[1.01] active:scale-95 border border-rose-100 dark:border-rose-500/20"
+                className="flex-1 flex items-center justify-center bg-rose-50/70 text-rose-600 rounded-xl shadow-sm disabled:opacity-50 transition-all hover:bg-rose-100/70 hover:scale-[1.01] active:scale-95 border border-rose-100/50"
               >
                 {actionLoading === "clear" ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -552,7 +552,7 @@ export default function ScheduleDashboard({
       {/* ── WARNINGS MODAL ── */}
       {showWarnings && warnings.length > 0 && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <div className="bg-surface rounded-3xl shadow-2xl max-w-md w-full p-6 border border-border-main">
+          <div className="glass-strong rounded-3xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-5 h-5 text-amber-500" />
@@ -564,12 +564,12 @@ export default function ScheduleDashboard({
             </div>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {warnings.map((w, i) => (
-                <div key={i} className="text-[13px] text-zinc-700 dark:text-zinc-300 bg-amber-50 dark:bg-amber-500/10 px-3 py-2 rounded-xl border border-amber-200 dark:border-amber-500/20">
+                <div key={i} className="text-[13px] text-zinc-700 bg-amber-50/60 px-3 py-2 rounded-xl border border-amber-200/40">
                   {w}
                 </div>
               ))}
             </div>
-            <button onClick={() => setShowWarnings(false)} className="mt-4 w-full py-2.5 bg-zinc-900 dark:bg-brand-purple text-white rounded-xl font-bold text-[14px]">
+            <button onClick={() => setShowWarnings(false)} className="mt-4 w-full py-2.5 gradient-purple text-white rounded-xl font-bold text-[14px] shadow-purple-sm">
               حسناً
             </button>
           </div>
@@ -601,16 +601,16 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
   return (
     <div className={`group flex items-center justify-between py-4 px-5 rounded-2xl border transition-all ${
       isDraft 
-        ? "bg-amber-50/60 border-amber-200/80 dark:bg-amber-500/5 dark:border-amber-500/20" 
-        : "bg-white border-zinc-100 dark:bg-zinc-900 dark:border-zinc-700/60 elevation-1"
+        ? "bg-amber-50/40 border-amber-200/50" 
+        : "glass border-white/40"
     } hover:shadow flex-wrap sm:flex-nowrap gap-y-3`}>
       
       <div className="flex items-center gap-4">
         {/* Avatar */}
         <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm shrink-0 border ${
           isManager 
-            ? "bg-brand-purple/10 border-brand-purple/20 text-brand-purple dark:bg-brand-purple/20" 
-            : "bg-indigo-50 border-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:border-indigo-500/20 dark:text-indigo-400"
+            ? "bg-brand-purple/10 border-brand-purple/20 text-brand-purple" 
+            : "bg-indigo-50/60 border-indigo-100/50 text-indigo-700"
         }`}>
           {getInitials(entry.userName)}
         </div>
@@ -638,8 +638,8 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
       <div className="flex items-center gap-2.5 ml-auto sm:ml-0">
         <span className={`text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-2 border ${
           isDraft 
-            ? "bg-amber-100/50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400"
-            : "bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-500/10 dark:border-emerald-500/20 dark:text-emerald-400"
+            ? "bg-amber-100/40 text-amber-700 border-amber-200/50"
+            : "bg-emerald-50/60 text-emerald-700 border-emerald-100/50"
         }`}>
           <span className={`w-2 h-2 rounded-full ${isDraft ? "bg-amber-500" : "bg-emerald-500"}`} />
           {isDraft ? "مسودة" : "معتمد"}
@@ -648,7 +648,7 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
         {isDraft && (
           <button 
             onClick={() => onRemove(entry.shiftId)}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors active:scale-95 border border-transparent hover:border-rose-100 dark:hover:border-rose-900/50"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-rose-500 hover:bg-rose-50/60 transition-colors active:scale-95 border border-transparent hover:border-rose-100/50"
           >
             <X className="w-4 h-4" />
           </button>
@@ -679,10 +679,10 @@ function UpdateRequirementControl({
 
   if (isOpen) {
     return (
-      <div className="flex items-center gap-2 bg-surface-hover/80 p-2 rounded-2xl animate-in zoom-in-95 duration-200 border border-border-main">
+      <div className="flex items-center gap-2 bg-white/40 p-2 rounded-2xl animate-in zoom-in-95 duration-200 border border-white/30">
         <button 
           onClick={() => onChange(Math.max(0, required - 1))}
-          className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-xl shadow-sm active:scale-95 transition-transform"
+          className="w-10 h-10 flex items-center justify-center bg-white/60 rounded-xl shadow-sm active:scale-95 transition-transform"
         >
           <Minus className="w-4 h-4" />
         </button>
@@ -695,7 +695,7 @@ function UpdateRequirementControl({
         </button>
         <button 
            onClick={() => setIsOpen(false)}
-           className="w-10 h-10 flex items-center justify-center mr-1 text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200"
+           className="w-10 h-10 flex items-center justify-center mr-1 text-zinc-400 hover:text-zinc-800"
         >
           <CheckCircle2 className="w-5 h-5" />
         </button>
@@ -708,10 +708,10 @@ function UpdateRequirementControl({
       onClick={() => setIsOpen(true)}
       className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm border ${
         isUnderstaffed 
-          ? "bg-orange-50 text-orange-700 border-orange-200/80 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/20" 
+          ? "bg-orange-50/60 text-orange-700 border-orange-200/50" 
           : isFull 
-          ? "bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20"
-          : "bg-white text-zinc-700 border-zinc-200 dark:bg-zinc-800/80 dark:text-zinc-300 dark:border-zinc-700/80"
+          ? "bg-emerald-50/60 text-emerald-700 border-emerald-200/50"
+          : "bg-white/50 text-zinc-700 border-white/40"
       }`}
     >
       <div className="flex items-center gap-1.5">

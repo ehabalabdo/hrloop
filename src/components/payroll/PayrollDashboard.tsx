@@ -229,13 +229,13 @@ export default function PayrollDashboard({
     items.length > 0 && items.every((i: PayrollListItem) => i.isLocked);
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen pb-28">
       {/* Header */}
-      <div className="bg-surface border-b border-border-main sticky top-0 z-30 elevation-2">
+      <div className="glass-strong sticky top-0 z-30">
         <div className="page-container py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-brand-purple/10 rounded-2xl flex items-center justify-center">
-              <Wallet className="w-6 h-6 text-brand-purple" />
+            <div className="w-12 h-12 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm">
+              <Wallet className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">

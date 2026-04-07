@@ -167,13 +167,13 @@ export default function LeavesDashboard({
   ];
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen pb-28">
       {/* ─── Header ─── */}
-      <div className="bg-surface border-b border-border-main sticky top-0 z-20 elevation-2">
+      <div className="glass-strong sticky top-0 z-20">
         <div className="page-container py-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-brand-purple/10 dark:bg-brand-purple/20 rounded-2xl flex items-center justify-center">
-              <TreePalm className="w-6 h-6 text-brand-purple" />
+            <div className="w-12 h-12 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm">
+              <TreePalm className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">

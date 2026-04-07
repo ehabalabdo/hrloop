@@ -63,13 +63,13 @@ export default function ActivityLogView({
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-surface border-b border-border-main">
+      <div className="glass-strong">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
-              <ClipboardList className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <div className="w-9 h-9 gradient-purple rounded-xl flex items-center justify-center shadow-purple-sm">
+              <ClipboardList className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="text-lg font-bold text-foreground">

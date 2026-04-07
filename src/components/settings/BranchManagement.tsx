@@ -189,7 +189,7 @@ export default function BranchManagement({
               setEditingId(null);
               setShowForm(true);
             }}
-            className="flex items-center gap-2 px-5 py-3 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl transition-colors elevation-1"
+            className="flex items-center gap-2 px-5 py-3 gradient-purple text-white text-sm font-semibold rounded-xl transition-colors shadow-purple-sm"
           >
             <Plus className="w-4 h-4" />
             إضافة فرع
@@ -199,7 +199,7 @@ export default function BranchManagement({
 
       {/* Add/Edit Form */}
       {showForm && (
-        <div className="bg-surface rounded-2xl border border-brand-primary/20 p-8 space-y-6 elevation-2">
+        <div className="card p-8 space-y-6 border-brand-primary/20">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-bold text-foreground">
               {editingId ? "تعديل الفرع" : "إضافة فرع جديد"}
@@ -395,14 +395,14 @@ export default function BranchManagement({
           <div className="flex justify-end gap-3 pt-4">
             <button
               onClick={resetForm}
-              className="px-4 py-2 text-sm text-muted hover:bg-surface-hover rounded-lg transition-colors"
+              className="px-4 py-2 text-sm text-muted hover:bg-white/40 rounded-lg transition-colors"
             >
               إلغاء
             </button>
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="flex items-center gap-2 px-6 py-3 bg-brand-primary hover:bg-brand-primary-dark text-white text-sm font-semibold rounded-xl disabled:opacity-50 transition-colors elevation-1"
+              className="flex items-center gap-2 px-6 py-3 gradient-purple text-white text-sm font-semibold rounded-xl disabled:opacity-50 transition-colors shadow-purple-sm"
             >
               {isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -427,10 +427,10 @@ export default function BranchManagement({
         {branches.map((branch) => (
           <div
             key={branch.id}
-            className={`bg-surface rounded-2xl border p-6 transition-colors elevation-1 ${
+            className={`card p-6 transition-colors ${
               branch.isActive
-                ? "border-border-main"
-                : "border-red-300 dark:border-red-800 opacity-60"
+                ? ""
+                : "border-red-300/50 opacity-60"
             }`}
           >
             <div className="flex items-start justify-between gap-4">
@@ -441,7 +441,7 @@ export default function BranchManagement({
                     {branch.name}
                   </h3>
                   {!branch.isActive && (
-                    <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 rounded-lg font-semibold">
+                    <span className="text-xs px-2 py-0.5 bg-red-100/60 text-red-600 rounded-lg font-semibold">
                       معطّل
                     </span>
                   )}
@@ -468,13 +468,13 @@ export default function BranchManagement({
                     {branch.geofenceRadius}م
                   </span>
                   {branch.manager && (
-                    <span className="text-violet-600 dark:text-violet-400 font-medium flex items-center gap-1.5">
+                    <span className="text-violet-600 font-medium flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5" />
                       {branch.manager.fullName}
                     </span>
                   )}
                   {branch.minStaff > 0 && (
-                    <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                    <span className="text-amber-600 flex items-center gap-1.5">
                       <AlertTriangle className="w-3.5 h-3.5" />
                       حد أدنى: {branch.minStaff} موظف
                     </span>
@@ -485,13 +485,13 @@ export default function BranchManagement({
                 {(branch.openTime || branch.shiftStartTime) && (
                   <div className="flex flex-wrap items-center gap-4 mt-2.5 text-sm">
                     {branch.openTime && branch.closeTime && (
-                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                      <span className="flex items-center gap-1.5 text-emerald-600">
                         <Clock className="w-3.5 h-3.5" />
                         الفرع: {branch.openTime} — {branch.closeTime}
                       </span>
                     )}
                     {branch.shiftStartTime && branch.shiftEndTime && (
-                      <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+                      <span className="flex items-center gap-1.5 text-blue-600">
                         <Clock className="w-3.5 h-3.5" />
                         الدوام: {branch.shiftStartTime} — {branch.shiftEndTime}
                       </span>
@@ -505,7 +505,7 @@ export default function BranchManagement({
                 <button
                   onClick={() => handleToggle(branch.id, branch.isActive)}
                   disabled={isPending}
-                  className="p-1.5 rounded-lg hover:bg-surface-hover text-muted transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-white/40 text-muted transition-colors"
                   title={branch.isActive ? "تعطيل" : "تفعيل"}
                 >
                   {branch.isActive ? (
@@ -518,7 +518,7 @@ export default function BranchManagement({
                 <button
                   onClick={() => startEdit(branch)}
                   disabled={isPending}
-                  className="p-1.5 rounded-lg hover:bg-surface-hover text-muted transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-white/40 text-muted transition-colors"
                   title="تعديل"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -535,7 +535,7 @@ export default function BranchManagement({
                     </button>
                     <button
                       onClick={() => setConfirmDelete(null)}
-                      className="px-2 py-1 text-xs bg-zinc-200 dark:bg-zinc-700 text-muted rounded font-medium"
+                      className="px-2 py-1 text-xs bg-zinc-200/60 text-muted rounded font-medium"
                     >
                       إلغاء
                     </button>
@@ -544,7 +544,7 @@ export default function BranchManagement({
                   <button
                     onClick={() => setConfirmDelete(branch.id)}
                     disabled={isPending}
-                    className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-zinc-400 hover:text-red-500 transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-red-50/60 text-zinc-400 hover:text-red-500 transition-colors"
                     title="حذف"
                   >
                     <Trash2 className="w-4 h-4" />

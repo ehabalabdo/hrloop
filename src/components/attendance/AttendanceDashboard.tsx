@@ -354,7 +354,7 @@ export default function AttendanceDashboard({
   const statusInfo = getStatusLabel();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-24">
+    <div className="min-h-screen flex flex-col pb-24">
       {/* ─── Connectivity Banners ─── */}
       {!isOnline && (
         <div className="bg-red-600 text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">

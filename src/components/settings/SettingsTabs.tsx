@@ -35,13 +35,13 @@ export default function SettingsTabs({
   const [tab, setTab] = useState<TabKey>("employees");
 
   return (
-    <div className="min-h-screen bg-background pb-28">
+    <div className="min-h-screen pb-28">
       {/* Header */}
-      <div className="bg-surface border-b border-border-main sticky top-0 lg:top-0 z-20 elevation-2">
+      <div className="glass-strong sticky top-0 lg:top-0 z-20">
         <div className="page-container py-6">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 bg-brand-primary-subtle rounded-2xl flex items-center justify-center">
-              <Settings className="w-6 h-6 text-brand-primary" />
+            <div className="w-12 h-12 gradient-purple rounded-2xl flex items-center justify-center shadow-purple-sm">
+              <Settings className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">
@@ -64,8 +64,8 @@ export default function SettingsTabs({
                   onClick={() => setTab(t.key)}
                   className={`shrink-0 flex items-center gap-2.5 px-5 py-3 rounded-xl text-sm font-semibold transition-all ${
                     active
-                      ? "bg-brand-primary text-white shadow-sm shadow-brand-primary/20"
-                      : "text-muted hover:text-foreground hover:bg-surface-hover"
+                      ? "gradient-purple text-white shadow-purple-sm"
+                      : "text-muted hover:text-foreground hover:bg-white/40"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
