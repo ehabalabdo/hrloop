@@ -20,8 +20,6 @@ import {
   Megaphone,
   ArrowLeftRight,
   LogOut,
-  Zap,
-  ChevronDown,
   Ellipsis,
   X,
 } from "lucide-react";
@@ -79,39 +77,16 @@ export default function AppSidebar({
 
   return (
     <div className="min-h-screen relative">
-      {/* ===== Top Bar ===== */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-zinc-200">
-        <div className="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg gradient-purple flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-sm font-extrabold text-foreground">HR Loop</span>
-          </Link>
+      {/* ===== Main Content ===== */}
+      <main className="pb-24">
+        {children}
+      </main>
 
-          <button
-            onClick={() => setShowProfile(!showProfile)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-zinc-50 transition-colors"
-          >
-            <div className={`w-7 h-7 rounded-lg bg-gradient-to-br ${ROLE_COLORS[user.role]} flex items-center justify-center`}>
-              <span className="text-white text-[10px] font-bold">
-                {user.fullName.split(" ").map(w => w[0]).join("").slice(0, 2)}
-              </span>
-            </div>
-            <div className="hidden sm:block text-right">
-              <span className="text-xs font-bold text-foreground block leading-tight">{user.fullName}</span>
-              <span className="text-[10px] text-zinc-400">{ROLE_LABELS[user.role]}</span>
-            </div>
-            <ChevronDown className="w-3 h-3 text-zinc-400" />
-          </button>
-        </div>
-      </div>
-
-      {/* Profile Dropdown */}
+      {/* Profile Popup — opens upward from dock */}
       {showProfile && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setShowProfile(false)} />
-          <div className="fixed top-12 left-4 sm:left-auto sm:right-4 z-50 w-60 bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden">
+          <div className="fixed inset-0 z-50" onClick={() => setShowProfile(false)} />
+          <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-64 bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden">
             <div className="p-4 border-b border-zinc-100">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${ROLE_COLORS[user.role]} flex items-center justify-center`}>
@@ -122,6 +97,7 @@ export default function AppSidebar({
                 <div>
                   <p className="text-sm font-bold text-foreground">{user.fullName}</p>
                   <p className="text-[11px] text-zinc-400">{user.email}</p>
+                  <span className="text-[10px] font-bold text-brand-purple">{ROLE_LABELS[user.role]}</span>
                 </div>
               </div>
             </div>
@@ -138,14 +114,9 @@ export default function AppSidebar({
         </>
       )}
 
-      {/* ===== Main Content ===== */}
-      <main className="pt-12 pb-24">
-        {children}
-      </main>
-
       {/* ===== macOS-style Dock ===== */}
       <nav className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40">
-        {/* Desktop Dock — show all items */}
+        {/* Desktop Dock — all items + user avatar */}
         <div className="hidden sm:flex items-end gap-1 bg-white/95 backdrop-blur-xl px-3 py-2 rounded-2xl shadow-2xl border border-zinc-200/80">
           {visibleItems.map((item) => {
             const active = isActive(item.href);
@@ -168,9 +139,25 @@ export default function AppSidebar({
               </Link>
             );
           })}
+          {/* Separator */}
+          <div className="w-px h-10 bg-zinc-200 mx-1 self-center" />
+          {/* User avatar in dock */}
+          <button
+            onClick={() => { setShowProfile(!showProfile); setShowMore(false); }}
+            className="group flex flex-col items-center gap-0.5 px-1.5"
+          >
+            <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center transition-all duration-200 group-hover:scale-125 group-hover:-translate-y-1 bg-gradient-to-br ${ROLE_COLORS[user.role]}`}>
+              <span className="text-white text-xs font-bold">
+                {user.fullName.split(" ").map(w => w[0]).join("").slice(0, 2)}
+              </span>
+            </div>
+            <span className="text-[9px] font-bold text-zinc-400 group-hover:text-zinc-600 transition-colors">
+              حسابي
+            </span>
+          </button>
         </div>
 
-        {/* Mobile Dock — compact with overflow */}
+        {/* Mobile Dock — compact with overflow + user */}
         <div className="flex sm:hidden items-end gap-1 bg-white/95 backdrop-blur-xl px-2.5 py-2 rounded-2xl shadow-2xl border border-zinc-200/80">
           {mobileMain.map((item) => {
             const active = isActive(item.href);
@@ -195,7 +182,7 @@ export default function AppSidebar({
           })}
           {mobileOverflow.length > 0 && (
             <button
-              onClick={() => setShowMore(!showMore)}
+              onClick={() => { setShowMore(!showMore); setShowProfile(false); }}
               className="group flex flex-col items-center gap-0.5 px-1"
             >
               <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-200 group-active:scale-90 ${
@@ -208,6 +195,20 @@ export default function AppSidebar({
               </span>
             </button>
           )}
+          {/* User avatar in mobile dock */}
+          <button
+            onClick={() => { setShowProfile(!showProfile); setShowMore(false); }}
+            className="group flex flex-col items-center gap-0.5 px-1"
+          >
+            <div className={`w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-200 group-active:scale-90 bg-gradient-to-br ${ROLE_COLORS[user.role]}`}>
+              <span className="text-white text-xs font-bold">
+                {user.fullName.split(" ").map(w => w[0]).join("").slice(0, 2)}
+              </span>
+            </div>
+            <span className="text-[9px] font-bold text-zinc-400">
+              حسابي
+            </span>
+          </button>
         </div>
       </nav>
 
