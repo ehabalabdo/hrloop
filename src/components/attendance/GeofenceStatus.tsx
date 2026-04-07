@@ -55,7 +55,7 @@ export default function GeofenceStatus({
   const RefreshBtn = () => (
     <button
       onClick={checkLocation}
-      className="p-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+      className="p-1.5 rounded-full hover:bg-zinc-100 transition-colors"
       aria-label="تحديث الموقع"
     >
       <RefreshCw className="w-3.5 h-3.5" />

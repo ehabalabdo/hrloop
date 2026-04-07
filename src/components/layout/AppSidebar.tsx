@@ -93,7 +93,7 @@ export default function AppSidebar({
   return (
     <div className="flex min-h-screen relative z-[1]">
       {/* ===== Desktop Sidebar ===== */}
-      <aside className="hidden lg:flex flex-col w-[260px] bg-white/90 backdrop-blur-xl shrink-0 min-h-screen sticky top-0 z-10 border-l border-zinc-200/50">
+      <aside className="hidden lg:flex flex-col w-[260px] bg-white shrink-0 min-h-screen sticky top-0 z-10 border-l border-zinc-200">
         {/* Logo */}
         <Link href="/dashboard" className="flex items-center gap-3.5 px-6 py-6">
           <div className="w-10 h-10 rounded-xl gradient-purple flex items-center justify-center shadow-purple-sm">
@@ -168,7 +168,7 @@ export default function AppSidebar({
       </aside>
 
       {/* ===== Mobile Top Bar ===== */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-xl border-b border-zinc-200/50 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-zinc-200 px-4 py-3 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg gradient-purple flex items-center justify-center shadow-purple-sm">
             <Zap className="w-4 h-4 text-white" />
@@ -235,7 +235,7 @@ export default function AppSidebar({
       </main>
 
       {/* ===== Mobile Bottom Nav — Floating Dock ===== */}
-      <nav className="lg:hidden fixed bottom-4 left-4 right-4 z-40 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-200/40 safe-area-pb">
+      <nav className="lg:hidden fixed bottom-4 left-4 right-4 z-40 bg-white rounded-2xl shadow-xl border border-zinc-200 safe-area-pb">
         <div className="flex items-stretch justify-around px-1">
           {mobileItems.map((item) => {
             const active = isActive(item.href);

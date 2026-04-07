@@ -299,7 +299,7 @@ export default function ScheduleDashboard({
       </div>
 
       {/* ── DAY PILLS (sticky) ── */}
-      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-zinc-200/50">
+      <div className="sticky top-0 z-30 bg-white border-b border-zinc-200">
         <div className="page-container py-3">
           <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 snap-x">
             {weekDays.map((dateStr, i) => {
@@ -446,24 +446,24 @@ export default function ScheduleDashboard({
         )}
       </div>
 
-      {/* ── FLOATING ACTION BAR ── */}
+      {/* ── ACTION BAR ── */}
       {(!hasShifts || hasDrafts) && (
-      <div className="fixed bottom-6 left-0 right-0 z-40 px-5 pointer-events-none">
-        <div className="page-container flex gap-2 pointer-events-auto bg-white/95 backdrop-blur-xl p-3 rounded-2xl shadow-2xl border border-zinc-200/40">
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40">
+        <div className="flex gap-2 bg-white p-2 rounded-xl shadow-lg border border-zinc-200">
           
           {/* Generate Button */}
           {!hasShifts && (
             <button
               onClick={() => handleAction("generate", () => generateWeeklySchedule(weekStart))}
               disabled={actionLoading !== null}
-              className="flex-1 flex items-center justify-center gap-2 py-3.5 gradient-purple text-white rounded-xl text-sm font-bold shadow-purple-sm disabled:opacity-50 transition-all active:scale-95"
+              className="flex items-center gap-2 px-5 py-2.5 gradient-purple text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
             >
               {actionLoading === "generate" ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <Wand2 className="w-4 h-4" />
               )}
-              توليد الورديات لأسبوعين
+              توليد الورديات
             </button>
           )}
 
@@ -473,7 +473,7 @@ export default function ScheduleDashboard({
               <button
                 onClick={() => handleAction("publish", () => publishSchedule(weekStart))}
                 disabled={actionLoading !== null}
-                className="flex-[3] flex items-center justify-center gap-2 py-3.5 bg-emerald-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/25 disabled:opacity-50 transition-all active:scale-95"
+                className="flex items-center gap-2 px-5 py-2.5 bg-emerald-500 text-white rounded-lg text-sm font-bold disabled:opacity-50 transition-all active:scale-95"
               >
                 {actionLoading === "publish" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -490,7 +490,7 @@ export default function ScheduleDashboard({
                   }
                 }}
                 disabled={actionLoading !== null}
-                className="w-12 flex items-center justify-center bg-rose-50 text-rose-500 rounded-xl disabled:opacity-50 transition-all active:scale-95 border border-rose-100"
+                className="flex items-center justify-center w-10 h-10 bg-rose-50 text-rose-500 rounded-lg disabled:opacity-50 transition-all active:scale-95 border border-rose-100"
               >
                 {actionLoading === "clear" ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

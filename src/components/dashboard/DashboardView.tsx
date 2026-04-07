@@ -144,7 +144,7 @@ export default function DashboardView({
         </div>
       </div>
 
-      <div className="page-container -mt-6 relative z-10">
+      <div className="page-container mt-6 relative z-10">
 
         {/* ─── KPI Strip ─── */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
@@ -260,7 +260,7 @@ export default function DashboardView({
         )}
 
         {/* ─── Tab Switcher ─── */}
-        <div className="flex items-center gap-1 p-1 rounded-2xl bg-white/50 border border-white/40 mb-5 w-fit">
+        <div className="flex items-center gap-1 p-1 rounded-2xl bg-zinc-100 border border-zinc-200 mb-5 w-fit">
           <button
             onClick={() => setActiveTab("branches")}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
@@ -289,7 +289,7 @@ export default function DashboardView({
         {activeTab === "branches" && (
           <div className="card overflow-hidden">
             {/* Toolbar */}
-            <div className="px-5 py-4 flex items-center justify-between border-b border-white/30">
+            <div className="px-5 py-4 flex items-center justify-between border-b border-zinc-100">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-brand-purple/10 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-brand-purple" />
@@ -302,7 +302,7 @@ export default function DashboardView({
                   className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
                     showChart
                       ? "gradient-purple text-white shadow-purple-sm"
-                      : "bg-white/50 text-muted hover:text-foreground hover:bg-white/80"
+                      : "bg-zinc-100 text-muted hover:text-foreground hover:bg-zinc-200"
                   }`}
                   title="رسم بياني"
                 >
@@ -310,7 +310,7 @@ export default function DashboardView({
                 </button>
                 <button
                   onClick={handleExportBranches}
-                  className="w-9 h-9 rounded-xl bg-white/50 text-muted hover:text-foreground hover:bg-white/80 flex items-center justify-center transition-all"
+                  className="w-9 h-9 rounded-xl bg-zinc-100 text-muted hover:text-foreground hover:bg-zinc-200 flex items-center justify-center transition-all"
                   title="تصدير CSV"
                 >
                   <Download className="w-4 h-4" />
@@ -320,7 +320,7 @@ export default function DashboardView({
 
             {/* Chart */}
             {showChart && chartData.length > 0 && (
-              <div className="px-5 py-4 border-b border-white/20 bg-white/20">
+              <div className="px-5 py-4 border-b border-zinc-100 bg-zinc-50">
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={chartData} barSize={20}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.5} />
@@ -357,14 +357,14 @@ export default function DashboardView({
                 {visibleBranches.map((b: BranchPerformance, idx: number) => (
                   <div
                     key={b.id}
-                    className="flex items-center gap-3 px-5 py-4 hover:bg-white/30 transition-colors border-b border-white/15 last:border-b-0"
+                    className="flex items-center gap-3 px-5 py-4 hover:bg-zinc-50 transition-colors border-b border-zinc-100 last:border-b-0"
                   >
                     {/* Medal/Rank */}
                     <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${
                       idx === 0 ? "bg-gradient-to-br from-amber-400 to-amber-600 text-white"
                       : idx === 1 ? "bg-gradient-to-br from-zinc-300 to-zinc-500 text-white"
                       : idx === 2 ? "bg-gradient-to-br from-orange-400 to-orange-600 text-white"
-                      : "bg-white/60 text-zinc-400 border border-white/50"
+                      : "bg-zinc-100 text-zinc-400 border border-zinc-200"
                     }`}>
                       {idx + 1}
                     </div>
@@ -411,7 +411,7 @@ export default function DashboardView({
             {rankedBranches.length > 5 && (
               <button
                 onClick={() => setShowAllBranches(!showAllBranches)}
-                className="w-full px-5 py-3.5 text-sm font-bold text-brand-purple hover:bg-brand-purple/5 transition-colors flex items-center justify-center gap-2 border-t border-white/30"
+                className="w-full px-5 py-3.5 text-sm font-bold text-brand-purple hover:bg-brand-purple/5 transition-colors flex items-center justify-center gap-2 border-t border-zinc-100"
               >
                 <Eye className="w-4 h-4" />
                 {showAllBranches ? "عرض أقل" : `عرض جميع الفروع (${rankedBranches.length})`}
@@ -423,7 +423,7 @@ export default function DashboardView({
         {/* ─── Activity Feed ─── */}
         {activeTab === "activity" && (
           <div className="card overflow-hidden">
-            <div className="px-5 py-4 flex items-center gap-2.5 border-b border-white/30">
+            <div className="px-5 py-4 flex items-center gap-2.5 border-b border-zinc-100">
               <div className="w-8 h-8 rounded-xl bg-brand-purple/10 flex items-center justify-center">
                 <Zap className="w-4 h-4 text-brand-purple" />
               </div>
@@ -437,7 +437,7 @@ export default function DashboardView({
             ) : (
               <div>
                 {activities.slice(0, 10).map((a: ActivityLogItem) => (
-                  <div key={a.id} className="flex items-start gap-4 px-5 py-4 border-b border-white/15 last:border-b-0 hover:bg-white/20 transition-colors">
+                  <div key={a.id} className="flex items-start gap-4 px-5 py-4 border-b border-zinc-100 last:border-b-0 hover:bg-zinc-50 transition-colors">
                     <div className="w-9 h-9 rounded-xl gradient-purple flex items-center justify-center shrink-0 text-white text-xs font-bold mt-0.5">
                       {a.actorName[0]}
                     </div>
@@ -447,7 +447,7 @@ export default function DashboardView({
                         <span className="text-muted">{a.description}</span>
                       </p>
                     </div>
-                    <span className="text-xs text-muted-light font-medium shrink-0 mt-0.5 bg-white/40 px-2.5 py-1 rounded-lg">
+                    <span className="text-xs text-muted-light font-medium shrink-0 mt-0.5 bg-zinc-100 px-2.5 py-1 rounded-lg">
                       {timeAgo(a.createdAt)}
                     </span>
                   </div>
@@ -473,16 +473,16 @@ function KpiCard({ icon: Icon, value, label, gradient, badge }: {
   badge?: string;
 }) {
   return (
-    <div className="card p-4 sm:p-5 flex items-center gap-4">
-      <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0 shadow-lg`}>
+    <div className="bg-white rounded-xl border border-zinc-200 p-4 flex items-center gap-3 shadow-sm">
+      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center shrink-0`}>
         <Icon className="w-5 h-5 text-white" />
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-1.5">
-          <span className="text-xl sm:text-2xl font-extrabold text-foreground leading-none">{value}</span>
-          {badge && <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">{badge}</span>}
+          <span className="text-xl font-bold text-zinc-900 leading-none">{value}</span>
+          {badge && <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">{badge}</span>}
         </div>
-        <span className="text-xs text-muted font-medium mt-1 block truncate">{label}</span>
+        <span className="text-xs text-zinc-500 mt-1 block truncate">{label}</span>
       </div>
     </div>
   );
@@ -501,7 +501,7 @@ function StatChip({ icon: Icon, value, label, warn }: {
     <div className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl text-center min-w-[56px] ${
       warn
         ? "bg-rose-50/80 border border-rose-200/40"
-        : "bg-white/50 border border-white/40"
+        : "bg-zinc-50 border border-zinc-200/50"
     }`}>
       <Icon className={`w-3.5 h-3.5 ${warn ? "text-rose-500" : "text-zinc-400"}`} />
       <span className={`text-sm font-bold leading-none ${warn ? "text-rose-600" : "text-foreground"}`}>{value}</span>
