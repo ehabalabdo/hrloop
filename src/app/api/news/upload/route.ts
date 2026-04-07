@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { put, getDownloadUrl } from "@vercel/blob";
+import { put } from "@vercel/blob";
 import { getSession } from "@/lib/auth";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
       addRandomSuffix: true,
     });
 
-    // Generate signed URL for preview; store the raw blob.url in DB
-    const previewUrl = await getDownloadUrl(blob.url);
+    // Generate proxy URL for preview; store raw blob.url in DB
+    const previewUrl = `/api/news/blob-proxy?url=${encodeURIComponent(blob.url)}`;
 
     return NextResponse.json({
       url: blob.url,
