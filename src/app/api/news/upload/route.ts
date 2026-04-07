@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     const blob = await put(`news/${file.name}`, file, {
-      access: "public",
+      access: "private",
       addRandomSuffix: true,
     });
 
