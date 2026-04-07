@@ -65,40 +65,34 @@ export default function ActivityLogView({
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="gradient-purple relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-5 relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div>
-            <p className="text-white/70 text-xs font-bold mb-0.5">المراقبة</p>
-            <h1 className="text-lg font-bold text-white">
-              Activity Log
-            </h1>
-            <p className="text-xs text-white/60">
-              {logs.length} logged events
-            </p>
-          </div>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-extrabold text-foreground">Activity Log</h1>
+          <p className="text-xs text-zinc-400">
+            {logs.length} logged events
+          </p>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={refresh}
-              disabled={isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-white/15 hover:bg-white/25 text-white rounded-lg transition-colors disabled:opacity-50"
-            >
-              {isPending ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
-              ) : (
-                <RefreshCw className="w-3 h-3" />
-              )}
-              Refresh
-            </button>
-            <button
-              onClick={handleExport}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-white/15 hover:bg-white/25 text-white rounded-lg transition-colors"
-            >
-              <Download className="w-3 h-3" />
-              Export CSV
-            </button>
-          </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={refresh}
+            disabled={isPending}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-lg transition-colors disabled:opacity-50"
+          >
+            {isPending ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <RefreshCw className="w-3 h-3" />
+            )}
+            Refresh
+          </button>
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-lg transition-colors"
+          >
+            <Download className="w-3 h-3" />
+            Export CSV
+          </button>
         </div>
       </div>
 

@@ -168,27 +168,24 @@ export default function LeavesDashboard({
 
   return (
     <div className="min-h-screen pb-28">
-      {/* ─── Header Banner ─── */}
-      <div className="gradient-purple px-6 py-7 sm:py-8 relative overflow-hidden">
-        <div className="page-container relative z-10 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold text-white mb-0.5">الإجازات</h1>
-            <p className="text-white/60 text-sm">
-              {pendingCount > 0
-                ? `${pendingCount} طلب بانتظار الموافقة`
-                : "جميع الطلبات مُعالجة"}
-            </p>
-          </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-xl bg-white text-brand-purple shadow-lg transition-all active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">طلب إجازة</span>
-            <span className="sm:hidden">جديد</span>
-          </button>
+      {/* ─── Header ─── */}
+      <div className="page-container pt-6 pb-2 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-extrabold text-foreground">الإجازات</h1>
+          <p className="text-zinc-400 text-sm">
+            {pendingCount > 0
+              ? `${pendingCount} طلب بانتظار الموافقة`
+              : "جميع الطلبات مُعالجة"}
+          </p>
         </div>
-        <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-xl bg-brand-primary text-white shadow-sm transition-all active:scale-95"
+        >
+          <Plus className="w-4 h-4" />
+          <span className="hidden sm:inline">طلب إجازة</span>
+          <span className="sm:hidden">جديد</span>
+        </button>
       </div>
 
       <div className="page-container py-6 section-gap">

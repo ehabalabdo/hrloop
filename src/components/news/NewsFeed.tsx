@@ -173,29 +173,25 @@ export default function NewsFeed({
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
-      <div className="gradient-purple relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-10 w-20 h-20 bg-white/5 rounded-full translate-y-1/2" />
-        <div className="px-5 pt-8 pb-10 relative z-10">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Megaphone className="w-6 h-6 text-white/80" />
-              <h1 className="text-lg font-bold text-white">الأخبار</h1>
-            </div>
-            {canPost && (
-              <button
-                onClick={() => setShowComposer(!showComposer)}
-                className="flex items-center gap-2 bg-white text-brand-purple rounded-xl px-4 py-2.5 text-xs font-bold transition-all active:scale-95"
-              >
-                <Plus className="w-4 h-4" />
-                منشور جديد
-              </button>
-            )}
+      <div className="px-5 pt-6 pb-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Megaphone className="w-5 h-5 text-brand-primary" />
+            <h1 className="text-xl font-extrabold text-foreground">الأخبار</h1>
           </div>
-          <p className="text-xs text-white/60 mt-2">
-            {total} منشور
-          </p>
+          {canPost && (
+            <button
+              onClick={() => setShowComposer(!showComposer)}
+              className="flex items-center gap-2 bg-brand-primary text-white rounded-xl px-4 py-2.5 text-xs font-bold transition-all active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              منشور جديد
+            </button>
+          )}
         </div>
+        <p className="text-xs text-zinc-400 mt-1">
+          {total} منشور
+        </p>
       </div>
 
       {/* Composer */}

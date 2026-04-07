@@ -229,32 +229,23 @@ export default function SwapDashboard({
       )}
 
       {/* ─── Header ─── */}
-      <div className="gradient-purple relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-10 w-20 h-20 bg-white/5 rounded-full translate-y-1/2" />
-        <div className="page-container py-6 relative">
-          <p className="text-white/70 text-xs font-bold mb-1">إدارة التبديلات</p>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-lg font-bold text-white">
-                تبديل الورديات
-              </h1>
-              <p className="text-xs text-white/60 mt-0.5">
-                {pendingCount > 0
-                  ? `${pendingCount} طلب بانتظار ردك`
-                  : "لا توجد طلبات معلّقة"}
-              </p>
-            </div>
-            <button
-              onClick={() => setShowForm(!showForm)}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-white text-brand-purple transition-all active:scale-95"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">طلب تبديل</span>
-              <span className="sm:hidden">جديد</span>
-            </button>
-          </div>
+      <div className="page-container pt-6 pb-2 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-extrabold text-foreground">تبديل الورديات</h1>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            {pendingCount > 0
+              ? `${pendingCount} طلب بانتظار ردك`
+              : "لا توجد طلبات معلّقة"}
+          </p>
         </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-brand-primary text-white transition-all active:scale-95"
+        >
+          <Plus className="w-4 h-4" />
+          <span className="hidden sm:inline">طلب تبديل</span>
+          <span className="sm:hidden">جديد</span>
+        </button>
       </div>
 
       <div className="page-container py-8 section-gap">

@@ -231,26 +231,17 @@ export default function PayrollDashboard({
   return (
     <div className="min-h-screen pb-28">
       {/* Header */}
-      <div className="gradient-purple relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-10 w-20 h-20 bg-white/5 rounded-full translate-y-1/2" />
-        <div className="page-container py-6 relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div>
-            <p className="text-white/70 text-xs font-bold mb-1">المحاسبة</p>
-            <h1 className="text-lg font-bold text-white">
-              الرواتب والخصومات
-            </h1>
-            <p className="text-xs text-white/60 mt-0.5">
-              محرك تسوية الرواتب الشهري
-            </p>
-          </div>
-
-          <MonthPicker
-            month={month}
-            year={year}
-            onChange={handleMonthChange}
-          />
+      <div className="page-container pt-6 pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div>
+          <p className="text-zinc-400 text-xs font-bold mb-0.5">المحاسبة</p>
+          <h1 className="text-xl font-extrabold text-foreground">الرواتب والخصومات</h1>
+          <p className="text-xs text-zinc-400 mt-0.5">محرك تسوية الرواتب الشهري</p>
         </div>
+        <MonthPicker
+          month={month}
+          year={year}
+          onChange={handleMonthChange}
+        />
       </div>
 
       {/* Content */}

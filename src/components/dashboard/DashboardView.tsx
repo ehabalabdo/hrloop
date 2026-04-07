@@ -115,32 +115,19 @@ export default function DashboardView({
 
   return (
     <div className="min-h-screen pb-28">
-      {/* ─── Welcome Banner ─── */}
-      <div className="relative overflow-hidden">
-        <div className="gradient-purple px-6 py-8 sm:py-10">
-          <div className="page-container relative z-10">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-1">
-                  لوحة التحكم
-                </h1>
-                <p className="text-white/70 text-sm">
-                  نظرة شاملة على أداء جميع الفروع
-                </p>
-              </div>
-              <div className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold ${
-                health.database
-                  ? "bg-white/20 text-white"
-                  : "bg-red-400/30 text-white"
-              }`}>
-                {health.database ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
-                {health.database ? "متصل" : "غير متصل"}
-              </div>
-            </div>
-          </div>
-          {/* Decorative circles */}
-          <div className="absolute top-0 left-0 w-40 h-40 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-10 w-24 h-24 bg-white/5 rounded-full translate-y-1/3" />
+      {/* ─── Page Title ─── */}
+      <div className="page-container pt-6 pb-2 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl font-extrabold text-foreground">لوحة التحكم</h1>
+          <p className="text-zinc-400 text-sm">نظرة شاملة على أداء جميع الفروع</p>
+        </div>
+        <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-xs font-bold ${
+          health.database
+            ? "bg-emerald-50 text-emerald-600"
+            : "bg-red-50 text-red-500"
+        }`}>
+          {health.database ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
+          {health.database ? "متصل" : "غير متصل"}
         </div>
       </div>
 

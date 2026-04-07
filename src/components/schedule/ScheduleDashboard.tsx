@@ -238,120 +238,116 @@ export default function ScheduleDashboard({
   return (
     <div className="min-h-screen pb-36">
       
-      {/* ── HEADER BANNER ── */}
-      <div className="gradient-purple px-6 py-7 sm:py-8 relative overflow-hidden">
-        <div className="page-container relative z-10">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-2xl font-extrabold text-white mb-0.5">جدول الورديات</h1>
-              <p className="text-white/60 text-sm">تخطيط وتوزيع الموظفين</p>
-            </div>
-            <div className="flex items-center gap-2">
-              {isPending && <Loader2 className="w-5 h-5 animate-spin text-white/70" />}
-            </div>
+      {/* ── HEADER ── */}
+      <div className="page-container pt-6 pb-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-xl font-extrabold text-foreground">جدول الورديات</h1>
+            <p className="text-zinc-400 text-sm">تخطيط وتوزيع الموظفين</p>
           </div>
-
-          {/* Week Selector - inline */}
-          <div className="flex items-center gap-2 bg-white/15 rounded-2xl p-1.5">
-            <button
-              onClick={() => shiftWeek(-7)}
-              className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center active:scale-95 transition-transform hover:bg-white/25"
-            >
-              <ChevronRight className="w-4 h-4 text-white" />
-            </button>
-            <label className="flex-1 text-center cursor-pointer relative">
-              <span className="font-bold text-white text-sm">{data.weekLabel}</span>
-              <input
-                type="date"
-                value={weekStart}
-                onChange={(e) => { if (e.target.value) goToWeek(e.target.value); }}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </label>
-            <button
-              onClick={() => shiftWeek(7)}
-              className="w-10 h-10 bg-white/15 rounded-xl flex items-center justify-center active:scale-95 transition-transform hover:bg-white/25"
-            >
-              <ChevronLeft className="w-4 h-4 text-white" />
-            </button>
-            <button 
-              onClick={goToCurrentWeek}
-              className="px-4 py-2.5 bg-white text-brand-purple font-bold text-xs rounded-xl active:scale-95 transition-all"
-            >
-              اليوم
-            </button>
-          </div>
-
-          {/* ── Date Range & Actions ── */}
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-bold text-white/60">من</label>
-              <input
-                type="date"
-                value={genStart}
-                onChange={(e) => setGenStart(e.target.value)}
-                className="px-3 py-1.5 text-sm border border-white/20 rounded-lg bg-white/15 text-white focus:outline-none focus:ring-2 focus:ring-white/30 [color-scheme:dark]"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <label className="text-xs font-bold text-white/60">إلى</label>
-              <input
-                type="date"
-                value={genEnd}
-                onChange={(e) => setGenEnd(e.target.value)}
-                min={genStart}
-                className="px-3 py-1.5 text-sm border border-white/20 rounded-lg bg-white/15 text-white focus:outline-none focus:ring-2 focus:ring-white/30 [color-scheme:dark]"
-              />
-            </div>
-            <span className="text-xs text-white/50">
-              {(() => {
-                const diff = Math.round((new Date(genEnd).getTime() - new Date(genStart).getTime()) / 86400000) + 1;
-                return `${diff} يوم`;
-              })()}
-            </span>
-            <button
-              onClick={() => {
-                if (hasShifts) {
-                  if (window.confirm("سيتم توليد ورديات جديدة للفترة المحددة. هل تريد الاستمرار؟")) {
-                    handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
-                  }
-                } else {
-                  handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
-                }
-              }}
-              disabled={actionLoading !== null}
-              className="flex items-center gap-1.5 px-4 py-1.5 bg-white text-brand-purple rounded-lg text-xs font-bold disabled:opacity-50 transition-all active:scale-95"
-            >
-              {actionLoading === "generate" ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Wand2 className="w-3.5 h-3.5" />
-              )}
-              توليد
-            </button>
-            {hasDrafts && (
-              <>
-                <button
-                  onClick={() => handleAction("publish", () => publishSchedule(genStart, genEnd))}
-                  disabled={actionLoading !== null}
-                  className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-400 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all active:scale-95"
-                >
-                  {actionLoading === "publish" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                  نشر
-                </button>
-                <button
-                  onClick={() => { if (window.confirm("حذف جميع المسودات؟")) handleAction("clear", () => clearWeekDrafts(genStart, genEnd)); }}
-                  disabled={actionLoading !== null}
-                  className="flex items-center justify-center w-8 h-8 bg-white/15 text-white rounded-lg disabled:opacity-50 transition-all active:scale-95 hover:bg-white/25"
-                >
-                  {actionLoading === "clear" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                </button>
-              </>
-            )}
+          <div className="flex items-center gap-2">
+            {isPending && <Loader2 className="w-5 h-5 animate-spin text-brand-primary" />}
           </div>
         </div>
-        <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-8 w-20 h-20 bg-white/5 rounded-full translate-y-1/3" />
+
+        {/* Week Selector */}
+        <div className="flex items-center gap-2 bg-zinc-100 rounded-2xl p-1.5">
+          <button
+            onClick={() => shiftWeek(-7)}
+            className="w-10 h-10 bg-white rounded-xl flex items-center justify-center active:scale-95 transition-transform hover:bg-zinc-50 shadow-sm"
+          >
+            <ChevronRight className="w-4 h-4 text-zinc-600" />
+          </button>
+          <label className="flex-1 text-center cursor-pointer relative">
+            <span className="font-bold text-foreground text-sm">{data.weekLabel}</span>
+            <input
+              type="date"
+              value={weekStart}
+              onChange={(e) => { if (e.target.value) goToWeek(e.target.value); }}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          </label>
+          <button
+            onClick={() => shiftWeek(7)}
+            className="w-10 h-10 bg-white rounded-xl flex items-center justify-center active:scale-95 transition-transform hover:bg-zinc-50 shadow-sm"
+          >
+            <ChevronLeft className="w-4 h-4 text-zinc-600" />
+          </button>
+          <button 
+            onClick={goToCurrentWeek}
+            className="px-4 py-2.5 bg-brand-primary text-white font-bold text-xs rounded-xl active:scale-95 transition-all"
+          >
+            اليوم
+          </button>
+        </div>
+
+        {/* Date Range & Actions */}
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-bold text-zinc-400">من</label>
+            <input
+              type="date"
+              value={genStart}
+              onChange={(e) => setGenStart(e.target.value)}
+              className="px-3 py-1.5 text-sm border border-zinc-200 rounded-lg bg-zinc-50 text-foreground focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-bold text-zinc-400">إلى</label>
+            <input
+              type="date"
+              value={genEnd}
+              onChange={(e) => setGenEnd(e.target.value)}
+              min={genStart}
+              className="px-3 py-1.5 text-sm border border-zinc-200 rounded-lg bg-zinc-50 text-foreground focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
+            />
+          </div>
+          <span className="text-xs text-zinc-400">
+            {(() => {
+              const diff = Math.round((new Date(genEnd).getTime() - new Date(genStart).getTime()) / 86400000) + 1;
+              return `${diff} يوم`;
+            })()}
+          </span>
+          <button
+            onClick={() => {
+              if (hasShifts) {
+                if (window.confirm("سيتم توليد ورديات جديدة للفترة المحددة. هل تريد الاستمرار؟")) {
+                  handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
+                }
+              } else {
+                handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
+              }
+            }}
+            disabled={actionLoading !== null}
+            className="flex items-center gap-1.5 px-4 py-1.5 bg-brand-primary text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all active:scale-95"
+          >
+            {actionLoading === "generate" ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Wand2 className="w-3.5 h-3.5" />
+            )}
+            توليد
+          </button>
+          {hasDrafts && (
+            <>
+              <button
+                onClick={() => handleAction("publish", () => publishSchedule(genStart, genEnd))}
+                disabled={actionLoading !== null}
+                className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-500 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all active:scale-95"
+              >
+                {actionLoading === "publish" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+                نشر
+              </button>
+              <button
+                onClick={() => { if (window.confirm("حذف جميع المسودات؟")) handleAction("clear", () => clearWeekDrafts(genStart, genEnd)); }}
+                disabled={actionLoading !== null}
+                className="flex items-center justify-center w-8 h-8 bg-zinc-100 text-zinc-500 rounded-lg disabled:opacity-50 transition-all active:scale-95 hover:bg-zinc-200"
+              >
+                {actionLoading === "clear" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {/* ── DAY PILLS (sticky) ── */}

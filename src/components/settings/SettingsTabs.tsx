@@ -36,13 +36,10 @@ export default function SettingsTabs({
 
   return (
     <div className="min-h-screen pb-28">
-      {/* Header Banner */}
-      <div className="gradient-purple px-6 py-7 sm:py-8 relative overflow-hidden">
-        <div className="page-container relative z-10">
-          <h1 className="text-2xl font-extrabold text-white mb-0.5">إعدادات النظام</h1>
-          <p className="text-white/60 text-sm">إدارة الموظفين، الفروع والإعدادات العامة</p>
-        </div>
-        <div className="absolute top-0 left-0 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
+      {/* Header */}
+      <div className="page-container pt-6 pb-2">
+        <h1 className="text-xl font-extrabold text-foreground">إعدادات النظام</h1>
+        <p className="text-zinc-400 text-sm">إدارة الموظفين، الفروع والإعدادات العامة</p>
       </div>
 
       {/* Tab Navigation */}
