@@ -49,9 +49,7 @@ export async function getAnnouncements(page = 1, limit = 20): Promise<{
     items: items.map((a: typeof items[number]) => ({
       id: a.id,
       content: a.content,
-      mediaUrl: a.mediaUrl
-        ? `/api/news/blob-proxy?url=${encodeURIComponent(a.mediaUrl)}`
-        : null,
+      mediaUrl: a.mediaUrl,
       mediaType: a.mediaType,
       isPinned: a.isPinned,
       createdAt: a.createdAt.toISOString(),

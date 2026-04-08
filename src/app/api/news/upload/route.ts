@@ -57,16 +57,12 @@ export async function POST(request: NextRequest) {
     }
 
     const blob = await put(`news/${file.name}`, file, {
-      access: "private",
+      access: "public",
       addRandomSuffix: true,
     });
 
-    // Generate proxy URL for preview; store raw blob.url in DB
-    const previewUrl = `/api/news/blob-proxy?url=${encodeURIComponent(blob.url)}`;
-
     return NextResponse.json({
       url: blob.url,
-      previewUrl,
       mediaType,
       fileName: file.name,
       originalName: file.name,
