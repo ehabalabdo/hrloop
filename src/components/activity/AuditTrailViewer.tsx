@@ -22,6 +22,7 @@ import {
   getSystemLogActionTypes,
   getSystemLogActors,
 } from "@/lib/system-logger";
+import { useLang } from "@/lib/i18n";
 
 interface LogEntry {
   id: string;
@@ -54,6 +55,7 @@ export default function AuditTrailViewer({
   const [searchText, setSearchText] = useState<string>("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { t } = useLang();
 
   const applyFilters = () => {
     startTransition(async () => {
@@ -102,7 +104,7 @@ export default function AuditTrailViewer({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
           <input
             type="text"
-            placeholder="Search logs..."
+            placeholder={t.activity.searchLogs}
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             className="w-full pl-9 pr-4 py-2 text-sm border border-border-main rounded-xl bg-surface text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none"
@@ -114,7 +116,7 @@ export default function AuditTrailViewer({
           onChange={(e) => setFilterAction(e.target.value)}
           className="text-sm border border-border-main rounded-xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-pink-500 outline-none"
         >
-          <option value="">All Actions</option>
+          <option value="">{t.activity.allActions}</option>
           {actionTypes.map((a: string) => (
             <option key={a} value={a}>
               {a.replace(/_/g, " ")}
@@ -127,7 +129,7 @@ export default function AuditTrailViewer({
           onChange={(e) => setFilterActor(e.target.value)}
           className="text-sm border border-border-main rounded-xl px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-pink-500 outline-none"
         >
-          <option value="">All Actors</option>
+          <option value="">{t.activity.allActors}</option>
           {actors.map((a: { id: string; name: string }) => (
             <option key={a.id} value={a.id}>
               {a.name}
@@ -151,14 +153,14 @@ export default function AuditTrailViewer({
 
       {/* Log Count */}
       <div className="text-xs text-zinc-500">
-        Showing {displayed.length} log{displayed.length !== 1 ? "s" : ""}
+        {t.activity.showing} {displayed.length} {t.activity.logs}{displayed.length !== 1 ? "s" : ""}
       </div>
 
       {/* Log List */}
       {displayed.length === 0 ? (
         <div className="bg-surface rounded-xl border border-border-main p-8 text-center">
           <Shield className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-2" />
-          <p className="text-sm text-zinc-500">No logs found</p>
+          <p className="text-sm text-zinc-500">{t.activity.noLogs}</p>
         </div>
       ) : (
         <div className="bg-surface rounded-xl border border-border-main divide-y divide-border-main">
@@ -211,7 +213,7 @@ export default function AuditTrailViewer({
                 <div className="px-5 py-3 bg-surface-hover/30 border-t border-border-main">
                   <div className="grid grid-cols-2 gap-4 text-xs">
                     <div>
-                      <p className="font-medium text-zinc-500 mb-1">Target</p>
+                      <p className="font-medium text-zinc-500 mb-1">{t.activity.target}</p>
                       <p className="text-zinc-700 dark:text-zinc-300">
                         {log.targetType ?? "N/A"}{" "}
                         {log.targetId && (
@@ -224,7 +226,7 @@ export default function AuditTrailViewer({
                     {log.ipAddress && (
                       <div>
                         <p className="font-medium text-zinc-500 mb-1">
-                          IP Address
+                          {t.activity.ipAddress}
                         </p>
                         <p className="text-zinc-700 dark:text-zinc-300 font-mono">
                           {log.ipAddress}
@@ -234,7 +236,7 @@ export default function AuditTrailViewer({
                     {log.oldValue != null && (
                       <div>
                         <p className="font-medium text-zinc-500 mb-1">
-                          Old Value
+                          {t.activity.oldValue}
                         </p>
                         <pre className="text-muted bg-surface rounded-lg p-2 overflow-x-auto max-h-32">
                           {JSON.stringify(log.oldValue, null, 2)}
@@ -244,7 +246,7 @@ export default function AuditTrailViewer({
                     {log.newValue != null && (
                       <div>
                         <p className="font-medium text-zinc-500 mb-1">
-                          New Value
+                          {t.activity.newValue}
                         </p>
                         <pre className="text-muted bg-surface rounded-lg p-2 overflow-x-auto max-h-32">
                           {JSON.stringify(log.newValue, null, 2)}

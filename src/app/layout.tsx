@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
+import { LangProvider } from "@/lib/i18n";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -48,7 +49,7 @@ export default function RootLayout({
       <body
         className={`${ibmArabic.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <LangProvider>{children}</LangProvider>
       </body>
     </html>
   );

@@ -24,25 +24,27 @@ import {
   X,
 } from "lucide-react";
 import { logoutAction } from "@/app/login/actions";
+import { useLang, type Translations } from "@/lib/i18n";
+import LangToggle from "./LangToggle";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "لوحة التحكم", icon: LayoutDashboard, roles: ["OWNER", "MANAGER"] as string[] },
-  { href: "/attendance", label: "الحضور", icon: Fingerprint, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
-  { href: "/availability", label: "ساعاتي", icon: Clock, roles: ["STAFF"] as string[] },
-  { href: "/schedule", label: "الورديات", icon: CalendarDays, roles: ["OWNER", "MANAGER"] as string[] },
-  { href: "/leaves", label: "الإجازات", icon: TreePalm, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
-  { href: "/swap", label: "التبديل", icon: ArrowLeftRight, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
-  { href: "/payroll", label: "الرواتب", icon: Wallet, roles: ["OWNER"] as string[] },
-  { href: "/news", label: "الأخبار", icon: Megaphone, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
-  { href: "/activity", label: "النشاط", icon: Activity, roles: ["OWNER"] as string[] },
-  { href: "/settings", label: "الإعدادات", icon: Settings, roles: ["OWNER"] as string[] },
+  { href: "/dashboard", labelKey: "dashboard" as const, icon: LayoutDashboard, roles: ["OWNER", "MANAGER"] as string[] },
+  { href: "/attendance", labelKey: "attendance" as const, icon: Fingerprint, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
+  { href: "/availability", labelKey: "myHours" as const, icon: Clock, roles: ["STAFF"] as string[] },
+  { href: "/schedule", labelKey: "schedule" as const, icon: CalendarDays, roles: ["OWNER", "MANAGER"] as string[] },
+  { href: "/leaves", labelKey: "leaves" as const, icon: TreePalm, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
+  { href: "/swap", labelKey: "swap" as const, icon: ArrowLeftRight, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
+  { href: "/payroll", labelKey: "payroll" as const, icon: Wallet, roles: ["OWNER"] as string[] },
+  { href: "/news", labelKey: "news" as const, icon: Megaphone, roles: ["OWNER", "MANAGER", "STAFF"] as string[] },
+  { href: "/activity", labelKey: "activity" as const, icon: Activity, roles: ["OWNER"] as string[] },
+  { href: "/settings", labelKey: "settings" as const, icon: Settings, roles: ["OWNER"] as string[] },
 ];
 
-const ROLE_LABELS: Record<string, string> = {
-  OWNER: "مالك النظام",
-  MANAGER: "مدير فرع",
-  STAFF: "موظف",
-};
+function getRoleLabel(role: string, t: Translations["sidebar"]) {
+  if (role === "OWNER") return t.owner;
+  if (role === "MANAGER") return t.manager;
+  return t.staff;
+}
 
 const ROLE_COLORS: Record<string, string> = {
   OWNER: "from-[#702F8A] to-[#E20074]",
@@ -66,6 +68,7 @@ export default function AppSidebar({
   const [showProfile, setShowProfile] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const pathname = usePathname();
+  const { t } = useLang();
 
   const isActive = (href: string) => pathname.startsWith(href);
 
@@ -97,9 +100,13 @@ export default function AppSidebar({
                 <div>
                   <p className="text-sm font-bold text-foreground">{user.fullName}</p>
                   <p className="text-[11px] text-zinc-400">{user.email}</p>
-                  <span className="text-[10px] font-bold text-brand-purple">{ROLE_LABELS[user.role]}</span>
+                  <span className="text-[10px] font-bold text-brand-purple">{getRoleLabel(user.role, t.sidebar)}</span>
                 </div>
               </div>
+            </div>
+            <div className="px-4 py-2 border-b border-zinc-100 flex items-center justify-between">
+              <span className="text-xs font-bold text-zinc-400">{t.sidebar.myAccount}</span>
+              <LangToggle />
             </div>
             <form action={logoutAction} className="p-2">
               <button
@@ -107,7 +114,7 @@ export default function AppSidebar({
                 className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
               >
                 <LogOut className="w-4 h-4" />
-                تسجيل الخروج
+                {t.sidebar.logout}
               </button>
             </form>
           </div>
@@ -134,7 +141,7 @@ export default function AppSidebar({
                   <item.icon className={`w-5 h-5 ${active ? "text-white" : ""}`} />
                 </div>
                 <span className={`text-[9px] font-bold transition-colors ${active ? "text-brand-purple" : "text-zinc-400 group-hover:text-zinc-600"}`}>
-                  {item.label}
+                  {t.sidebar[item.labelKey]}
                 </span>
               </Link>
             );
@@ -152,7 +159,7 @@ export default function AppSidebar({
               </span>
             </div>
             <span className="text-[9px] font-bold text-zinc-400 group-hover:text-zinc-600 transition-colors">
-              حسابي
+              {t.sidebar.myAccount}
             </span>
           </button>
         </div>
@@ -175,7 +182,7 @@ export default function AppSidebar({
                   <item.icon className={`w-5 h-5 ${active ? "text-white" : ""}`} />
                 </div>
                 <span className={`text-[9px] font-bold ${active ? "text-brand-purple" : "text-zinc-400"}`}>
-                  {item.label}
+                  {t.sidebar[item.labelKey]}
                 </span>
               </Link>
             );
@@ -191,7 +198,7 @@ export default function AppSidebar({
                 {showMore ? <X className="w-5 h-5 text-white" /> : <Ellipsis className="w-5 h-5" />}
               </div>
               <span className={`text-[9px] font-bold ${showMore ? "text-brand-purple" : "text-zinc-400"}`}>
-                المزيد
+                {t.sidebar.more}
               </span>
             </button>
           )}
@@ -206,7 +213,7 @@ export default function AppSidebar({
               </span>
             </div>
             <span className="text-[9px] font-bold text-zinc-400">
-              حسابي
+              {t.sidebar.myAccount}
             </span>
           </button>
         </div>
@@ -235,7 +242,7 @@ export default function AppSidebar({
                       <item.icon className={`w-5 h-5 ${active ? "text-white" : ""}`} />
                     </div>
                     <span className={`text-[10px] font-bold ${active ? "text-brand-purple" : "text-zinc-500"}`}>
-                      {item.label}
+                      {t.sidebar[item.labelKey]}
                     </span>
                   </Link>
                 );

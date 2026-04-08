@@ -32,6 +32,7 @@ import {
   toggleBranchActive,
   deleteBranch,
 } from "@/app/(app)/settings/branch-actions";
+import { useLang } from "@/lib/i18n";
 
 interface BranchManagementProps {
   initialBranches: BranchWithManager[];
@@ -57,6 +58,7 @@ export default function BranchManagement({
   managers,
 }: BranchManagementProps) {
   const [branches, setBranches] = useState<BranchWithManager[]>(initialBranches);
+  const { t } = useLang();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<BranchFormData>(emptyForm);
@@ -98,7 +100,7 @@ export default function BranchManagement({
 
   const handleSave = () => {
     if (!form.name.trim()) {
-      showToast("اسم الفرع مطلوب", "error");
+      showToast(t.settings.branchName + " " + t.common.required, "error");
       return;
     }
 
@@ -117,7 +119,7 @@ export default function BranchManagement({
 
       if (result.success) {
         showToast(
-          editingId ? "تم تحديث الفرع بنجاح" : "تم إضافة الفرع بنجاح",
+          editingId ? t.settings.branchUpdated : t.settings.branchAdded,
           "success"
         );
         resetForm();
@@ -128,24 +130,24 @@ export default function BranchManagement({
         const updated = await getBranches();
         setBranches(updated);
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
       }
     });
   };
 
-  const handleToggle = (id: string, currentActive: boolean) => {
+  const handleToggle = (id: string, isActive: boolean) => {
     startTransition(async () => {
-      const result = await toggleBranchActive(id, !currentActive);
+      const result = await toggleBranchActive(id, !isActive);
       if (result.success) {
         setBranches((prev) =>
-          prev.map((b) => (b.id === id ? { ...b, isActive: !currentActive } : b))
+          prev.map((b) => (b.id === id ? { ...b, isActive: !isActive } : b))
         );
         showToast(
-          !currentActive ? "تم تفعيل الفرع" : "تم تعطيل الفرع",
+          !isActive ? t.settings.branchEnabled : t.settings.branchDisabled,
           "success"
         );
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
       }
     });
   };
@@ -155,9 +157,9 @@ export default function BranchManagement({
       const result = await deleteBranch(id);
       if (result.success) {
         setBranches((prev) => prev.filter((b) => b.id !== id));
-        showToast("تم حذف الفرع", "success");
+        showToast(t.settings.branchDeleted, "success");
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
       }
       setConfirmDelete(null);
     });
@@ -180,7 +182,7 @@ export default function BranchManagement({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5 text-sm text-muted">
           <Building2 className="w-5 h-5" />
-          <span className="font-medium">{branches.length} فرع</span>
+          <span className="font-medium">{branches.length} {t.settings.branch}</span>
         </div>
         {!showForm && (
           <button
@@ -192,7 +194,7 @@ export default function BranchManagement({
             className="flex items-center gap-2 px-5 py-3 gradient-purple text-white text-sm font-semibold rounded-xl transition-colors shadow-purple-sm"
           >
             <Plus className="w-4 h-4" />
-            إضافة فرع
+            {t.settings.addBranch}
           </button>
         )}
       </div>
@@ -202,7 +204,7 @@ export default function BranchManagement({
         <div className="card p-8 space-y-6 border-brand-primary/20">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-lg font-bold text-foreground">
-              {editingId ? "تعديل الفرع" : "إضافة فرع جديد"}
+              {editingId ? t.settings.editBranch : t.settings.addNewBranch}
             </h3>
             <button
               onClick={resetForm}
@@ -216,7 +218,7 @@ export default function BranchManagement({
             {/* Branch Name */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1">
-                اسم الفرع *
+                {t.settings.branchName} *
               </label>
               <input
                 type="text"
@@ -231,7 +233,7 @@ export default function BranchManagement({
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
                 <Map className="w-3.5 h-3.5" />
-                موقع الفرع على الخريطة
+                {t.settings.branchMap}
               </label>
               <Suspense
                 fallback={
@@ -258,13 +260,13 @@ export default function BranchManagement({
             {/* Address (auto-filled from map, editable) */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1">
-                العنوان
+                {t.settings.address}
               </label>
               <input
                 type="text"
                 value={form.address || ""}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
-                placeholder="يتم تعبئته تلقائياً عند اختيار الموقع"
+                placeholder={t.settings.autoFill}
                 className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground placeholder:text-muted-light focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
                 dir="rtl"
               />
@@ -273,7 +275,7 @@ export default function BranchManagement({
             {/* Geofence Radius */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                نطاق السياج الجغرافي (متر)
+                {t.settings.geofenceRadius}
               </label>
               <input
                 type="number"
@@ -293,7 +295,7 @@ export default function BranchManagement({
             {/* Manager Dropdown */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                المدير المسؤول
+                {t.settings.responsibleManager}
               </label>
               <select
                 value={form.managerId || ""}
@@ -302,7 +304,7 @@ export default function BranchManagement({
                 }
                 className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               >
-                <option value="">— بدون مدير —</option>
+                <option value="">— {t.settings.noManager} —</option>
                 {managers.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.fullName}
@@ -315,11 +317,11 @@ export default function BranchManagement({
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
-                ساعات فتح وإغلاق الفرع
+                {t.settings.branchOpenClose}
               </label>
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs text-muted mb-0.5">وقت الفتح</label>
+                  <label className="block text-xs text-muted mb-0.5">{t.settings.openTime}</label>
                   <input
                     type="time"
                     value={form.openTime || ""}
@@ -329,7 +331,7 @@ export default function BranchManagement({
                 </div>
                 <span className="text-zinc-400 mt-4">—</span>
                 <div className="flex-1">
-                  <label className="block text-xs text-muted mb-0.5">وقت الإغلاق</label>
+                  <label className="block text-xs text-muted mb-0.5">{t.settings.closeTime}</label>
                   <input
                     type="time"
                     value={form.closeTime || ""}
@@ -344,11 +346,11 @@ export default function BranchManagement({
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-foreground mb-1.5 flex items-center gap-1">
                 <Users className="w-3.5 h-3.5" />
-                ساعات دوام الموظفين
+                {t.settings.employeeHours}
               </label>
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs text-muted mb-0.5">بداية الدوام</label>
+                  <label className="block text-xs text-muted mb-0.5">{t.settings.shiftStart}</label>
                   <input
                     type="time"
                     value={form.shiftStartTime || ""}
@@ -358,7 +360,7 @@ export default function BranchManagement({
                 </div>
                 <span className="text-zinc-400 mt-4">—</span>
                 <div className="flex-1">
-                  <label className="block text-xs text-muted mb-0.5">نهاية الدوام</label>
+                  <label className="block text-xs text-muted mb-0.5">{t.settings.shiftEnd}</label>
                   <input
                     type="time"
                     value={form.shiftEndTime || ""}
@@ -372,7 +374,7 @@ export default function BranchManagement({
             {/* Min Staff */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                الحد الأدنى للموظفين
+                {t.settings.minStaff}
               </label>
               <input
                 type="number"
@@ -387,7 +389,7 @@ export default function BranchManagement({
                 }
                 className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               />
-              <p className="text-xs text-muted mt-0.5">عدد الموظفين المطلوب كحد أدنى (تنبيهي فقط)</p>
+              <p className="text-xs text-muted mt-0.5">{t.settings.minStaffHint}</p>
             </div>
           </div>
 
@@ -397,7 +399,7 @@ export default function BranchManagement({
               onClick={resetForm}
               className="px-4 py-2 text-sm text-muted hover:bg-white/40 rounded-lg transition-colors"
             >
-              إلغاء
+              {t.common.cancel}
             </button>
             <button
               onClick={handleSave}
@@ -409,7 +411,7 @@ export default function BranchManagement({
               ) : (
                 <Save className="w-4 h-4" />
               )}
-              {editingId ? "حفظ التعديلات" : "إضافة الفرع"}
+              {editingId ? t.settings.saveChanges : t.settings.addBranchBtn}
             </button>
           </div>
         </div>
@@ -420,7 +422,7 @@ export default function BranchManagement({
         {branches.length === 0 && (
           <div className="text-center py-16 text-zinc-400">
             <Building2 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p className="text-base">لا توجد فروع - أضف فرعك الأول</p>
+            <p className="text-base">{t.settings.noBranches}</p>
           </div>
         )}
 
@@ -442,7 +444,7 @@ export default function BranchManagement({
                   </h3>
                   {!branch.isActive && (
                     <span className="text-xs px-2 py-0.5 bg-red-100/60 text-red-600 rounded-lg font-semibold">
-                      معطّل
+                      {t.settings.disabled}
                     </span>
                   )}
                 </div>
@@ -457,7 +459,7 @@ export default function BranchManagement({
                 <div className="flex flex-wrap items-center gap-4 text-sm text-muted">
                   <span className="flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5" />
-                    {branch._count.users} موظف
+                    {branch._count.users} {t.settings.employees}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5" />
@@ -476,7 +478,7 @@ export default function BranchManagement({
                   {branch.minStaff > 0 && (
                     <span className="text-amber-600 flex items-center gap-1.5">
                       <AlertTriangle className="w-3.5 h-3.5" />
-                      حد أدنى: {branch.minStaff} موظف
+                      {t.settings.minStaffLabel} {branch.minStaff}
                     </span>
                   )}
                 </div>
@@ -487,13 +489,13 @@ export default function BranchManagement({
                     {branch.openTime && branch.closeTime && (
                       <span className="flex items-center gap-1.5 text-emerald-600">
                         <Clock className="w-3.5 h-3.5" />
-                        الفرع: {branch.openTime} — {branch.closeTime}
+                        {t.settings.branch}: {branch.openTime} — {branch.closeTime}
                       </span>
                     )}
                     {branch.shiftStartTime && branch.shiftEndTime && (
                       <span className="flex items-center gap-1.5 text-blue-600">
                         <Clock className="w-3.5 h-3.5" />
-                        الدوام: {branch.shiftStartTime} — {branch.shiftEndTime}
+                        {t.settings.shiftStart}: {branch.shiftStartTime} — {branch.shiftEndTime}
                       </span>
                     )}
                   </div>
@@ -531,13 +533,13 @@ export default function BranchManagement({
                       disabled={isPending}
                       className="px-2 py-1 text-xs bg-red-600 text-white rounded font-medium"
                     >
-                      {isPending ? "..." : "تأكيد"}
+                      {isPending ? "..." : t.settings.confirm}
                     </button>
                     <button
                       onClick={() => setConfirmDelete(null)}
                       className="px-2 py-1 text-xs bg-zinc-200/60 text-muted rounded font-medium"
                     >
-                      إلغاء
+                      {t.common.cancel}
                     </button>
                   </div>
                 ) : (

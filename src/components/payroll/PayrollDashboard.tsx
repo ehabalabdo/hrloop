@@ -36,6 +36,7 @@ import {
   unlockPayroll,
   getEmployeePayslip,
 } from "@/app/(app)/payroll/actions";
+import { useLang } from "@/lib/i18n";
 
 // ============================================================
 
@@ -74,6 +75,7 @@ export default function PayrollDashboard({
 
   const [isPending, startTransition] = useTransition();
   const [loadingPayslip, setLoadingPayslip] = useState(false);
+  const { t } = useLang();
 
   const monthLabel = `${MONTH_NAMES_AR[month - 1]} ${year}`;
 
@@ -233,9 +235,9 @@ export default function PayrollDashboard({
       {/* Header */}
       <div className="page-container pt-4 pb-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <p className="text-zinc-400 text-xs font-bold mb-0.5">المحاسبة</p>
-          <h1 className="text-xl font-extrabold text-foreground">الرواتب والخصومات</h1>
-          <p className="text-xs text-zinc-400 mt-0.5">محرك تسوية الرواتب الشهري</p>
+          <p className="text-zinc-400 text-xs font-bold mb-0.5">{t.payroll.title}</p>
+          <h1 className="text-xl font-extrabold text-foreground">{t.payroll.subtitle}</h1>
+          <p className="text-xs text-zinc-400 mt-0.5">{t.payroll.engine}</p>
         </div>
         <MonthPicker
           month={month}
@@ -261,7 +263,7 @@ export default function PayrollDashboard({
               }
               className="text-sm border border-zinc-200 rounded-xl px-3 py-2 bg-zinc-50 text-foreground focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
             >
-              <option value="">جميع الفروع</option>
+              <option value="">{t.payroll.allBranches}</option>
               {branches.map((b: Branch) => (
                 <option key={b.id} value={b.id}>
                   {b.name}
@@ -282,7 +284,7 @@ export default function PayrollDashboard({
               ) : (
                 <RefreshCw className="w-3.5 h-3.5" />
               )}
-              توليد الكشوفات
+              {t.payroll.generatePayslips}
             </button>
 
             {!allLocked && items.length > 0 && (
@@ -292,7 +294,7 @@ export default function PayrollDashboard({
                 className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-brand-purple hover:bg-brand-primary-dark text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
               >
                 <Lock className="w-3.5 h-3.5" />
-                اعتماد وقفل
+                {t.payroll.lockApprove}
               </button>
             )}
 
@@ -303,7 +305,7 @@ export default function PayrollDashboard({
                 className="flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-amber-600 hover:bg-amber-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
               >
                 <Unlock className="w-3.5 h-3.5" />
-                فتح للتعديل
+                {t.payroll.unlockEdit}
               </button>
             )}
           </div>
@@ -313,7 +315,7 @@ export default function PayrollDashboard({
         {isPending && (
           <div className="flex items-center gap-2 text-sm text-muted animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin" />
-            جاري المعالجة...
+            {t.payroll.processing}
           </div>
         )}
 

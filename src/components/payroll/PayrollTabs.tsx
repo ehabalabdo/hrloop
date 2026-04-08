@@ -6,6 +6,7 @@
 
 import { useState, type ReactNode } from "react";
 import { Wallet, AlertTriangle, Camera } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 
 interface PayrollTabsProps {
   payrollDashboard: ReactNode;
@@ -31,6 +32,13 @@ export default function PayrollTabs({
   pendingOverrideCount,
 }: PayrollTabsProps) {
   const [tab, setTab] = useState<TabKey>("payroll");
+  const { t } = useLang();
+
+  const TABS_LABELS = [
+    { key: "payroll" as const, label: t.payroll.salaries, icon: Wallet },
+    { key: "disputes" as const, label: t.payroll.disputes, icon: AlertTriangle },
+    { key: "overrides" as const, label: t.payroll.adjustments, icon: Camera },
+  ];
 
   const badges: Record<string, number> = {
     disputes: pendingDisputeCount,
@@ -42,21 +50,21 @@ export default function PayrollTabs({
       {/* Tab Bar */}
         <div className="bg-white/90 backdrop-blur-xl sticky top-0 z-30 border-b border-zinc-100">
         <div className="page-container flex gap-2 overflow-x-auto no-scrollbar py-3">
-          {TABS.map((t) => {
-            const Icon = t.icon;
-            const badge = badges[t.key] ?? 0;
+          {TABS_LABELS.map((item) => {
+            const Icon = item.icon;
+            const badge = badges[item.key] ?? 0;
             return (
               <button
-                key={t.key}
-                onClick={() => setTab(t.key)}
+                key={item.key}
+                onClick={() => setTab(item.key)}
                 className={`flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl transition-all active:scale-95 shrink-0 ${
-                  tab === t.key
+                  tab === item.key
                     ? "gradient-purple text-white shadow-purple-sm"
                     : "text-zinc-500 hover:text-zinc-700 bg-zinc-50"
                 }`}
               >
                 <Icon className="w-4 h-4" />
-                {t.label}
+                {item.label}
                 {badge > 0 && (
                   <span className="ml-1 text-xs font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                     {badge}
@@ -73,7 +81,7 @@ export default function PayrollTabs({
       {tab === "disputes" && (
         <div className="page-container py-4 pb-20">
           <h2 className="text-xl font-bold text-foreground mb-5">
-            اعتراضات العقوبات
+            {t.payroll.penaltyDisputes}
           </h2>
           {disputesPanel}
         </div>
@@ -81,7 +89,7 @@ export default function PayrollTabs({
       {tab === "overrides" && (
         <div className="page-container py-4 pb-20">
           <h2 className="text-xl font-bold text-foreground mb-5">
-            طلبات التعديل اليدوي
+            {t.payroll.manualAdjustments}
           </h2>
           {overridesPanel}
         </div>

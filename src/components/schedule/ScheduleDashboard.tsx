@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 
 import { exportSchedulePDF } from "@/lib/export-schedule-pdf";
+import { useLang } from "@/lib/i18n";
 
 import type {
   WeeklyScheduleData,
@@ -83,6 +84,7 @@ export default function ScheduleDashboard({
   const [branches, setBranches] = useState(initialBranches);
   const [weekStart, setWeekStart] = useState(initialWeekStart);
   const [isPending, startTransition] = useTransition();
+  const { t } = useLang();
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast] = useState<{
     message: string;
@@ -200,7 +202,7 @@ export default function ScheduleDashboard({
       }
       await refreshData();
     } catch {
-      showToast("حدث خطأ", "error");
+      showToast(t.settings.error, "error");
     } finally {
       setActionLoading(null);
     }
@@ -245,14 +247,14 @@ export default function ScheduleDashboard({
       <div className="page-container pt-4 pb-3">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-xl font-extrabold text-foreground">جدول الورديات</h1>
-            <p className="text-zinc-400 text-sm">تخطيط وتوزيع الموظفين</p>
+            <h1 className="text-xl font-extrabold text-foreground">{t.schedule.title}</h1>
+            <p className="text-zinc-400 text-sm">{t.schedule.subtitle}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => exportSchedulePDF(data, weekStart)}
               className="flex items-center gap-1.5 px-3 py-2 bg-zinc-100 text-zinc-600 rounded-xl text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all"
-              title="تصدير PDF"
+              title={t.schedule.exportPdf}
             >
               <FileDown className="w-4 h-4" />
               PDF
@@ -288,14 +290,14 @@ export default function ScheduleDashboard({
             onClick={goToCurrentWeek}
             className="px-4 py-2.5 bg-brand-primary text-white font-bold text-xs rounded-xl active:scale-95 transition-all"
           >
-            اليوم
+            {t.schedule.today}
           </button>
         </div>
 
         {/* Date Range & Actions */}
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <label className="text-xs font-bold text-zinc-400">من</label>
+            <label className="text-xs font-bold text-zinc-400">{t.schedule.from}</label>
             <input
               type="date"
               value={genStart}
@@ -304,7 +306,7 @@ export default function ScheduleDashboard({
             />
           </div>
           <div className="flex items-center gap-2">
-            <label className="text-xs font-bold text-zinc-400">إلى</label>
+            <label className="text-xs font-bold text-zinc-400">{t.schedule.to}</label>
             <input
               type="date"
               value={genEnd}
@@ -316,13 +318,13 @@ export default function ScheduleDashboard({
           <span className="text-xs text-zinc-400">
             {(() => {
               const diff = Math.round((new Date(genEnd).getTime() - new Date(genStart).getTime()) / 86400000) + 1;
-              return `${diff} يوم`;
+              return `${diff} ${t.schedule.day}`;
             })()}
           </span>
           <button
             onClick={() => {
               if (hasShifts) {
-                if (window.confirm("سيتم توليد ورديات جديدة للفترة المحددة. هل تريد الاستمرار؟")) {
+                if (window.confirm(t.schedule.confirmGenerate)) {
                   handleAction("generate", () => generateWeeklySchedule(genStart, genEnd));
                 }
               } else {
@@ -337,7 +339,7 @@ export default function ScheduleDashboard({
             ) : (
               <Wand2 className="w-3.5 h-3.5" />
             )}
-            توليد
+            {t.schedule.generate}
           </button>
           {hasDrafts && (
             <>
@@ -347,10 +349,10 @@ export default function ScheduleDashboard({
                 className="flex items-center gap-1.5 px-4 py-1.5 bg-emerald-500 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition-all active:scale-95"
               >
                 {actionLoading === "publish" ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
-                نشر
+                {t.schedule.publish}
               </button>
               <button
-                onClick={() => { if (window.confirm("حذف جميع المسودات؟")) handleAction("clear", () => clearWeekDrafts(genStart, genEnd)); }}
+                onClick={() => { if (window.confirm(t.schedule.confirmDeleteDrafts)) handleAction("clear", () => clearWeekDrafts(genStart, genEnd)); }}
                 disabled={actionLoading !== null}
                 className="flex items-center justify-center w-8 h-8 bg-zinc-100 text-zinc-500 rounded-lg disabled:opacity-50 transition-all active:scale-95 hover:bg-zinc-200"
               >
@@ -421,7 +423,7 @@ export default function ScheduleDashboard({
           </div>
           {isToday && (
             <span className="px-3 py-1.5 bg-emerald-500 text-white text-xs font-bold rounded-lg">
-              اليوم
+              {t.schedule.today}
             </span>
           )}
         </div>
@@ -432,9 +434,9 @@ export default function ScheduleDashboard({
             <div className="w-16 h-16 bg-zinc-100 rounded-2xl flex items-center justify-center mb-4">
               <Briefcase className="w-7 h-7 text-zinc-300" />
             </div>
-            <h3 className="text-base text-foreground font-bold mb-1">لا توجد فروع</h3>
+            <h3 className="text-base text-foreground font-bold mb-1">{t.schedule.noBranches}</h3>
             <p className="text-sm text-muted max-w-[280px]">
-              يرجى إضافة فروع من الإعدادات للبدء بجدولة وتوزيع الموظفين.
+              {t.schedule.addBranchesHint}
             </p>
           </div>
         ) : (
@@ -468,7 +470,7 @@ export default function ScheduleDashboard({
                       </div>
                       <div>
                         <h3 className="font-bold text-base text-foreground">{branch.name}</h3>
-                        <span className="text-xs text-muted">{branch.managerName || "بدون مدير"}</span>
+                        <span className="text-xs text-muted">{branch.managerName || t.schedule.noManager}</span>
                       </div>
                     </div>
 
@@ -487,7 +489,7 @@ export default function ScheduleDashboard({
                       <div className="flex flex-col items-center justify-center py-6 text-center">
                         <Users className="w-6 h-6 text-zinc-300 mb-2" />
                         <span className="text-xs font-medium text-zinc-400">
-                          {isUnplanned ? "لم يتم تحديد احتياج لهذا اليوم" : "يجب توليد أو إضافة موظفين"}
+                          {isUnplanned ? t.schedule.noPlanDay : t.schedule.addEmployees}
                         </span>
                       </div>
                     ) : (
@@ -518,7 +520,7 @@ export default function ScheduleDashboard({
                 <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center">
                   <AlertTriangle className="w-4 h-4 text-amber-600" />
                 </div>
-                <h3 className="font-bold text-base text-foreground">تنبيهات الحد الأدنى</h3>
+                <h3 className="font-bold text-base text-foreground">{t.schedule.warnings}</h3>
               </div>
               <button onClick={() => setShowWarnings(false)} className="w-8 h-8 rounded-lg hover:bg-zinc-100 flex items-center justify-center transition-colors">
                 <X className="w-4 h-4 text-zinc-400" />
@@ -532,7 +534,7 @@ export default function ScheduleDashboard({
               ))}
             </div>
             <button onClick={() => setShowWarnings(false)} className="mt-4 w-full py-2.5 gradient-purple text-white rounded-xl font-bold text-sm shadow-purple-sm">
-              حسناً
+              {t.schedule.ok}
             </button>
           </div>
         </div>
@@ -559,6 +561,7 @@ export default function ScheduleDashboard({
 function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id: string) => void }) {
   const isDraft = entry.status === "DRAFT";
   const isManager = entry.userRole === "MANAGER";
+  const { t } = useLang();
   
   return (
     <div className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${
@@ -579,7 +582,7 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-foreground truncate">{entry.userName}</span>
           {isManager && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-brand-purple/10 text-brand-purple rounded">مدير</span>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 bg-brand-purple/10 text-brand-purple rounded">{t.schedule.manager}</span>
           )}
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
@@ -591,7 +594,7 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
       <span className={`text-[10px] font-bold px-2 py-1 rounded-lg ${
         isDraft ? "bg-amber-100 text-amber-700" : "bg-emerald-50 text-emerald-700"
       }`}>
-        {isDraft ? "مسودة" : "معتمد"}
+        {isDraft ? t.schedule.draft : t.schedule.approved}
       </span>
 
       {isDraft && (

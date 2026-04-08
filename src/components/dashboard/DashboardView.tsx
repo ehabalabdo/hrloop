@@ -45,6 +45,7 @@ import type {
   OvertimeAlert,
 } from "@/lib/dashboard-types";
 import { downloadCSV } from "@/lib/csv-export";
+import { useLang } from "@/lib/i18n";
 
 interface DashboardViewProps {
   metrics: DashboardMetrics;
@@ -64,14 +65,14 @@ function formatCurrency(n: number): string {
   return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
-function timeAgo(iso: string): string {
+function timeAgo(iso: string, labels: { now: string; min: string; hrs: string; days: string }): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return "الآن";
-  if (mins < 60) return `${mins}د`;
+  if (mins < 1) return labels.now;
+  if (mins < 60) return `${mins}${labels.min}`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}س`;
-  return `${Math.floor(hrs / 24)}ي`;
+  if (hrs < 24) return `${hrs}${labels.hrs}`;
+  return `${Math.floor(hrs / 24)}${labels.days}`;
 }
 
 export default function DashboardView({
@@ -84,6 +85,7 @@ export default function DashboardView({
   const [showAllBranches, setShowAllBranches] = useState(false);
   const [showChart, setShowChart] = useState(false);
   const [activeTab, setActiveTab] = useState<"branches" | "activity">("branches");
+  const { t } = useLang();
 
   const chartData = [...branches]
     .sort((a, b) => b.lateFrequency - a.lateFrequency)
@@ -118,8 +120,8 @@ export default function DashboardView({
       {/* ─── Page Title ─── */}
       <div className="page-container pt-4 pb-1 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">لوحة التحكم</h1>
-          <p className="text-zinc-400 text-sm">نظرة شاملة على أداء جميع الفروع</p>
+          <h1 className="text-xl font-extrabold text-foreground">{t.dashboard.title}</h1>
+          <p className="text-zinc-400 text-sm">{t.dashboard.subtitle}</p>
         </div>
         <div className={`flex items-center gap-2 px-3 py-2 rounded-full text-xs font-bold ${
           health.database
@@ -127,7 +129,7 @@ export default function DashboardView({
             : "bg-red-50 text-red-500"
         }`}>
           {health.database ? <Wifi className="w-3.5 h-3.5" /> : <WifiOff className="w-3.5 h-3.5" />}
-          {health.database ? "متصل" : "غير متصل"}
+          {health.database ? t.dashboard.online : t.dashboard.offline}
         </div>
       </div>
 
@@ -138,32 +140,32 @@ export default function DashboardView({
           <KpiCard
             icon={Users}
             value={metrics.totalStaff}
-            label="إجمالي الموظفين"
+            label={t.dashboard.totalEmployees}
             gradient="from-[#702F8A] to-[#E20074]"
           />
           <KpiCard
             icon={Timer}
             value={metrics.activeToday}
-            label="حاضرين اليوم"
+            label={t.dashboard.presentToday}
             gradient="from-emerald-500 to-teal-600"
             badge={`${metrics.todayAttendancePct}%`}
           />
           <KpiCard
             icon={DollarSign}
             value={`$${formatCurrency(metrics.monthlyPayrollCost)}`}
-            label="الرواتب الشهرية"
+            label={t.dashboard.monthlySalaries}
             gradient="from-amber-500 to-orange-600"
           />
           <KpiCard
             icon={Building2}
             value={metrics.totalBranches}
-            label="عدد الفروع"
+            label={t.dashboard.branchCount}
             gradient="from-blue-500 to-indigo-600"
           />
           <KpiCard
             icon={TreePalm}
             value={metrics.pendingLeaves}
-            label="طلبات الإجازة"
+            label={t.dashboard.leaveRequests}
             gradient="from-rose-500 to-pink-600"
           />
         </div>
@@ -176,8 +178,8 @@ export default function DashboardView({
                 <AlertTriangle className="w-4 h-4 text-white" />
               </div>
               <div className="flex-1">
-                <span className="text-sm font-bold text-amber-900">تنبيه العمل الإضافي</span>
-                <span className="text-xs text-amber-700/70 block">تجاوز ٤٠ ساعة أسبوعياً</span>
+                <span className="text-sm font-bold text-amber-900">{t.dashboard.overtimeAlert}</span>
+                <span className="text-xs text-amber-700/70 block">{t.dashboard.exceeded40h}</span>
               </div>
               <span className="w-7 h-7 rounded-full bg-amber-500 text-white text-xs font-bold flex items-center justify-center">
                 {overtimeAlerts.length}
@@ -195,7 +197,7 @@ export default function DashboardView({
                   </div>
                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
                     <Clock className="w-3 h-3" />
-                    {alert.weeklyHours} ساعة
+                    {alert.weeklyHours} {t.dashboard.hour}
                   </div>
                 </div>
               ))}
@@ -210,7 +212,7 @@ export default function DashboardView({
               <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center">
                 <Trophy className="w-4 h-4 text-amber-600" />
               </div>
-              <h2 className="text-base font-bold text-foreground">أفضل الفروع أداءً</h2>
+              <h2 className="text-base font-bold text-foreground">{t.dashboard.topBranches}</h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {metrics.topPerfectBranches.map(
@@ -257,7 +259,7 @@ export default function DashboardView({
             }`}
           >
             <Building2 className="w-4 h-4" />
-            الفروع
+            {t.dashboard.branches}
           </button>
           <button
             onClick={() => setActiveTab("activity")}
@@ -268,7 +270,7 @@ export default function DashboardView({
             }`}
           >
             <Activity className="w-4 h-4" />
-            النشاط
+            {t.dashboard.activityLabel}
           </button>
         </div>
 
@@ -281,7 +283,7 @@ export default function DashboardView({
                 <div className="w-8 h-8 rounded-xl bg-brand-purple/10 flex items-center justify-center">
                   <TrendingUp className="w-4 h-4 text-brand-purple" />
                 </div>
-                <span className="text-sm font-bold text-foreground">ترتيب الفروع</span>
+                <span className="text-sm font-bold text-foreground">{t.dashboard.branchRanking}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <button
@@ -291,14 +293,14 @@ export default function DashboardView({
                       ? "gradient-purple text-white shadow-purple-sm"
                       : "bg-zinc-100 text-muted hover:text-foreground hover:bg-zinc-200"
                   }`}
-                  title="رسم بياني"
+                  title={t.dashboard.chart}
                 >
                   <BarChart3 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleExportBranches}
                   className="w-9 h-9 rounded-xl bg-zinc-100 text-muted hover:text-foreground hover:bg-zinc-200 flex items-center justify-center transition-all"
-                  title="تصدير CSV"
+                  title={t.dashboard.exportCsv}
                 >
                   <Download className="w-4 h-4" />
                 </button>
@@ -337,7 +339,7 @@ export default function DashboardView({
             {rankedBranches.length === 0 ? (
               <div className="px-6 py-16 text-center">
                 <Building2 className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-                <p className="text-sm text-muted">لا توجد بيانات فروع</p>
+                <p className="text-sm text-muted">{t.dashboard.noBranchData}</p>
               </div>
             ) : (
               <div>
@@ -359,14 +361,14 @@ export default function DashboardView({
                     {/* Branch info */}
                     <div className="flex-1 min-w-0">
                       <span className="text-sm font-bold text-foreground block truncate">{b.name}</span>
-                      <span className="text-xs text-muted">{b.employeeCount} موظف</span>
+                      <span className="text-xs text-muted">{b.employeeCount} {t.dashboard.employee}</span>
                     </div>
 
                     {/* Stats */}
                     <div className="hidden sm:flex items-center gap-2 shrink-0">
-                      <StatChip icon={CalendarCheck} value={b.totalShifts} label="وردية" />
-                      <StatChip icon={Clock} value={b.lateFrequency} label="تأخير" warn={b.lateFrequency > 0} />
-                      <StatChip icon={UserX} value={b.totalAbsences} label="غياب" warn={b.totalAbsences > 0} />
+                      <StatChip icon={CalendarCheck} value={b.totalShifts} label={t.dashboard.shift} />
+                      <StatChip icon={Clock} value={b.lateFrequency} label={t.dashboard.late} warn={b.lateFrequency > 0} />
+                      <StatChip icon={UserX} value={b.totalAbsences} label={t.dashboard.absent} warn={b.totalAbsences > 0} />
                     </div>
 
                     {/* Score bar */}
@@ -401,7 +403,7 @@ export default function DashboardView({
                 className="w-full px-5 py-3.5 text-sm font-bold text-brand-purple hover:bg-brand-purple/5 transition-colors flex items-center justify-center gap-2 border-t border-zinc-100"
               >
                 <Eye className="w-4 h-4" />
-                {showAllBranches ? "عرض أقل" : `عرض جميع الفروع (${rankedBranches.length})`}
+                {showAllBranches ? t.dashboard.showLess : `${t.dashboard.showAll} (${rankedBranches.length})`}
               </button>
             )}
           </div>
@@ -414,12 +416,12 @@ export default function DashboardView({
               <div className="w-8 h-8 rounded-xl bg-brand-purple/10 flex items-center justify-center">
                 <Zap className="w-4 h-4 text-brand-purple" />
               </div>
-              <span className="text-sm font-bold text-foreground">النشاط الأخير</span>
+              <span className="text-sm font-bold text-foreground">{t.dashboard.recentActivity}</span>
             </div>
             {activities.length === 0 ? (
               <div className="px-6 py-16 text-center">
                 <Activity className="w-10 h-10 text-zinc-300 mx-auto mb-3" />
-                <p className="text-sm text-muted">لا يوجد نشاط حديث</p>
+                <p className="text-sm text-muted">{t.dashboard.noActivity}</p>
               </div>
             ) : (
               <div>
@@ -435,7 +437,7 @@ export default function DashboardView({
                       </p>
                     </div>
                     <span className="text-xs text-muted-light font-medium shrink-0 mt-0.5 bg-zinc-100 px-2.5 py-1 rounded-lg">
-                      {timeAgo(a.createdAt)}
+                      {timeAgo(a.createdAt, t.dashboard)}
                     </span>
                   </div>
                 ))}

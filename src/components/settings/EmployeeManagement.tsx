@@ -49,17 +49,18 @@ import {
   deleteEmployee,
   deleteEmployeeDocument,
 } from "@/app/(app)/settings/employee-actions";
+import { useLang } from "@/lib/i18n";
 
 interface EmployeeManagementProps {
   initialEmployees: EmployeeWithBranch[];
   branches: { id: string; name: string }[];
 }
 
-const DAY_LABELS = [
+const DAY_LABELS_AR = [
   "الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت",
 ];
 
-const ROLE_LABELS: Record<string, string> = {
+const ROLE_LABELS_MAP: Record<string, string> = {
   OWNER: "مالك",
   MANAGER: "مدير",
   STAFF: "موظف",
@@ -95,6 +96,7 @@ export default function EmployeeManagement({
 }: EmployeeManagementProps) {
   const [employees, setEmployees] =
     useState<EmployeeWithBranch[]>(initialEmployees);
+  const { t } = useLang();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<EmployeeFormData>(emptyForm);
@@ -150,15 +152,15 @@ export default function EmployeeManagement({
 
   const handleSave = () => {
     if (!form.fullName.trim()) {
-      showToast("اسم الموظف مطلوب", "error");
+      showToast(t.settings.fullName + " " + t.common.required, "error");
       return;
     }
     if (!form.email.trim()) {
-      showToast("البريد الإلكتروني مطلوب", "error");
+      showToast(t.settings.emailLabel + " " + t.common.required, "error");
       return;
     }
     if (!editingId && (!form.password || form.password.length < 6)) {
-      showToast("كلمة المرور مطلوبة (6 أحرف على الأقل)", "error");
+      showToast(t.settings.minChars, "error");
       return;
     }
 
@@ -180,7 +182,7 @@ export default function EmployeeManagement({
 
       if (result.success) {
         showToast(
-          editingId ? "تم تحديث بيانات الموظف" : "تم إضافة الموظف بنجاح",
+          editingId ? t.settings.employeeUpdated : t.settings.employeeAdded,
           "success"
         );
         resetForm();
@@ -191,7 +193,7 @@ export default function EmployeeManagement({
         const fresh = await getEmployees();
         setEmployees(fresh);
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
       }
     });
   };
@@ -206,11 +208,11 @@ export default function EmployeeManagement({
           )
         );
         showToast(
-          !currentActive ? "تم تفعيل الموظف" : "تم تعطيل الموظف",
+          !currentActive ? t.settings.employeeEnabled : t.settings.employeeDisabled,
           "success"
         );
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
       }
     });
   };
@@ -220,10 +222,10 @@ export default function EmployeeManagement({
       const result = await deleteEmployee(id);
       if (result.success) {
         setEmployees((prev) => prev.filter((e) => e.id !== id));
-        showToast("تم حذف الموظف", "success");
+        showToast(t.settings.employeeDeleted, "success");
         setConfirmDelete(null);
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
         setConfirmDelete(null);
       }
     });
@@ -253,17 +255,17 @@ export default function EmployeeManagement({
       const result = await res.json();
 
       if (result.success) {
-        showToast("تم رفع الملف بنجاح", "success");
+        showToast(t.leaves.uploadSuccess, "success");
         const { getEmployees } = await import(
           "@/app/(app)/settings/employee-actions"
         );
         const fresh = await getEmployees();
         setEmployees(fresh);
       } else {
-        showToast(result.error || "فشل في رفع الملف", "error");
+        showToast(result.error || t.settings.error, "error");
       }
     } catch {
-      showToast("فشل في رفع الملف", "error");
+      showToast(t.settings.error, "error");
     } finally {
       setUploadingFor(null);
     }
@@ -273,14 +275,14 @@ export default function EmployeeManagement({
     startTransition(async () => {
       const result = await deleteEmployeeDocument(docId);
       if (result.success) {
-        showToast("تم حذف الملف", "success");
+        showToast(t.settings.employeeDeleted, "success");
         const { getEmployees } = await import(
           "@/app/(app)/settings/employee-actions"
         );
         const fresh = await getEmployees();
         setEmployees(fresh);
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.settings.error, "error");
       }
     });
   };
@@ -301,19 +303,19 @@ export default function EmployeeManagement({
           <div className="text-2xl font-bold text-brand-purple">
             {employees.length}
           </div>
-          <div className="text-xs text-zinc-500 mt-0.5">إجمالي الموظفين</div>
+          <div className="text-xs text-zinc-500 mt-0.5">{t.settings.totalEmployees}</div>
         </div>
         <div className="shrink-0 bg-surface/60 border border-border-main/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-emerald-600">
             {activeCount}
           </div>
-          <div className="text-xs text-zinc-500 mt-0.5">نشط</div>
+          <div className="text-xs text-zinc-500 mt-0.5">{t.settings.active}</div>
         </div>
         <div className="shrink-0 bg-surface/60 border border-border-main/40 shadow-sm rounded-2xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-zinc-400">
             {employees.length - activeCount}
           </div>
-          <div className="text-xs text-zinc-500 mt-0.5">معطل</div>
+          <div className="text-xs text-zinc-500 mt-0.5">{t.settings.disabled}</div>
         </div>
       </div>
 
@@ -325,7 +327,7 @@ export default function EmployeeManagement({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="بحث بالاسم أو البريد..."
+            placeholder={t.settings.searchPlaceholder}
             className="w-full pl-10 pr-4 py-3 rounded-2xl bg-surface/60 border border-border-main/40 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple/50 outline-none"
           />
         </div>
@@ -333,10 +335,10 @@ export default function EmployeeManagement({
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar flex-1">
             {[
-              { key: "ALL", label: "الكل" },
-              { key: "OWNER", label: "مالك" },
-              { key: "MANAGER", label: "مدير" },
-              { key: "STAFF", label: "موظف" },
+              { key: "ALL", label: t.settings.allFilter },
+              { key: "OWNER", label: t.sidebar.owner },
+              { key: "MANAGER", label: t.sidebar.manager },
+              { key: "STAFF", label: t.sidebar.staff },
             ].map((r) => (
               <button
                 key={r.key}
@@ -360,7 +362,7 @@ export default function EmployeeManagement({
             className="shrink-0 flex items-center gap-1.5 bg-brand-purple hover:bg-brand-primary-dark text-white px-4 py-2.5 rounded-2xl text-sm font-bold shadow-lg shadow-brand-purple/20 transition-all active:scale-95"
           >
             <UserPlus className="w-4 h-4" />
-            إضافة موظف
+            {t.settings.addEmployee}
           </button>
         </div>
       </div>
@@ -371,7 +373,7 @@ export default function EmployeeManagement({
           <div className="flex items-center justify-between mb-1">
             <h3 className="text-base font-bold text-foreground flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-brand-purple" />
-              {editingId ? "تعديل بيانات الموظف" : "إضافة موظف جديد"}
+              {editingId ? t.settings.editEmployee : t.settings.addNewEmployee}
             </h3>
             <button
               onClick={resetForm}
@@ -384,7 +386,7 @@ export default function EmployeeManagement({
           {/* Name */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              الاسم الكامل *
+              {t.settings.fullName} *
             </label>
             <div className="relative">
               <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -403,7 +405,7 @@ export default function EmployeeManagement({
           {/* Email */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              البريد الإلكتروني *
+              {t.settings.emailLabel} *
             </label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -431,7 +433,7 @@ export default function EmployeeManagement({
           {/* Password */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              كلمة المرور {editingId ? "(اتركها فارغة للإبقاء)" : "*"}
+              {t.settings.passwordLabel} {editingId ? `(${t.settings.keepEmpty})` : "*"}
             </label>
             <div className="relative">
               <Shield className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -441,7 +443,7 @@ export default function EmployeeManagement({
                 onChange={(e) =>
                   setForm({ ...form, password: e.target.value })
                 }
-                placeholder={editingId ? "••••••" : "6 أحرف على الأقل"}
+                placeholder={editingId ? "••••••" : t.settings.minChars}
                 className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
               <button
@@ -461,7 +463,7 @@ export default function EmployeeManagement({
           {/* Phone */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              رقم الجوال
+              {t.settings.phone}
             </label>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -480,7 +482,7 @@ export default function EmployeeManagement({
           {/* Role */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              الدور *
+              {t.settings.role} *
             </label>
             <div className="flex gap-2">
               {(["STAFF", "MANAGER", "OWNER"] as const).map((r) => (
@@ -494,7 +496,7 @@ export default function EmployeeManagement({
                       : "bg-surface-hover text-muted hover:bg-surface-hover"
                   }`}
                 >
-                  {ROLE_LABELS[r]}
+                  {r === "OWNER" ? t.sidebar.owner : r === "MANAGER" ? t.sidebar.manager : t.sidebar.staff}
                 </button>
               ))}
             </div>
@@ -503,7 +505,7 @@ export default function EmployeeManagement({
           {/* Branch */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              الفرع الأساسي
+              {t.settings.primaryBranch}
             </label>
             <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -514,7 +516,7 @@ export default function EmployeeManagement({
                 }
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground focus:ring-2 focus:ring-brand-purple/30 outline-none appearance-none"
               >
-                <option value="">بدون فرع</option>
+                <option value="">{t.settings.noBranch}</option>
                 {branches.map((b) => (
                   <option key={b.id} value={b.id}>
                     {b.name}
@@ -528,11 +530,11 @@ export default function EmployeeManagement({
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
               <Building2 className="inline w-3.5 h-3.5 ml-1" />
-              الفروع المسموح بالدوام فيها
+              {t.settings.allowedBranchesWork}
             </label>
             <div className="bg-surface-hover border border-border-main rounded-xl p-3 max-h-40 overflow-y-auto space-y-2">
               {branches.length === 0 ? (
-                <div className="text-xs text-zinc-400 text-center py-2">لا توجد فروع</div>
+                <div className="text-xs text-zinc-400 text-center py-2">{t.settings.noBranchesAvailable}</div>
               ) : (
                 branches.map((b) => (
                   <label
@@ -567,7 +569,7 @@ export default function EmployeeManagement({
             </div>
             {(form.assignedBranchIds?.length ?? 0) > 0 && (
               <div className="text-xs text-brand-purple mt-1">
-                تم اختيار {form.assignedBranchIds!.length} فرع
+                {t.settings.branchSelected}: {form.assignedBranchIds!.length}
               </div>
             )}
           </div>
@@ -575,7 +577,7 @@ export default function EmployeeManagement({
           {/* Social Security Number */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              رقم الضمان الاجتماعي (SSN)
+              {t.settings.ssn}
             </label>
             <div className="relative">
               <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -594,7 +596,7 @@ export default function EmployeeManagement({
           {/* Employment Type */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              نوع التوظيف *
+              {t.settings.employmentType} *
             </label>
             <div className="flex gap-2">
               <button
@@ -607,7 +609,7 @@ export default function EmployeeManagement({
                 }`}
               >
                 <Briefcase className="w-4 h-4" />
-                دوام كامل
+                {t.settings.fullTime}
               </button>
               <button
                 type="button"
@@ -619,7 +621,7 @@ export default function EmployeeManagement({
                 }`}
               >
                 <Clock className="w-4 h-4" />
-                بالساعة
+                {t.settings.hourly}
               </button>
             </div>
           </div>
@@ -628,7 +630,7 @@ export default function EmployeeManagement({
           {form.employmentType === "HOURLY" ? (
             <div>
               <label className="block text-xs font-medium text-muted mb-1.5">
-                أجرة الساعة (بالدينار) *
+                {t.settings.hourlyRate} *
               </label>
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -648,7 +650,7 @@ export default function EmployeeManagement({
           ) : (
             <div>
               <label className="block text-xs font-medium text-muted mb-1.5">
-                الراتب الشهري (بالدينار) *
+                {t.settings.monthlySalary} *
               </label>
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -670,7 +672,7 @@ export default function EmployeeManagement({
           {/* Transportation Allowance */}
           <div>
             <label className="block text-xs font-medium text-muted mb-1.5">
-              بدل تنقل (بالدينار)
+              {t.settings.transportAllowance}
             </label>
             <div className="relative">
               <Bus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -692,7 +694,7 @@ export default function EmployeeManagement({
           <div className="sm:col-span-2 border-t border-border-main pt-4">
             <label className="block text-xs font-medium text-muted mb-2 flex items-center gap-1.5">
               <CalendarDays className="w-3.5 h-3.5" />
-              نوع الجدول
+              {t.settings.scheduleType}
             </label>
             <div className="flex gap-2">
               <button
@@ -704,7 +706,7 @@ export default function EmployeeManagement({
                     : "bg-surface-hover text-zinc-500"
                 }`}
               >
-                أيام وساعات محددة
+                {t.settings.fixedSchedule}
               </button>
               <button
                 type="button"
@@ -715,7 +717,7 @@ export default function EmployeeManagement({
                     : "bg-surface-hover text-zinc-500"
                 }`}
               >
-                مرن - أي وقت
+                {t.settings.flexibleSchedule}
               </button>
             </div>
           </div>
@@ -724,9 +726,9 @@ export default function EmployeeManagement({
           {!form.isFlexibleSchedule && (
             <div className="sm:col-span-2 space-y-2">
               <label className="block text-xs font-medium text-muted mb-1">
-                أيام وساعات الدوام
+                {t.settings.workDaysHours}
               </label>
-              {DAY_LABELS.map((label, dayIdx) => {
+              {DAY_LABELS_AR.map((label, dayIdx) => {
                 const existing = form.availability?.find((a) => a.dayOfWeek === dayIdx);
                 const isActive = !!existing;
                 return (
@@ -800,7 +802,7 @@ export default function EmployeeManagement({
               onClick={resetForm}
               className="flex-1 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-2xl py-3 text-sm font-bold hover:bg-surface-hover transition active:scale-95"
             >
-              إلغاء
+              {t.common.cancel}
             </button>
             <button
               onClick={handleSave}
@@ -812,7 +814,7 @@ export default function EmployeeManagement({
               ) : (
                 <Save className="w-4 h-4" />
               )}
-              {editingId ? "تحديث" : "إضافة"}
+              {editingId ? t.settings.update : t.settings.add}
             </button>
           </div>
         </div>
@@ -824,8 +826,8 @@ export default function EmployeeManagement({
           <Users className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mx-auto mb-3" />
           <div className="text-sm text-muted">
             {search || filterRole !== "ALL"
-              ? "لا توجد نتائج مطابقة"
-              : "لا يوجد موظفين. أضف أول موظف!"}
+              ? t.settings.noResults
+              : t.settings.noEmployees}
           </div>
         </div>
       ) : (
@@ -868,11 +870,11 @@ export default function EmployeeManagement({
                       <span
                         className={`px-2 py-0.5 rounded-full text-xs font-bold ${ROLE_COLORS[emp.role]}`}
                       >
-                        {ROLE_LABELS[emp.role]}
+                        {emp.role === "OWNER" ? t.sidebar.owner : emp.role === "MANAGER" ? t.sidebar.manager : t.sidebar.staff}
                       </span>
                       {!emp.isActive && (
                         <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400">
-                          معطل
+                          {t.settings.disabled}
                         </span>
                       )}
                     </div>
@@ -888,7 +890,7 @@ export default function EmployeeManagement({
                 <div className="flex items-center gap-1.5 text-xs text-zinc-500">
                   <Building2 className="w-3.5 h-3.5" />
                   <span className="truncate">
-                    {emp.primaryBranch?.name || "بدون فرع"}
+                    {emp.primaryBranch?.name || t.settings.noBranch}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-zinc-500">
@@ -901,7 +903,7 @@ export default function EmployeeManagement({
                   ) : (
                     <Clock className="w-3.5 h-3.5" />
                   )}
-                  <span>{emp.employmentType === "FULL_TIME" ? "دوام كامل" : "بالساعة"}</span>
+                  <span>{emp.employmentType === "FULL_TIME" ? t.settings.fullTime : t.settings.hourly}</span>
                 </div>
                 {emp.payrollProfile && (
                   <div className="flex items-center gap-1.5 text-xs text-zinc-500">
@@ -930,7 +932,7 @@ export default function EmployeeManagement({
               {/* Assigned Branches */}
               {emp.assignedBranches && emp.assignedBranches.length > 0 && (
                 <div className="mb-3">
-                  <div className="text-xs text-zinc-400 mb-1">الفروع المسموح بها:</div>
+                  <div className="text-xs text-zinc-400 mb-1">{t.settings.allowedBranches}:</div>
                   <div className="flex flex-wrap gap-1">
                     {emp.assignedBranches.map((ab) => (
                       <span
@@ -948,7 +950,7 @@ export default function EmployeeManagement({
               <div className="mb-3">
                 {emp.isFlexibleSchedule ? (
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
-                    مرن - أي وقت
+                    {t.settings.flexibleSchedule}
                   </span>
                 ) : emp.availability && emp.availability.length > 0 ? (
                   <div className="flex flex-wrap gap-1">
@@ -957,12 +959,12 @@ export default function EmployeeManagement({
                         key={a.dayOfWeek}
                         className="px-2 py-0.5 rounded-full text-xs font-medium bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400"
                       >
-                        {DAY_LABELS[a.dayOfWeek]}
+                        {t.dayNames[a.dayOfWeek]}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <span className="text-xs text-zinc-400">لم يتم تحديد جدول</span>
+                  <span className="text-xs text-zinc-400">{t.settings.workDaysHours}</span>
                 )}
               </div>
 
@@ -972,20 +974,20 @@ export default function EmployeeManagement({
                   <div className="text-sm font-bold text-brand-purple">
                     {emp._count.shifts}
                   </div>
-                  <div className="text-xs text-zinc-400">ورديات</div>
+                  <div className="text-xs text-zinc-400">{t.settings.shifts}</div>
                 </div>
                 <div className="flex-1 bg-surface-hover/50 rounded-xl px-3 py-2 text-center">
                   <div className="text-sm font-bold text-brand-purple">
                     {emp._count.attendanceLogs}
                   </div>
-                  <div className="text-xs text-zinc-400">سجل حضور</div>
+                  <div className="text-xs text-zinc-400">{t.settings.attendanceLog}</div>
                 </div>
                 {emp.managedBranches.length > 0 && (
                   <div className="flex-1 bg-amber-50 dark:bg-amber-900/20 rounded-xl px-3 py-2 text-center">
                     <div className="text-sm font-bold text-amber-600 dark:text-amber-400">
                       {emp.managedBranches.length}
                     </div>
-                    <div className="text-xs text-zinc-400">يدير فروع</div>
+                    <div className="text-xs text-zinc-400">{t.settings.managesBranches}</div>
                   </div>
                 )}
               </div>
@@ -1006,7 +1008,7 @@ export default function EmployeeManagement({
                   ) : (
                     <Upload className="w-3.5 h-3.5" />
                   )}
-                  رفع ملف
+                  {t.settings.uploadFile}
                 </button>
 
                 {/* Expand Documents */}
@@ -1027,7 +1029,7 @@ export default function EmployeeManagement({
                   className="flex-1 flex items-center justify-center gap-1.5 bg-surface-hover text-zinc-700 dark:text-zinc-300 rounded-xl py-2 text-xs font-bold hover:bg-surface-hover transition active:scale-95"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
-                  تعديل
+                  {t.settings.edit}
                 </button>
 
                 <button
@@ -1044,7 +1046,7 @@ export default function EmployeeManagement({
                   ) : (
                     <ToggleLeft className="w-3.5 h-3.5" />
                   )}
-                  {emp.isActive ? "تعطيل" : "تفعيل"}
+                  {emp.isActive ? t.settings.disable : t.settings.enable}
                 </button>
 
                 {confirmDelete === emp.id ? (
@@ -1057,14 +1059,14 @@ export default function EmployeeManagement({
                       {isPending ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       ) : (
-                        "تأكيد"
+                        t.settings.confirm
                       )}
                     </button>
                     <button
                       onClick={() => setConfirmDelete(null)}
                       className="px-3 py-2 rounded-xl bg-surface-hover text-zinc-500 text-xs font-bold transition"
                     >
-                      لا
+                      {t.common.no}
                     </button>
                   </div>
                 ) : (
@@ -1073,7 +1075,7 @@ export default function EmployeeManagement({
                     className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-xs font-bold hover:bg-red-100 dark:hover:bg-red-900/40 transition active:scale-95"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    حذف
+                    {t.settings.deleteLabel}
                   </button>
                 )}
               </div>
@@ -1083,7 +1085,7 @@ export default function EmployeeManagement({
                 <div className="mt-3 border-t border-border-main/40 pt-3 space-y-2">
                   <div className="text-xs font-bold text-muted flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5" />
-                    مستندات التوظيف
+                    {t.settings.uploadFile}
                   </div>
                   {emp.documents.map((doc) => (
                     <div

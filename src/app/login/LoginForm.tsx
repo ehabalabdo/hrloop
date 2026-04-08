@@ -8,11 +8,13 @@
 import { useActionState } from "react";
 import { loginAction, type LoginState } from "./actions";
 import { LogIn, Mail, Lock, Loader2, AlertCircle } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 
 const initialState: LoginState = {};
 
 export default function LoginForm() {
   const [state, formAction, isPending] = useActionState(loginAction, initialState);
+  const { t } = useLang();
 
   return (
     <form action={formAction} className="space-y-4">
@@ -30,7 +32,7 @@ export default function LoginForm() {
           htmlFor="email"
           className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
         >
-          البريد الإلكتروني
+          {t.login.email}
         </label>
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -53,7 +55,7 @@ export default function LoginForm() {
           htmlFor="password"
           className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
         >
-          كلمة المرور
+          {t.login.password}
         </label>
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -79,12 +81,12 @@ export default function LoginForm() {
         {isPending ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>جارٍ الدخول...</span>
+            <span>{t.login.loading}</span>
           </>
         ) : (
           <>
             <LogIn className="w-4 h-4" />
-            <span>دخول</span>
+            <span>{t.login.submit}</span>
           </>
         )}
       </button>

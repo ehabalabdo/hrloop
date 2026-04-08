@@ -21,6 +21,7 @@ import { useServiceWorker, useOfflineSync } from "@/hooks/useOfflineSync";
 import type { AttendanceState, AttendanceAction } from "@/lib/types";
 import type { GeofenceResult } from "@/lib/geofence";
 import type { OfflinePayload } from "@/lib/offline-sync";
+import { useLang } from "@/lib/i18n";
 
 interface AttendanceDashboardProps {
   userId: string;
@@ -44,6 +45,7 @@ export default function AttendanceDashboard({
   const [isLoading, setIsLoading] = useState(false);
   const [geofenceResult, setGeofenceResult] = useState<GeofenceResult | null>(null);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const { t } = useLang();
 
   // Manual override state
   const [showOverrideForm, setShowOverrideForm] = useState(false);
@@ -240,7 +242,7 @@ export default function AttendanceDashboard({
         const fresh = await getAttendanceState(userId);
         setState(fresh);
       } else if (result.error === "CHECKLIST_INCOMPLETE" || result.message === "CHECKLIST_INCOMPLETE") {
-        addToast("يجب إكمال لائحة المهام قبل تسجيل الانصراف", "error");
+        addToast(t.attendance.completeChecklist, "error");
       } else {
         addToast(result.message, "error");
       }
@@ -334,20 +336,20 @@ export default function AttendanceDashboard({
   // Arabic greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "صباح الخير";
-    if (hour < 17) return "مساء الخير";
-    return "مساء النور";
+    if (hour < 12) return t.attendance.goodMorning;
+    if (hour < 17) return t.attendance.goodEvening;
+    return t.attendance.goodNight;
   };
 
   // Status indicator
   const getStatusLabel = () => {
     switch (state.status) {
       case "clocked_in":
-        return { text: "في الوردية", color: "bg-brand-primary", glow: "shadow-brand-magenta/40" };
+        return { text: t.attendance.onShift, color: "bg-brand-primary", glow: "shadow-brand-magenta/40" };
       case "on_break":
-        return { text: "في استراحة", color: "bg-brand-orange", glow: "shadow-brand-orange/40" };
+        return { text: t.attendance.onBreak, color: "bg-brand-orange", glow: "shadow-brand-orange/40" };
       default:
-        return { text: "لم يبدأ", color: "bg-zinc-400", glow: "" };
+        return { text: t.attendance.notStarted, color: "bg-zinc-400", glow: "" };
     }
   };
 
@@ -359,19 +361,19 @@ export default function AttendanceDashboard({
       {!isOnline && (
         <div className="bg-red-600 text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
           <WifiOff className="w-4 h-4" />
-          <span>أنت غير متصل بالإنترنت — سيتم حفظ العمليات ومزامنتها لاحقاً</span>
+          <span>{t.attendance.offlineMsg}</span>
         </div>
       )}
       {syncing && (
         <div className="bg-amber-500 text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span>جاري مزامنة العمليات المعلّقة...</span>
+          <span>{t.attendance.syncing}</span>
         </div>
       )}
       {!syncing && pendingOffline > 0 && isOnline && (
         <div className="bg-brand-purple text-white text-center py-2.5 px-4 text-sm flex items-center justify-center gap-2">
           <Upload className="w-4 h-4" />
-          <span>{pendingOffline} عملية معلّقة بانتظار المزامنة</span>
+          <span>{pendingOffline} {t.attendance.pendingSync}</span>
         </div>
       )}
 
@@ -430,7 +432,7 @@ export default function AttendanceDashboard({
           <div className="w-full bg-white rounded-2xl border border-zinc-200/50 px-5 py-4">
             <div className="flex items-center gap-2.5 mb-2">
               <Store className="w-5 h-5 text-brand-purple/60" />
-              <span className="text-sm font-bold text-foreground">ساعات دوام الفرع</span>
+              <span className="text-sm font-bold text-foreground">{t.attendance.branchHours}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-muted" dir="ltr">
               <Clock className="w-4 h-4 text-brand-purple/50" />
@@ -446,10 +448,10 @@ export default function AttendanceDashboard({
           <div className="w-full text-center py-12 bg-white rounded-2xl border border-zinc-200/50">
             <CalendarEmpty />
             <p className="text-zinc-500 font-bold text-base mt-4">
-              لا توجد وردية مجدولة اليوم
+              {t.attendance.noShift}
             </p>
             <p className="text-zinc-400 text-sm mt-1.5">
-              تواصل مع مديرك لمعرفة جدول العمل
+              {t.attendance.contactManager}
             </p>
           </div>
         )}
@@ -508,8 +510,8 @@ export default function AttendanceDashboard({
             <Fingerprint className="w-3.5 h-3.5" />
             <span>
               {hasBiometric
-                ? "البصمة مسجّلة — الجهاز مُعتمد"
-                : "البصمة غير مسجّلة"}
+                ? t.attendance.biometricRegistered
+                : t.attendance.biometricNotRegistered}
             </span>
           </div>
         </div>
@@ -524,10 +526,10 @@ export default function AttendanceDashboard({
               <div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto mb-4 sm:hidden" />
               <h2 className="text-lg font-bold text-foreground flex items-center gap-2.5">
                 <Camera className="w-5 h-5 text-brand-purple" />
-                طلب تجاوز يدوي
+                {t.attendance.manualOverride}
               </h2>
               <p className="text-sm text-muted mt-1.5 leading-relaxed">
-                أنت خارج نطاق الفرع. التقط صورة حية لتأكيد موقعك.
+                {t.attendance.outsideFence}
               </p>
             </div>
 
@@ -537,7 +539,7 @@ export default function AttendanceDashboard({
                 {overridePhoto ? (
                   <img
                     src={overridePhoto}
-                    alt="صورة ملتقطة"
+                    alt={t.attendance.photoCaptured}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -552,7 +554,7 @@ export default function AttendanceDashboard({
                     {!streamRef.current && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-light">
                         <Camera className="w-10 h-10 mb-2" />
-                        <span className="text-sm">الكاميرا غير مفعّلة</span>
+                        <span className="text-sm">{t.attendance.cameraOff}</span>
                       </div>
                     )}
                   </>
@@ -569,7 +571,7 @@ export default function AttendanceDashboard({
                         className="flex-1 gradient-purple text-white rounded-xl py-3.5 text-sm font-bold transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
-                        تشغيل الكاميرا
+                        {t.attendance.enableCamera}
                       </button>
                     ) : (
                       <button
@@ -577,7 +579,7 @@ export default function AttendanceDashboard({
                         className="flex-1 gradient-purple text-white rounded-xl py-3.5 text-sm font-bold transition flex items-center justify-center gap-2"
                       >
                         <Camera className="w-4 h-4" />
-                        التقاط صورة
+                        {t.attendance.takePhoto}
                       </button>
                     )}
                   </>
@@ -589,7 +591,7 @@ export default function AttendanceDashboard({
                     }}
                     className="flex-1 bg-zinc-100 text-zinc-700 rounded-xl py-3.5 text-sm font-bold hover:bg-zinc-200 transition"
                   >
-                    إعادة التصوير
+                    {t.attendance.retake}
                   </button>
                 )}
               </div>
@@ -597,13 +599,13 @@ export default function AttendanceDashboard({
               {/* Reason */}
               <div>
                 <label className="block text-xs font-bold text-zinc-500 mb-1.5">
-                  سبب التجاوز
+                  {t.attendance.overrideReason}
                 </label>
                 <textarea
                   value={overrideReason}
                   onChange={(e) => setOverrideReason(e.target.value)}
                   rows={3}
-                  placeholder="مثال: انحراف GPS، مدخل المبنى خارج النطاق..."
+                  placeholder={t.attendance.overridePlaceholder}
                   className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none resize-none"
                 />
               </div>
@@ -614,7 +616,7 @@ export default function AttendanceDashboard({
                   onClick={cancelOverride}
                   className="flex-1 bg-zinc-100 text-zinc-600 rounded-xl py-3.5 text-sm font-bold hover:bg-zinc-200 transition"
                 >
-                  إلغاء
+                  {t.attendance.cancel}
                 </button>
                 <button
                   onClick={submitOverride}
@@ -626,7 +628,7 @@ export default function AttendanceDashboard({
                   ) : (
                     <Upload className="w-4 h-4" />
                   )}
-                  إرسال الطلب
+                  {t.attendance.submitRequest}
                 </button>
               </div>
             </div>

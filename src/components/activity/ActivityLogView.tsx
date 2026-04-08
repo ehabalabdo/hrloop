@@ -10,6 +10,7 @@ import { ClipboardList, RefreshCw, Download, Loader2 } from "lucide-react";
 import type { ActivityLogItem } from "@/lib/dashboard-types";
 import { getActivityLogs } from "@/app/(app)/dashboard/actions";
 import { downloadCSV } from "@/lib/csv-export";
+import { useLang } from "@/lib/i18n";
 
 interface ActivityLogViewProps {
   initialLogs: ActivityLogItem[];
@@ -20,6 +21,7 @@ export default function ActivityLogView({
 }: ActivityLogViewProps) {
   const [logs, setLogs] = useState<ActivityLogItem[]>(initialLogs);
   const [isPending, startTransition] = useTransition();
+  const { t, lang } = useLang();
 
   const refresh = () => {
     startTransition(async () => {
@@ -44,12 +46,12 @@ export default function ActivityLogView({
   const timeAgo = (isoStr: string): string => {
     const diff = Date.now() - new Date(isoStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "just now";
-    if (mins < 60) return `${mins}m ago`;
+    if (mins < 1) return t.activity.justNow;
+    if (mins < 60) return `${mins}${t.dashboard.min}`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return `${hours}${t.dashboard.hrs}`;
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return `${days}${t.dashboard.days}`;
   };
 
   const actionColor = (action: string): string => {
@@ -67,9 +69,9 @@ export default function ActivityLogView({
       {/* Header */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">Activity Log</h1>
+          <h1 className="text-xl font-extrabold text-foreground">{t.activity.title}</h1>
           <p className="text-xs text-zinc-400">
-            {logs.length} logged events
+            {logs.length} {t.activity.events}
           </p>
         </div>
 
@@ -84,14 +86,14 @@ export default function ActivityLogView({
             ) : (
               <RefreshCw className="w-3 h-3" />
             )}
-            Refresh
+            {t.activity.refresh}
           </button>
           <button
             onClick={handleExport}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-lg transition-colors"
           >
             <Download className="w-3 h-3" />
-            Export CSV
+            {t.activity.exportCsv}
           </button>
         </div>
       </div>
@@ -100,7 +102,7 @@ export default function ActivityLogView({
         <div className="bg-white rounded-xl border border-zinc-200/50 overflow-hidden">
           {logs.length === 0 ? (
             <div className="p-12 text-center text-zinc-400">
-              No activity logs yet.
+              {t.dashboard.noActivity}
             </div>
           ) : (
             <div className="divide-y divide-zinc-100">

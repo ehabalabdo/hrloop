@@ -32,6 +32,7 @@ import {
 } from "@/app/(app)/leaves/actions";
 
 import { downloadCSV } from "@/lib/csv-export";
+import { useLang } from "@/lib/i18n";
 
 interface LeavesDashboardProps {
   initialRequests: LeaveRequestItem[];
@@ -54,6 +55,7 @@ export default function LeavesDashboard({
     type: "success" | "error";
   } | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { t } = useLang();
 
   // Form state
   const [formUserId, setFormUserId] = useState(currentUserId);
@@ -83,7 +85,7 @@ export default function LeavesDashboard({
 
   const handleSubmit = () => {
     if (!formUserId || !formStart || !formEnd) {
-      showToast("يرجى تعبئة جميع الحقول المطلوبة", "error");
+      showToast(t.leaves.fillRequired, "error");
       return;
     }
     startTransition(async () => {
@@ -159,11 +161,11 @@ export default function LeavesDashboard({
   ).length;
 
   const STATUS_FILTERS = [
-    { value: "ALL", label: "الكل" },
-    { value: "PENDING", label: "معلّقة" },
-    { value: "APPROVED", label: "مقبولة" },
-    { value: "REJECTED", label: "مرفوضة" },
-    { value: "CANCELLED", label: "ملغاة" },
+    { value: "ALL", label: t.leaves.all },
+    { value: "PENDING", label: t.leaves.pending },
+    { value: "APPROVED", label: t.leaves.accepted },
+    { value: "REJECTED", label: t.leaves.rejected },
+    { value: "CANCELLED", label: t.leaves.cancelled },
   ];
 
   return (
@@ -171,11 +173,11 @@ export default function LeavesDashboard({
       {/* ─── Header ─── */}
       <div className="page-container pt-4 pb-1 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-extrabold text-foreground">الإجازات</h1>
+          <h1 className="text-xl font-extrabold text-foreground">{t.leaves.title}</h1>
           <p className="text-zinc-400 text-sm">
             {pendingCount > 0
-              ? `${pendingCount} طلب بانتظار الموافقة`
-              : "جميع الطلبات مُعالجة"}
+              ? `${pendingCount} ${t.leaves.pendingRequest}`
+              : t.leaves.allProcessed}
           </p>
         </div>
         <button
@@ -183,8 +185,8 @@ export default function LeavesDashboard({
           className="flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold rounded-xl bg-brand-primary text-white shadow-sm transition-all active:scale-95"
         >
           <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">طلب إجازة</span>
-          <span className="sm:hidden">جديد</span>
+          <span className="hidden sm:inline">{t.leaves.newRequest}</span>
+          <span className="sm:hidden">{t.leaves.new}</span>
         </button>
       </div>
 
@@ -194,7 +196,7 @@ export default function LeavesDashboard({
           <div className="bg-white rounded-2xl border border-zinc-200/50 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-zinc-100">
               <h3 className="text-sm font-bold text-foreground">
-                طلب إجازة جديد
+                {t.leaves.newLeaveTitle}
               </h3>
             </div>
 
@@ -202,7 +204,7 @@ export default function LeavesDashboard({
               {/* Employee */}
               <div>
                 <label className="block text-xs font-bold text-zinc-500 mb-1.5">
-                  الموظف
+                  {t.leaves.employee}
                 </label>
                 <div className="relative">
                   {isAdmin ? (
@@ -235,7 +237,7 @@ export default function LeavesDashboard({
               {/* Leave Type */}
               <div>
                 <label className="block text-xs font-bold text-zinc-500 mb-1.5">
-                  نوع الإجازة
+                  {t.leaves.leaveType}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {(["ANNUAL", "SICK", "EMERGENCY", "UNPAID"] as const).map((type) => (
@@ -258,7 +260,7 @@ export default function LeavesDashboard({
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-zinc-500 mb-1.5">من تاريخ</label>
+                  <label className="block text-xs font-bold text-zinc-500 mb-1.5">{t.leaves.fromDate}</label>
                   <input
                     type="date"
                     value={formStart}
@@ -267,7 +269,7 @@ export default function LeavesDashboard({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-zinc-500 mb-1.5">إلى تاريخ</label>
+                  <label className="block text-xs font-bold text-zinc-500 mb-1.5">{t.leaves.toDate}</label>
                   <input
                     type="date"
                     value={formEnd}
@@ -280,7 +282,7 @@ export default function LeavesDashboard({
               {/* Reason */}
               <div>
                 <label className="block text-xs font-bold text-zinc-500 mb-1.5">
-                  السبب <span className="text-zinc-400 font-normal">(اختياري)</span>
+                  {t.leaves.reason} <span className="text-zinc-400 font-normal">({t.leaves.optional})</span>
                 </label>
                 <textarea
                   value={formReason}
@@ -297,7 +299,7 @@ export default function LeavesDashboard({
                   onClick={() => setShowForm(false)}
                   className="flex-1 px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
                 >
-                  إلغاء
+                  {t.attendance.cancel}
                 </button>
                 <button
                   onClick={handleSubmit}
@@ -309,7 +311,7 @@ export default function LeavesDashboard({
                   ) : (
                     <Check className="w-4 h-4" />
                   )}
-                  إرسال الطلب
+                  {t.leaves.submit}
                 </button>
               </div>
             </div>
@@ -369,7 +371,7 @@ export default function LeavesDashboard({
             <div className="text-center py-16 bg-white rounded-2xl border border-zinc-200/50">
               <Calendar className="w-10 h-10 mx-auto text-zinc-200 mb-3" />
               <p className="text-sm font-bold text-zinc-400">
-                لا توجد طلبات إجازة
+                {t.leaves.noLeaves}
               </p>
             </div>
           ) : (
@@ -431,13 +433,13 @@ export default function LeavesDashboard({
                 {/* Card Body: details in a clean grid */}
                 <div className="px-4 pb-3.5 grid grid-cols-3 gap-2">
                   <div className="bg-zinc-50 rounded-xl px-3 py-2 text-center">
-                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">النوع</span>
+                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">{t.leaves.type}</span>
                     <span className="text-xs font-bold text-zinc-700">
                       {LEAVE_TYPE_LABELS[r.type]}
                     </span>
                   </div>
                   <div className="bg-zinc-50 rounded-xl px-3 py-2 text-center">
-                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">المدة</span>
+                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">{t.leaves.duration}</span>
                     <span className="text-[11px] font-bold text-zinc-700" dir="ltr">
                       {new Date(r.startDate).toLocaleDateString("ar-SA", { month: "short", day: "numeric" })}
                       {" – "}
@@ -445,7 +447,7 @@ export default function LeavesDashboard({
                     </span>
                   </div>
                   <div className="bg-zinc-50 rounded-xl px-3 py-2 text-center">
-                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">الأيام</span>
+                    <span className="text-[10px] text-zinc-400 font-medium block mb-0.5">{t.leaves.daysLabel}</span>
                     <span className="text-lg font-bold text-brand-purple">{r.days}</span>
                   </div>
                 </div>
@@ -458,7 +460,7 @@ export default function LeavesDashboard({
                         ? "bg-emerald-50 text-emerald-600"
                         : "bg-red-50 text-red-600"
                     }`}>
-                      {r.isPaid ? "مدفوعة" : "بدون راتب"}
+                      {r.isPaid ? t.leaves.paid : t.leaves.unpaidLabel}
                     </span>
                     {r.reason && (
                       <span className="text-muted-light truncate flex-1">
@@ -480,7 +482,7 @@ export default function LeavesDashboard({
             <div className="p-5 space-y-4">
               <div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto sm:hidden" />
               <h3 className="text-sm font-bold text-foreground">
-                مراجعة طلب الإجازة
+                {t.leaves.reviewTitle}
               </h3>
 
               <textarea
@@ -490,7 +492,7 @@ export default function LeavesDashboard({
                 }
                 rows={3}
                 className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
-                placeholder="ملاحظة للموظف (اختياري)..."
+                placeholder={`${t.leaves.noteToEmployee} (${t.leaves.optional})...`}
               />
 
               <div className="flex gap-2">
@@ -500,7 +502,7 @@ export default function LeavesDashboard({
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 transition-colors"
                 >
                   <Check className="w-4 h-4" />
-                  قبول
+                  {t.leaves.accept}
                 </button>
                 <button
                   onClick={() => handleReview("REJECTED")}
@@ -508,13 +510,13 @@ export default function LeavesDashboard({
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold rounded-xl bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 transition-colors"
                 >
                   <X className="w-4 h-4" />
-                  رفض
+                  {t.leaves.reject}
                 </button>
                 <button
                   onClick={() => setReviewingId(null)}
                   className="px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
                 >
-                  إلغاء
+                  {t.attendance.cancel}
                 </button>
               </div>
             </div>

@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { AvailabilitySlot } from "@/app/(app)/availability/actions";
 import { saveAvailability } from "@/app/(app)/availability/actions";
+import { useLang } from "@/lib/i18n";
 
 interface AvailabilityDashboardProps {
   initialSlots: AvailabilitySlot[];
@@ -37,6 +38,7 @@ export default function AvailabilityDashboard({
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const { t, lang } = useLang();
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -75,7 +77,7 @@ export default function AvailabilityDashboard({
       }));
 
     if (entries.length === 0) {
-      showToast("يجب تحديد ساعات ليوم واحد على الأقل", "error");
+      showToast(t.availability.selectOneDay, "error");
       return;
     }
 
@@ -83,7 +85,7 @@ export default function AvailabilityDashboard({
     for (const e of entries) {
       if (e.startTime >= e.endTime) {
         const dayName = slots.find((s) => s.dayOfWeek === e.dayOfWeek)?.dayName;
-        showToast(`وقت البداية يجب أن يكون قبل النهاية (${dayName})`, "error");
+        showToast(`${t.availability.startBeforeEnd} (${dayName})`, "error");
         return;
       }
     }
@@ -91,7 +93,7 @@ export default function AvailabilityDashboard({
     startTransition(async () => {
       const result = await saveAvailability(entries);
       if (result.success) {
-        showToast("تم حفظ ساعاتك — مقفلة لمدة أسبوع", "success");
+        showToast(t.availability.saved, "success");
         setLocked(true);
         setExpiresAt(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString());
         // Mark all active slots as locked
@@ -102,14 +104,14 @@ export default function AvailabilityDashboard({
           }))
         );
       } else {
-        showToast(result.error || "حدث خطأ", "error");
+        showToast(result.error || t.common.error, "error");
       }
     });
   };
 
   const formatLockExpiry = (iso: string) => {
     const d = new Date(iso);
-    return d.toLocaleDateString("ar", {
+    return d.toLocaleDateString(lang === "ar" ? "ar" : "en", {
       weekday: "long",
       month: "long",
       day: "numeric",
@@ -136,10 +138,10 @@ export default function AvailabilityDashboard({
           </div>
           <div>
             <h2 className="text-base font-bold text-foreground">
-              ساعات الدوام المتاحة
+              {t.availability.title}
             </h2>
             <p className="text-xs text-zinc-500">
-              حدد الأيام والساعات اللي تقدر تداوم فيها
+              {t.availability.subtitle}
             </p>
           </div>
         </div>
@@ -150,10 +152,10 @@ export default function AvailabilityDashboard({
             <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
             <div>
               <div className="text-sm font-bold text-amber-700 dark:text-amber-300">
-                الساعات مقفلة
+                {t.availability.locked}
               </div>
               <div className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">
-                ما تقدر تعدل لغاية: {formatLockExpiry(expiresAt)}
+                {t.availability.cantEditUntil}: {formatLockExpiry(expiresAt)}
               </div>
             </div>
           </div>
@@ -164,7 +166,7 @@ export default function AvailabilityDashboard({
             <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
             <div>
               <div className="text-xs text-blue-700">
-                بعد الحفظ، الساعات بتنقفل لمدة <strong>أسبوع كامل</strong> ما بتقدر تعدلها. تأكد من اختياراتك!
+                {t.availability.lockNote}
               </div>
             </div>
           </div>
@@ -175,11 +177,11 @@ export default function AvailabilityDashboard({
       <div className="flex gap-3 overflow-x-auto no-scrollbar -mx-1 px-1">
         <div className="shrink-0 bg-white border border-zinc-200/50 rounded-xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-brand-purple">{activeDaysCount}</div>
-          <div className="text-xs text-zinc-500 mt-0.5">أيام الدوام</div>
+          <div className="text-xs text-zinc-500 mt-0.5">{t.availability.workDays}</div>
         </div>
         <div className="shrink-0 bg-white border border-zinc-200/50 rounded-xl p-4 min-w-[120px] text-center">
           <div className="text-2xl font-bold text-emerald-600">{totalHours.toFixed(1)}</div>
-          <div className="text-xs text-zinc-500 mt-0.5">ساعة / أسبوع</div>
+          <div className="text-xs text-zinc-500 mt-0.5">{t.availability.hrsWeek}</div>
         </div>
       </div>
 
@@ -226,7 +228,7 @@ export default function AvailabilityDashboard({
               {isActive && (
                 <div className="flex items-center gap-3">
                   <div className="flex-1">
-                    <label className="block text-xs text-zinc-400 mb-0.5">من</label>
+                    <label className="block text-xs text-zinc-400 mb-0.5">{t.availability.from}</label>
                     <input
                       type="time"
                       value={slot.startTime}
@@ -239,7 +241,7 @@ export default function AvailabilityDashboard({
                   </div>
                   <span className="text-zinc-400 mt-4">—</span>
                   <div className="flex-1">
-                    <label className="block text-xs text-zinc-400 mb-0.5">إلى</label>
+                    <label className="block text-xs text-zinc-400 mb-0.5">{t.availability.to}</label>
                     <input
                       type="time"
                       value={slot.endTime}
@@ -269,14 +271,14 @@ export default function AvailabilityDashboard({
           ) : (
             <Save className="w-4 h-4" />
           )}
-          حفظ وقفل لمدة أسبوع
+                    {t.availability.saveAndLock}
         </button>
       )}
 
       {locked && (
         <div className="flex items-center justify-center gap-2 bg-zinc-100 text-zinc-500 rounded-xl py-3.5 text-sm font-bold">
           <Lock className="w-4 h-4" />
-          الساعات مقفلة — ما تقدر تعدل هسه
+          {t.availability.lockedMsg}
         </div>
       )}
 

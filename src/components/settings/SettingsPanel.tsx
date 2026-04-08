@@ -9,6 +9,7 @@ import { useState, useTransition } from "react";
 import { Settings, Save, Loader2 } from "lucide-react";
 import type { SettingItem } from "@/lib/dashboard-types";
 import { updateGlobalSetting } from "@/app/(app)/dashboard/actions";
+import { useLang } from "@/lib/i18n";
 
 interface SettingsPanelProps {
   initialSettings: SettingItem[];
@@ -16,51 +17,43 @@ interface SettingsPanelProps {
   actorName: string;
 }
 
-const SETTING_LABELS: Record<string, string> = {
-  grace_period_minutes: "Grace Period (minutes)",
-  late_penalty_per_minute: "Late Penalty per Minute (SAR)",
-  overtime_multiplier: "Overtime Multiplier",
-  default_geofence_radius: "Geofence Radius (meters)",
-  company_work_start: "Work Start Time",
-  company_work_end: "Work End Time",
-  sick_leave_paid: "Sick Leave Paid",
-  annual_leave_days: "Annual Leave Days (per year)",
-  emergency_leave_days: "Emergency Leave Days (per year)",
-};
 
-const SETTING_DESCRIPTIONS: Record<string, string> = {
-  grace_period_minutes: "Number of minutes after shift start before lateness is recorded",
-  late_penalty_per_minute: "Deduction amount in SAR for each minute late after grace period",
-  overtime_multiplier: "Pay multiplier for overtime hours (e.g., 1.5 = time and a half)",
-  default_geofence_radius: "Radius in meters for GPS-based attendance validation",
-  company_work_start: "Default daily work start time (HH:MM format)",
-  company_work_end: "Default daily work end time (HH:MM format)",
-  sick_leave_paid: "Whether sick leave days are paid (true/false)",
-  annual_leave_days: "Total annual leave days allocated per employee per year",
-  emergency_leave_days: "Total emergency leave days allocated per employee per year",
-};
-
-const SETTING_GROUPS: { label: string; keys: string[] }[] = [
-  {
-    label: "Attendance & Penalties",
-    keys: [
-      "grace_period_minutes",
-      "late_penalty_per_minute",
-      "overtime_multiplier",
-      "default_geofence_radius",
-    ],
-  },
-  {
-    label: "Work Hours",
-    keys: ["company_work_start", "company_work_end"],
-  },
-  {
-    label: "Leave Policies",
-    keys: ["sick_leave_paid", "annual_leave_days", "emergency_leave_days"],
-  },
-];
 
 export default function SettingsPanel({ initialSettings, actorId, actorName }: SettingsPanelProps) {
+  const { t } = useLang();
+
+  const SETTING_LABELS: Record<string, string> = {
+    grace_period_minutes: t.settings.gracePeriod,
+    late_penalty_per_minute: t.settings.latePenalty,
+    overtime_multiplier: t.settings.overtimeMultiplier,
+    default_geofence_radius: t.settings.geofenceRadiusLabel,
+    company_work_start: t.settings.workStart,
+    company_work_end: t.settings.workEnd,
+    sick_leave_paid: t.settings.sickLeavePaid,
+    annual_leave_days: t.settings.annualDays,
+    emergency_leave_days: t.settings.emergencyDays,
+  };
+
+  const SETTING_GROUPS: { label: string; keys: string[] }[] = [
+    {
+      label: t.settings.attendancePenalties,
+      keys: [
+        "grace_period_minutes",
+        "late_penalty_per_minute",
+        "overtime_multiplier",
+        "default_geofence_radius",
+      ],
+    },
+    {
+      label: t.settings.workHoursLabel,
+      keys: ["company_work_start", "company_work_end"],
+    },
+    {
+      label: t.settings.leavePolicies,
+      keys: ["sick_leave_paid", "annual_leave_days", "emergency_leave_days"],
+    },
+  ];
+
   const [settings, setSettings] = useState<SettingItem[]>(initialSettings);
   const [editValues, setEditValues] = useState<Record<string, string>>({});
   const [savingKey, setSavingKey] = useState<string | null>(null);
@@ -140,9 +133,6 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
                       <p className="text-sm font-semibold text-foreground">
                         {SETTING_LABELS[key] ?? key}
                       </p>
-                      <p className="text-xs text-zinc-400 mt-0.5">
-                        {SETTING_DESCRIPTIONS[key] ?? ""}
-                      </p>
                     </div>
                     <div className="flex items-center gap-2 sm:w-52">
                       {key === "sick_leave_paid" ? (
@@ -153,8 +143,8 @@ export default function SettingsPanel({ initialSettings, actorId, actorName }: S
                           ) => handleChange(key, e.target.value)}
                           className="flex-1 text-sm border border-border-main rounded-lg px-3 py-2 bg-surface text-zinc-700 dark:text-zinc-300"
                         >
-                          <option value="true">Yes</option>
-                          <option value="false">No</option>
+                          <option value="true">{t.common.yes}</option>
+                          <option value="false">{t.common.no}</option>
                         </select>
                       ) : key.includes("work_start") ||
                         key.includes("work_end") ? (
