@@ -23,7 +23,10 @@ import {
   Clock,
   Briefcase,
   X,
+  FileDown,
 } from "lucide-react";
+
+import { exportSchedulePDF } from "@/lib/export-schedule-pdf";
 
 import type {
   WeeklyScheduleData,
@@ -246,6 +249,14 @@ export default function ScheduleDashboard({
             <p className="text-zinc-400 text-sm">تخطيط وتوزيع الموظفين</p>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => exportSchedulePDF(data, weekStart)}
+              className="flex items-center gap-1.5 px-3 py-2 bg-zinc-100 text-zinc-600 rounded-xl text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all"
+              title="تصدير PDF"
+            >
+              <FileDown className="w-4 h-4" />
+              PDF
+            </button>
             {isPending && <Loader2 className="w-5 h-5 animate-spin text-brand-primary" />}
           </div>
         </div>
