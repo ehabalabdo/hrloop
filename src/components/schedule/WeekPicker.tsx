@@ -5,6 +5,7 @@
 // ============================================================
 
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 
 interface WeekPickerProps {
   weekLabel: string;
@@ -17,6 +18,7 @@ export default function WeekPicker({
   weekStart,
   onWeekChange,
 }: WeekPickerProps) {
+  const { t } = useLang();
   const shiftWeek = (days: number) => {
     const d = new Date(weekStart);
     d.setDate(d.getDate() + days);
@@ -38,7 +40,7 @@ export default function WeekPicker({
       <button
         onClick={() => shiftWeek(-7)}
         className="p-2.5 rounded-2xl bg-surface border border-border-main hover:bg-surface-hover transition-colors shadow-sm active:scale-95"
-        title="الأسبوع السابق"
+        title={t.scheduleExtra.prevWeek}
       >
         <ChevronRight className="w-4 h-4 text-muted" />
       </button>
@@ -53,7 +55,7 @@ export default function WeekPicker({
       <button
         onClick={() => shiftWeek(7)}
         className="p-2.5 rounded-2xl bg-surface border border-border-main hover:bg-surface-hover transition-colors shadow-sm active:scale-95"
-        title="الأسبوع التالي"
+        title={t.scheduleExtra.nextWeek}
       >
         <ChevronLeft className="w-4 h-4 text-muted" />
       </button>
@@ -62,7 +64,7 @@ export default function WeekPicker({
         onClick={goToCurrentWeek}
         className="px-3 py-2 text-xs font-semibold rounded-2xl bg-brand-purple/10 text-brand-purple border border-brand-purple/20 hover:bg-brand-purple/15 transition-colors active:scale-95"
       >
-        اليوم
+        {t.scheduleExtra.today}
       </button>
     </div>
   );

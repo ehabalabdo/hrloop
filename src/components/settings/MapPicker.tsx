@@ -8,6 +8,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, MapPin, Loader2, LocateFixed } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -48,6 +49,7 @@ export default function MapPicker({
   const [isSearching, setIsSearching] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { t } = useLang();
 
   // Initialize map
   useEffect(() => {
@@ -226,7 +228,7 @@ export default function MapPicker({
               value={searchQuery}
               onChange={(e) => handleSearchInput(e.target.value)}
               onFocus={() => searchResults.length > 0 && setShowResults(true)}
-              placeholder="ابحث عن المكان..."
+              placeholder={t.mapPicker.searchPlaceholder}
               className="w-full text-sm border border-border-main rounded-lg pr-9 pl-3 py-2 bg-surface text-foreground placeholder:text-zinc-400"
               dir="rtl"
             />
@@ -238,7 +240,7 @@ export default function MapPicker({
             type="button"
             onClick={getCurrentLocation}
             className="p-2 rounded-lg border border-border-main hover:bg-surface-hover text-zinc-500 transition-colors"
-            title="موقعي الحالي"
+            title={t.mapPicker.myLocation}
           >
             <LocateFixed className="w-4 h-4" />
           </button>
@@ -273,7 +275,7 @@ export default function MapPicker({
       <p className="text-xs text-zinc-400 text-center" dir="ltr">
         📍 {latitude.toFixed(4)}, {longitude.toFixed(4)}
         <span className="mx-2">|</span>
-        <span className="text-zinc-500">اضغط على الخريطة أو اسحب الدبوس لتحديد الموقع</span>
+        <span className="text-zinc-500">{t.mapPicker.tapToSelect}</span>
       </p>
     </div>
   );

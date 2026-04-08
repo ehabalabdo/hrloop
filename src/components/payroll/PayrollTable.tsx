@@ -14,6 +14,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import type { PayrollListItem } from "@/lib/payroll-types";
+import { useLang } from "@/lib/i18n";
 
 interface PayrollTableProps {
   items: PayrollListItem[];
@@ -41,6 +42,7 @@ export default function PayrollTable({
 }: PayrollTableProps) {
   const [sortField, setSortField] = useState<SortField>("userName");
   const [sortAsc, setSortAsc] = useState(true);
+  const { t } = useLang();
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -62,10 +64,10 @@ export default function PayrollTable({
   });
 
   const sortOptions: { key: SortField; label: string }[] = [
-    { key: "userName", label: "الاسم" },
-    { key: "finalNetSalary", label: "صافي الراتب" },
-    { key: "totalDeductions", label: "الخصومات" },
-    { key: "totalLateMinutes", label: "التأخير" },
+    { key: "userName", label: t.payslipView.nameCol },
+    { key: "finalNetSalary", label: t.payslipView.netSalaryCol },
+    { key: "totalDeductions", label: t.payslipView.deductionsCol },
+    { key: "totalLateMinutes", label: t.payslipView.lateMinCol },
   ];
 
   if (sorted.length === 0) {
@@ -73,7 +75,7 @@ export default function PayrollTable({
       <div className="bg-white border border-zinc-200/50 rounded-2xl p-8 text-center">
         <AlertTriangle className="w-8 h-8 text-zinc-200 mx-auto mb-3" />
         <p className="text-sm font-bold text-zinc-400">
-          لا توجد بيانات رواتب. قم بتوليد كشوفات الرواتب أولاً.
+          {t.payslipView.noPayrollData}
         </p>
       </div>
     );
@@ -120,7 +122,7 @@ export default function PayrollTable({
                         : "bg-surface-hover text-zinc-500"
                     }`}
                   >
-                    {item.userRole === "MANAGER" ? "مدير" : "موظف"}
+                    {item.userRole === "MANAGER" ? t.payslipView.manager : t.payslipView.employee}
                   </span>
                   {item.branchName && (
                     <span className="text-xs text-zinc-400 truncate">
@@ -136,23 +138,23 @@ export default function PayrollTable({
               {item.isLocked ? (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold">
                   <Lock className="w-3 h-3" />
-                  مقفل
+                  {t.payslipView.locked}
                 </span>
               ) : item.payslipId ? (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 text-xs font-bold">
                   <Unlock className="w-3 h-3" />
-                  مسودة
+                  {t.payslipView.draft}
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-50 text-zinc-400 text-xs font-bold">
-                  بدون
+                  {t.payslipView.noPenalty}
                 </span>
               )}
 
               <button
                 onClick={() => onViewPayslip(item.userId)}
                 className="p-2 rounded-xl bg-brand-purple/10 hover:bg-brand-purple/15 text-brand-purple transition-colors active:scale-95"
-                title="عرض كشف الراتب"
+                title={t.payslipView.viewPayslip}
               >
                 <Eye className="w-4 h-4" />
               </button>
@@ -163,23 +165,23 @@ export default function PayrollTable({
           <div className="grid grid-cols-4 gap-2">
             <div className="text-center p-2 bg-zinc-50 rounded-xl">
               <div className="text-sm font-bold text-zinc-700">{item.totalShifts}</div>
-              <div className="text-[9px] text-zinc-400">الورديات</div>
+              <div className="text-[9px] text-zinc-400">{t.payslipView.shiftsLabel}</div>
             </div>
             <div className="text-center p-2 bg-zinc-50 rounded-xl">
               <div className={`text-sm font-bold ${item.totalLateMinutes > 0 ? "text-red-600" : "text-zinc-400"}`}>
                 {item.totalLateMinutes > 0 ? item.totalLateMinutes.toFixed(0) : "0"}
               </div>
-              <div className="text-[9px] text-zinc-400">تأخير (د)</div>
+              <div className="text-[9px] text-zinc-400">{t.payslipView.lateMinLabel}</div>
             </div>
             <div className="text-center p-2 bg-zinc-50 rounded-xl">
               <div className={`text-sm font-bold ${item.totalDeductions > 0 ? "text-red-600" : "text-zinc-400"}`}>
                 {item.totalDeductions > 0 ? `-$${formatCurrency(item.totalDeductions)}` : "$0"}
               </div>
-              <div className="text-[9px] text-zinc-400">الخصومات</div>
+              <div className="text-[9px] text-zinc-400">{t.payslipView.deductionsCol}</div>
             </div>
             <div className="text-center p-2 bg-brand-purple/5 rounded-xl">
               <div className="text-sm font-bold text-brand-purple">${formatCurrency(item.finalNetSalary)}</div>
-              <div className="text-[9px] text-zinc-400">صافي الراتب</div>
+              <div className="text-[9px] text-zinc-400">{t.payslipView.netSalary}</div>
             </div>
           </div>
         </div>

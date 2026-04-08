@@ -518,7 +518,7 @@ export default function SwapDashboard({
                             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-xl bg-green-500 hover:bg-green-600 text-white transition-colors"
                           >
                             <Check className="w-3.5 h-3.5" />
-                            موافقة
+                            {t.swap.accept}
                           </button>
                           <button
                             onClick={() => handleManagerReview(swap.id, "REJECTED")}
@@ -526,7 +526,7 @@ export default function SwapDashboard({
                             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-xs font-bold rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
                           >
                             <X className="w-3.5 h-3.5" />
-                            رفض
+                            {t.swap.reject}
                           </button>
                         </>
                       )}
@@ -538,7 +538,7 @@ export default function SwapDashboard({
                           disabled={isPending}
                           className="px-4 py-2.5 text-xs font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors disabled:opacity-50"
                         >
-                          إلغاء الطلب
+                          {t.swap.cancelRequest}
                         </button>
                       )}
                     </div>
@@ -560,40 +560,40 @@ export default function SwapDashboard({
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-5 space-y-4">
             <h3 className="text-sm font-bold text-foreground">
               {reviewingSwap.status === "PENDING_REPLACEMENT"
-                ? "قبول طلب التبديل"
-                : "الموافقة على التبديل"}
+                ? t.swap.acceptSwap
+                : t.swap.approveSwap}
             </h3>
 
             <div className="text-sm text-muted space-y-1">
               <p>
-                <strong>الطالب:</strong> {reviewingSwap.requesterName}
+                <strong>{t.swap.requester}:</strong> {reviewingSwap.requesterName}
               </p>
               <p>
-                <strong>البديل:</strong> {reviewingSwap.replacementName}
+                <strong>{t.swap.replacement}:</strong> {reviewingSwap.replacementName}
               </p>
               <p>
-                <strong>التاريخ:</strong> {formatDate(reviewingSwap.shiftDate)}
+                <strong>{t.swap.date}:</strong> {formatDate(reviewingSwap.shiftDate)}
               </p>
               <p>
-                <strong>الفرع:</strong> {reviewingSwap.branchName}
+                <strong>{t.swap.branch}:</strong> {reviewingSwap.branchName}
               </p>
               {reviewingSwap.reason && (
                 <p>
-                  <strong>السبب:</strong> {reviewingSwap.reason}
+                  <strong>{t.swap.reason}:</strong> {reviewingSwap.reason}
                 </p>
               )}
             </div>
 
             <div>
               <label className="block text-xs font-bold text-zinc-500 mb-1.5">
-                ملاحظة <span className="text-zinc-400 font-normal">(اختياري)</span>
+                {t.swap.note} <span className="text-zinc-400 font-normal">({t.swap.optional})</span>
               </label>
               <textarea
                 value={reviewNote}
                 onChange={(e) => setReviewNote(e.target.value)}
                 rows={2}
                 className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
-                placeholder="أضف ملاحظة..."
+                placeholder={t.swap.reasonPlaceholder}
               />
             </div>
 
@@ -602,7 +602,7 @@ export default function SwapDashboard({
                 onClick={() => setReviewingSwap(null)}
                 className="flex-1 px-4 py-3 text-sm font-bold rounded-xl bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
               >
-                رجوع
+                {t.swap.back}
               </button>
               <button
                 onClick={() => {
@@ -620,7 +620,7 @@ export default function SwapDashboard({
                 ) : (
                   <Check className="w-4 h-4" />
                 )}
-                تأكيد الموافقة
+                {t.swap.confirmApproval}
               </button>
             </div>
           </div>

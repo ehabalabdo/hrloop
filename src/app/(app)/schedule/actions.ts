@@ -277,7 +277,7 @@ export async function generateWeeklySchedule(
     if (existingDrafts > 0) {
       return {
         success: false,
-        message: `يوجد ${existingDrafts} مسودة وردية لهذه الفترة. امسحها أولاً قبل إعادة التوليد.`,
+        message: `There are ${existingDrafts} draft shifts for this period. Clear them first before regenerating.`,
         totalShiftsCreated: 0,
         understaffedSlots: 0,
         warnings: [],
@@ -555,7 +555,7 @@ export async function generateWeeklySchedule(
         if (slot.minStaff > 0 && assigned < slot.minStaff) {
           const dayName = DAY_NAMES[dow];
           warnings.push(
-            `\u26A0\uFE0F ${slot.branchName} — ${dayName} ${dateStr}: تم تعيين ${assigned} من أصل ${slot.minStaff} كحد أدنى`
+            `⚠️ ${slot.branchName} — ${dayName} ${dateStr}: Assigned ${assigned} out of ${slot.minStaff} minimum`
           );
         }
       }
@@ -577,9 +577,9 @@ export async function generateWeeklySchedule(
 
     return {
       success: true,
-      message: `تم توليد ${shiftsToCreate.length} وردية مسودة لأسبوعين.${
+      message: `Generated ${shiftsToCreate.length} draft shifts for two weeks.${
         understaffedSlots > 0
-          ? ` تنبيه: ${understaffedSlots} فرع-يوم يعاني من نقص موظفين.`
+          ? ` Alert: ${understaffedSlots} branch-day combinations are understaffed.`
           : ""
       }`,
       totalShiftsCreated: shiftsToCreate.length,
@@ -590,7 +590,7 @@ export async function generateWeeklySchedule(
     console.error("Schedule generation failed:", error);
     return {
       success: false,
-      message: "فشل توليد الجدول. راجع سجلات الخادم.",
+      message: "Schedule generation failed. Check server logs.",
       totalShiftsCreated: 0,
       understaffedSlots: 0,
       warnings: [],
@@ -624,14 +624,14 @@ export async function publishSchedule(
 
     return {
       success: true,
-      message: `تم نشر ${result.count} وردية. تم إشعار الموظفين.`,
+      message: `Published ${result.count} shifts. Employees notified.`,
       count: result.count,
     };
   } catch (error) {
     console.error("Publish failed:", error);
     return {
       success: false,
-      message: "فشل نشر الجدول.",
+      message: "Failed to publish schedule.",
       count: 0,
     };
   }
@@ -661,14 +661,14 @@ export async function clearWeekDrafts(
 
     return {
       success: true,
-      message: `تم مسح ${result.count} مسودة وردية.`,
+      message: `Cleared ${result.count} draft shifts.`,
       count: result.count,
     };
   } catch (error) {
     console.error("Clear drafts failed:", error);
     return {
       success: false,
-      message: "فشل مسح المسودات.",
+      message: "Failed to clear drafts.",
       count: 0,
     };
   }

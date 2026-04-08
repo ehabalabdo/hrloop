@@ -96,7 +96,7 @@ export default function EmployeeManagement({
 }: EmployeeManagementProps) {
   const [employees, setEmployees] =
     useState<EmployeeWithBranch[]>(initialEmployees);
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<EmployeeFormData>(emptyForm);
@@ -396,7 +396,7 @@ export default function EmployeeManagement({
                 onChange={(e) =>
                   setForm({ ...form, fullName: e.target.value })
                 }
-                placeholder="أحمد محمد علي"
+                placeholder={t.settings.namePlaceholder}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-hover border border-border-main text-sm text-foreground placeholder:text-zinc-400 focus:ring-2 focus:ring-brand-purple/30 outline-none"
               />
             </div>
@@ -426,7 +426,7 @@ export default function EmployeeManagement({
               className="inline-flex items-center gap-1 mt-1.5 text-xs text-brand-purple hover:underline"
             >
               <ExternalLink className="w-3 h-3" />
-              ما عندو إيميل؟ إنشاء حساب Gmail جديد
+              {t.settings.noEmailHint}
             </a>
           </div>
 
@@ -728,7 +728,7 @@ export default function EmployeeManagement({
               <label className="block text-xs font-medium text-muted mb-1">
                 {t.settings.workDaysHours}
               </label>
-              {DAY_LABELS_AR.map((label, dayIdx) => {
+              {t.dayNames.map((label: string, dayIdx: number) => {
                 const existing = form.availability?.find((a) => a.dayOfWeek === dayIdx);
                 const isActive = !!existing;
                 return (
@@ -910,15 +910,15 @@ export default function EmployeeManagement({
                     <DollarSign className="w-3.5 h-3.5" />
                     <span>
                       {emp.employmentType === "HOURLY"
-                        ? `${Number(emp.payrollProfile.hourlyRate).toFixed(2)}/ساعة`
-                        : `${Number(emp.payrollProfile.baseSalary).toFixed(0)} شهري`}
+                        ? `${Number(emp.payrollProfile.hourlyRate).toFixed(2)}${t.settings.hourlyUnit}`
+                        : `${Number(emp.payrollProfile.baseSalary).toFixed(0)} ${t.settings.monthlyUnit}`}
                     </span>
                   </div>
                 )}
                 {emp.payrollProfile && Number(emp.payrollProfile.transportationAllowance) > 0 && (
                   <div className="flex items-center gap-1.5 text-xs text-zinc-500">
                     <Bus className="w-3.5 h-3.5" />
-                    <span>تنقل: {Number(emp.payrollProfile.transportationAllowance).toFixed(0)}</span>
+                    <span>{t.settings.transportLabel}: {Number(emp.payrollProfile.transportationAllowance).toFixed(0)}</span>
                   </div>
                 )}
                 {emp.socialSecurityNumber && (
@@ -1020,7 +1020,7 @@ export default function EmployeeManagement({
                     className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-surface-hover/50 text-muted text-xs font-bold hover:bg-surface-hover transition active:scale-95"
                   >
                     <Paperclip className="w-3.5 h-3.5" />
-                    {emp.documents.length} ملف
+                    {emp.documents.length} {t.settings.fileCount}
                   </button>
                 )}
 
@@ -1109,7 +1109,7 @@ export default function EmployeeManagement({
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-1.5 rounded-lg hover:bg-surface-hover transition"
-                          title="تحميل"
+                          title={t.common.download}
                         >
                           <Download className="w-3.5 h-3.5 text-brand-purple" />
                         </a>
@@ -1117,7 +1117,7 @@ export default function EmployeeManagement({
                           onClick={() => handleDeleteDoc(doc.id)}
                           disabled={isPending}
                           className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition"
-                          title="حذف"
+                          title={t.common.delete}
                         >
                           <Trash2 className="w-3.5 h-3.5 text-red-500" />
                         </button>

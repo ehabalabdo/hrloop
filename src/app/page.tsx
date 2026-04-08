@@ -28,7 +28,7 @@ export default async function Home() {
               href="/login"
               className="text-sm font-semibold text-brand-primary hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/70 transition-colors"
             >
-              تسجيل الدخول →
+              Sign In →
             </Link>
           </div>
         </div>
@@ -62,7 +62,7 @@ export default async function Home() {
             className="inline-flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white font-semibold px-8 py-4 rounded-2xl shadow-lg shadow-brand-magenta/25 hover:shadow-brand-magenta/40 transition-all duration-200 active:scale-95 text-lg"
           >
             <LayoutDashboard className="w-5 h-5" />
-            تسجيل الدخول
+            Sign In
           </Link>
         </div>
 

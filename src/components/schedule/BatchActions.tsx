@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 
 interface BatchActionsProps {
   weekStart: string;
@@ -38,6 +39,7 @@ export default function BatchActions({
     type: "success" | "error";
     message: string;
   } | null>(null);
+  const { t } = useLang();
 
   const showToast = (type: "success" | "error", message: string) => {
     setToast({ type, message });
@@ -53,7 +55,7 @@ export default function BatchActions({
       const result = await fn();
       showToast(result.success ? "success" : "error", result.message);
     } catch {
-      showToast("error", "حدث خطأ غير متوقع");
+      showToast("error", t.scheduleExtra.unexpectedError);
     }
     setLoading(null);
   };
@@ -72,7 +74,7 @@ export default function BatchActions({
           ) : (
             <Wand2 className="w-4 h-4" />
           )}
-          توليد مسودة
+          {t.scheduleExtra.generateDraft}
         </button>
 
         {/* نشر الجدول */}
@@ -86,7 +88,7 @@ export default function BatchActions({
           ) : (
             <Send className="w-4 h-4" />
           )}
-          نشر الجدول
+          {t.scheduleExtra.publishSchedule}
         </button>
 
         {/* مسح المسودات */}
@@ -94,7 +96,7 @@ export default function BatchActions({
           onClick={() => {
             if (
               window.confirm(
-                "هل أنت متأكد من حذف جميع المسودات لهذا الأسبوع؟ لا يمكن التراجع."
+                t.scheduleExtra.confirmClearDrafts
               )
             ) {
               handleAction("clear", onClear);
@@ -108,7 +110,7 @@ export default function BatchActions({
           ) : (
             <Trash2 className="w-4 h-4" />
           )}
-          مسح المسودات
+          {t.scheduleExtra.clearDrafts}
         </button>
       </div>
 

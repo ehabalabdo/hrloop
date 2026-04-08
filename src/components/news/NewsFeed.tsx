@@ -98,7 +98,7 @@ export default function NewsFeed({
 
       if (!res.ok) {
         const err = await res.json();
-        alert(err.error || "فشل رفع الملف");
+        alert(err.error || t.common.uploadFailed);
         setUploading(false);
         return;
       }
@@ -107,7 +107,7 @@ export default function NewsFeed({
       setMediaUrl(data.url);
       setMediaType(data.mediaType);
     } catch {
-      alert("فشل رفع الملف");
+      alert(t.common.uploadFailed);
     }
     setUploading(false);
     if (fileRef.current) fileRef.current.value = "";
@@ -192,7 +192,7 @@ export default function NewsFeed({
           )}
         </div>
         <p className="text-xs text-zinc-400 mt-1">
-          {total} منشور
+          {total} {t.common.post}
         </p>
       </div>
 
@@ -214,7 +214,7 @@ export default function NewsFeed({
               {mediaUrl && (
                 <div className="relative mt-3 rounded-2xl overflow-hidden bg-surface-hover">
                   {mediaType === "image" ? (
-                    <img src={mediaUrl} alt="مرفق" className="w-full max-h-64 object-cover" />
+                    <img src={mediaUrl} alt={t.common.attachment} className="w-full max-h-64 object-cover" />
                   ) : mediaType === "video" ? (
                     <video src={mediaUrl} controls className="w-full max-h-64" />
                   ) : (
@@ -405,7 +405,7 @@ export default function NewsFeed({
                   {item.mediaType === "image" ? (
                     <img
                       src={item.mediaUrl}
-                      alt="مرفق"
+                      alt={t.common.attachment}
                       className="w-full rounded-2xl object-cover max-h-96"
                     />
                   ) : item.mediaType === "video" ? (
@@ -444,7 +444,7 @@ export default function NewsFeed({
             {loadingMore ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : null}
-            {loadingMore ? "جاري التحميل..." : "عرض المزيد"}
+            {loadingMore ? t.common.loading : t.common.loadMore}
           </button>
         )}
       </div>

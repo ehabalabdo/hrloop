@@ -289,7 +289,7 @@ export default function LeavesDashboard({
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setFormReason(e.target.value)}
                   rows={2}
                   className="w-full text-sm border border-zinc-200 rounded-xl px-4 py-3 bg-zinc-50 text-foreground resize-none focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none"
-                  placeholder="مثال: إجازة عائلية..."
+                  placeholder={t.leaves.reasonPlaceholder}
                 />
               </div>
 
@@ -352,7 +352,7 @@ export default function LeavesDashboard({
           <button
             onClick={handleExport}
             className="shrink-0 p-2.5 rounded-xl bg-white border border-zinc-200/50 text-zinc-400 hover:text-brand-purple transition-colors"
-            title="تصدير CSV"
+            title={t.common.exportCsv}
           >
             <Download className="w-4 h-4" />
           </button>
@@ -361,7 +361,7 @@ export default function LeavesDashboard({
         {isPending && (
           <div className="flex items-center justify-center gap-2 text-sm text-zinc-500 py-4 animate-pulse">
             <Loader2 className="w-4 h-4 animate-spin" />
-            جاري التحميل...
+            {t.common.loading}
           </div>
         )}
 
@@ -400,7 +400,7 @@ export default function LeavesDashboard({
                         </span>
                       </div>
                       <p className="text-[11px] text-zinc-400">
-                        {r.branchName ?? "بدون فرع"}
+                        {r.branchName ?? t.common.noBranch}
                       </p>
                     </div>
                   </div>
@@ -414,7 +414,7 @@ export default function LeavesDashboard({
                           setReviewNote("");
                         }}
                         className="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-colors"
-                        title="مراجعة"
+                        title={t.common.review}
                       >
                         <Check className="w-3.5 h-3.5" />
                       </button>
@@ -422,7 +422,7 @@ export default function LeavesDashboard({
                         onClick={() => handleCancel(r.id, r.userId)}
                         disabled={isPending}
                         className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
-                        title="إلغاء"
+                        title={t.common.cancel}
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>

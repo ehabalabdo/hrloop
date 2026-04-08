@@ -224,7 +224,7 @@ export default function BranchManagement({
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="مثال: فرع الرياض - العليا"
+                placeholder={t.settings.branchPlaceholder}
                 className="w-full text-sm border border-border-main rounded-xl px-4 py-2.5 bg-surface text-foreground placeholder:text-muted-light focus:border-brand-primary focus:ring-1 focus:ring-brand-primary/20 transition-colors"
               />
             </div>
@@ -467,7 +467,7 @@ export default function BranchManagement({
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Map className="w-3.5 h-3.5" />
-                    {branch.geofenceRadius}م
+                    {branch.geofenceRadius}{t.settings.radiusUnit}
                   </span>
                   {branch.manager && (
                     <span className="text-[#E20074] font-medium flex items-center gap-1.5">
@@ -508,7 +508,7 @@ export default function BranchManagement({
                   onClick={() => handleToggle(branch.id, branch.isActive)}
                   disabled={isPending}
                   className="p-1.5 rounded-lg hover:bg-white/40 text-muted transition-colors"
-                  title={branch.isActive ? "تعطيل" : "تفعيل"}
+                  title={branch.isActive ? t.common.deactivate : t.common.activate}
                 >
                   {branch.isActive ? (
                     <ToggleRight className="w-5 h-5 text-brand-primary" />
@@ -521,7 +521,7 @@ export default function BranchManagement({
                   onClick={() => startEdit(branch)}
                   disabled={isPending}
                   className="p-1.5 rounded-lg hover:bg-white/40 text-muted transition-colors"
-                  title="تعديل"
+                  title={t.common.edit}
                 >
                   <Edit2 className="w-4 h-4" />
                 </button>
@@ -547,7 +547,7 @@ export default function BranchManagement({
                     onClick={() => setConfirmDelete(branch.id)}
                     disabled={isPending}
                     className="p-1.5 rounded-lg hover:bg-red-50/60 text-zinc-400 hover:text-red-500 transition-colors"
-                    title="حذف"
+                    title={t.common.delete}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -26,7 +26,7 @@ import type {
   PayrollSummary,
   PayslipData,
 } from "@/lib/payroll-types";
-import { MONTH_NAMES_AR } from "@/lib/payroll-types";
+import { MONTH_NAMES, MONTH_NAMES_AR } from "@/lib/payroll-types";
 
 import {
   getPayrollList,
@@ -75,9 +75,10 @@ export default function PayrollDashboard({
 
   const [isPending, startTransition] = useTransition();
   const [loadingPayslip, setLoadingPayslip] = useState(false);
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
-  const monthLabel = `${MONTH_NAMES_AR[month - 1]} ${year}`;
+  const monthNames = lang === "ar" ? MONTH_NAMES_AR : MONTH_NAMES;
+  const monthLabel = `${monthNames[month - 1]} ${year}`;
 
   // ----- Fetch payroll data -----
   const refresh = useCallback(
@@ -329,7 +330,7 @@ export default function PayrollDashboard({
           <div className="bg-white rounded-2xl p-8 flex items-center gap-3">
             <Loader2 className="w-6 h-6 animate-spin text-brand-purple" />
             <span className="text-sm text-muted">
-              جاري تحميل كشف الراتب...
+              {t.payslipView.loadingPayslip}
             </span>
           </div>
         </div>

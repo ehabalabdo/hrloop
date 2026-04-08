@@ -13,6 +13,7 @@ import {
   Calculator,
 } from "lucide-react";
 import type { PayrollSummary } from "@/lib/payroll-types";
+import { useLang } from "@/lib/i18n";
 
 interface SummaryCardsProps {
   summary: PayrollSummary;
@@ -30,10 +31,11 @@ export default function PayrollSummaryCards({
   summary,
   monthLabel,
 }: SummaryCardsProps) {
+  const { t } = useLang();
   const cards = [
     {
       icon: DollarSign,
-      label: "إجمالي الرواتب",
+      label: t.payslipView.totalSalaries,
       value: formatCurrency(summary.totalPayrollCost),
       prefix: "$",
       color: "text-brand-purple",
@@ -42,14 +44,14 @@ export default function PayrollSummaryCards({
     },
     {
       icon: Users,
-      label: "الموظفين",
+      label: t.payslipView.employeesCount,
       value: summary.totalEmployees.toString(),
       color: "text-brand-purple",
       iconBg: "bg-brand-purple/10",
     },
     {
       icon: Calculator,
-      label: "متوسط الراتب",
+      label: t.payslipView.avgSalary,
       value: formatCurrency(summary.averageSalary),
       prefix: "$",
       color: "text-brand-purple",
@@ -57,7 +59,7 @@ export default function PayrollSummaryCards({
     },
     {
       icon: TrendingDown,
-      label: "إجمالي الخصومات",
+      label: t.payslipView.totalDeductionsCard,
       value: formatCurrency(summary.totalDeductions),
       prefix: "-$",
       color: "text-red-600",
@@ -65,7 +67,7 @@ export default function PayrollSummaryCards({
     },
     {
       icon: TrendingUp,
-      label: "إجمالي المكافآت",
+      label: t.payslipView.totalBonuses,
       value: formatCurrency(summary.totalBonuses),
       prefix: "+$",
       color: "text-emerald-600",
@@ -73,7 +75,7 @@ export default function PayrollSummaryCards({
     },
     {
       icon: Clock,
-      label: "العمل الإضافي (ساعات)",
+      label: t.payslipView.overtimeHours,
       value: summary.totalOvertimePay.toFixed(1),
       color: "text-amber-600",
       iconBg: "bg-amber-50",
@@ -83,7 +85,7 @@ export default function PayrollSummaryCards({
   return (
     <div>
       <div className="text-xs font-semibold text-muted mb-3">
-        {monthLabel} — الملخص المالي
+        {monthLabel} — {t.payslipView.financialSummary}
       </div>
       <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
         {cards.map((card) => (

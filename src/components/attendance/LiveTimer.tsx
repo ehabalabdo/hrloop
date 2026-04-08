@@ -5,6 +5,7 @@
 // ============================================================
 
 import { useEffect, useState } from "react";
+import { useLang } from "@/lib/i18n";
 
 interface LiveTimerProps {
   startTime: string | null;
@@ -24,6 +25,7 @@ function formatDuration(seconds: number): { hrs: string; mins: string; secs: str
 
 export default function LiveTimer({ startTime, isActive }: LiveTimerProps) {
   const [elapsed, setElapsed] = useState(0);
+  const { t } = useLang();
 
   useEffect(() => {
     if (!startTime || !isActive) {
@@ -50,7 +52,7 @@ export default function LiveTimer({ startTime, isActive }: LiveTimerProps) {
     <div className="flex flex-col items-center gap-2">
       {/* Label */}
       <span className="text-xs font-medium text-white/60 tracking-wider uppercase">
-        مدة الوردية
+        {t.checkin.shiftDuration}
       </span>
 
       {/* Big timer display */}

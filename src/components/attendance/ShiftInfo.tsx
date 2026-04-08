@@ -5,6 +5,7 @@
 // ============================================================
 
 import { Building2, CalendarClock, AlertTriangle } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 
 interface ShiftInfoProps {
   branchName: string;
@@ -14,15 +15,6 @@ interface ShiftInfoProps {
   lateMinutes: number;
 }
 
-function formatTime(isoString: string): string {
-  const date = new Date(isoString);
-  return date.toLocaleTimeString("ar-SA", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-}
-
 export default function ShiftInfo({
   branchName,
   scheduledStart,
@@ -30,6 +22,17 @@ export default function ShiftInfo({
   isLate,
   lateMinutes,
 }: ShiftInfoProps) {
+  const { t, lang } = useLang();
+
+  function formatTime(isoString: string): string {
+    const date = new Date(isoString);
+    return date.toLocaleTimeString(lang === "ar" ? "ar-SA" : "en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
   return (
     <div className="w-full space-y-3">
       {/* Branch + Shift in a 2-col grid on mobile */}
@@ -39,7 +42,7 @@ export default function ShiftInfo({
           <div className="flex items-center gap-2 mb-1.5">
             <Building2 className="w-4 h-4 text-brand-purple/60" />
             <span className="text-xs text-muted-light font-medium">
-              الفرع
+              {t.checkin.branch}
             </span>
           </div>
           <p className="text-sm font-bold text-foreground truncate">
@@ -52,7 +55,7 @@ export default function ShiftInfo({
           <div className="flex items-center gap-2 mb-1.5">
             <CalendarClock className="w-4 h-4 text-brand-purple/60" />
             <span className="text-xs text-muted-light font-medium">
-              وقت الوردية
+              {t.checkin.shiftTime}
             </span>
           </div>
           <p className="text-sm font-bold text-foreground" dir="ltr">
@@ -67,10 +70,10 @@ export default function ShiftInfo({
           <AlertTriangle className="w-5 h-5 text-red-500 dark:text-red-400 shrink-0" />
           <div className="flex-1">
             <span className="text-sm font-bold text-red-700 dark:text-red-400">
-              تأخر {lateMinutes} دقيقة
+              {t.checkin.lateBy} {lateMinutes} {t.checkin.minutesUnit}
             </span>
             <p className="text-xs text-red-500/80 dark:text-red-500/60 mt-0.5">
-              سيؤثر على الراتب
+              {t.checkin.affectsSalary}
             </p>
           </div>
         </div>

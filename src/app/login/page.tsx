@@ -9,8 +9,8 @@ import { redirect } from "next/navigation";
 import { Clock } from "lucide-react";
 
 export const metadata = {
-  title: "HR Loop — تسجيل الدخول",
-  description: "صفحة تسجيل الدخول لنظام الموارد البشرية",
+  title: "HR Loop — Sign In",
+  description: "HR Management System Login",
 };
 
 export default async function LoginPage() {
@@ -32,14 +32,14 @@ export default async function LoginPage() {
             HR Loop
           </h1>
           <p className="text-sm text-white/60 mt-1">
-            نظام إدارة الموارد البشرية
+            HR Management System
           </p>
         </div>
 
         {/* Login Card */}
         <div className="bg-surface rounded-3xl border border-white/20 shadow-2xl shadow-black/20 p-6">
           <h2 className="text-lg font-semibold text-foreground text-center mb-6">
-            تسجيل الدخول
+            Sign In
           </h2>
           <LoginForm />
         </div>

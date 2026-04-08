@@ -18,6 +18,7 @@ import {
   Ban,
 } from "lucide-react";
 import type { PayslipData, ShiftReconciliation } from "@/lib/payroll-types";
+import { useLang } from "@/lib/i18n";
 
 interface PayslipModalProps {
   payslip: PayslipData;
@@ -45,6 +46,7 @@ export default function PayslipModal({
   onClose,
   onDownloadPDF,
 }: PayslipModalProps) {
+  const { t } = useLang();
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4">
       <div className="bg-surface rounded-t-3xl sm:rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
@@ -83,7 +85,7 @@ export default function PayslipModal({
             <div className="bg-brand-primary/5 dark:bg-brand-primary/10 border border-brand-magenta/15 dark:border-brand-magenta/20 rounded-xl p-3 text-center">
               <DollarSign className="w-5 h-5 text-brand-primary dark:text-brand-primary mx-auto mb-1" />
               <div className="text-xs text-muted mb-0.5">
-                الراتب الأساسي
+                {t.payslipView.baseSalary}
               </div>
               <div className="text-lg font-bold text-brand-primary dark:text-brand-primary">
                 ${formatCurrency(payslip.baseSalary)}
@@ -93,7 +95,7 @@ export default function PayslipModal({
             <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-3 text-center">
               <TrendingDown className="w-5 h-5 text-red-600 dark:text-red-400 mx-auto mb-1" />
               <div className="text-xs text-muted mb-0.5">
-                إجمالي الخصومات
+                {t.payslipView.totalDeductions}
               </div>
               <div className="text-lg font-bold text-red-600 dark:text-red-400">
                 -${formatCurrency(payslip.totalDeductions)}
@@ -103,7 +105,7 @@ export default function PayslipModal({
             <div className="bg-brand-purple/5 dark:bg-brand-purple/10 border border-brand-purple/15 rounded-xl p-3 text-center">
               <DollarSign className="w-5 h-5 text-brand-purple mx-auto mb-1" />
               <div className="text-xs text-muted mb-0.5">
-                صافي الراتب
+                {t.payslipView.netSalary}
               </div>
               <div className="text-lg font-bold text-brand-purple dark:text-brand-purple">
                 ${formatCurrency(payslip.finalNetSalary)}
@@ -114,7 +116,7 @@ export default function PayslipModal({
           {/* Detailed Breakdown */}
           <div className="bg-surface-hover/50 rounded-xl p-4 space-y-3">
             <h3 className="text-xs font-bold text-muted uppercase tracking-wider">
-              تفاصيل الراتب والخصومات
+              {t.payslipView.salaryDetails}
             </h3>
 
             {/* Earnings */}
@@ -167,7 +169,7 @@ export default function PayslipModal({
               )}
               {payslip.totalDeductions === 0 && (
                 <div className="text-xs text-muted-light italic">
-                  لا توجد خصومات هذا الشهر
+                  {t.payslipView.noDeductions}
                 </div>
               )}
             </div>
@@ -177,7 +179,7 @@ export default function PayslipModal({
             {/* Net */}
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-foreground">
-                صافي الراتب
+                {t.payslipView.netSalary}
               </span>
               <span className="text-lg font-bold text-brand-primary dark:text-brand-primary">
                 ${formatCurrency(payslip.finalNetSalary)}
@@ -189,19 +191,19 @@ export default function PayslipModal({
           <div className="grid grid-cols-4 gap-2">
             <StatBox
               icon={<Calendar className="w-4 h-4" />}
-              label="إجمالي الورديات"
+              label={t.payslipView.totalShifts}
               value={payslip.totalShifts.toString()}
               color="text-brand-purple"
             />
             <StatBox
               icon={<Clock className="w-4 h-4" />}
-              label="ساعات العمل"
+              label={t.payslipView.workHours}
               value={payslip.totalHoursWorked.toFixed(1)}
               color="text-brand-primary dark:text-brand-primary"
             />
             <StatBox
               icon={<AlertTriangle className="w-4 h-4" />}
-              label="تأخير (د)"
+              label={t.payslipView.lateMinLabel}
               value={payslip.totalLateMinutes.toFixed(0)}
               color={
                 payslip.totalLateMinutes > 0
@@ -211,7 +213,7 @@ export default function PayslipModal({
             />
             <StatBox
               icon={<Ban className="w-4 h-4" />}
-              label="أيام الغياب"
+              label={t.payslipView.absentDaysLabel}
               value={payslip.totalAbsentDays.toString()}
               color={
                 payslip.totalAbsentDays > 0
@@ -225,7 +227,7 @@ export default function PayslipModal({
           {payslip.shifts.length > 0 && (
             <div>
               <h3 className="text-xs font-bold text-muted uppercase tracking-wider mb-2">
-                تفاصيل كل وردية
+                {t.payslipView.shiftDetails}
               </h3>
               <div className="bg-surface rounded-xl border border-border-main overflow-hidden">
                 <table className="w-full text-xs">

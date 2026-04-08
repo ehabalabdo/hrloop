@@ -20,6 +20,7 @@ import {
   resolveDispute,
 } from "@/app/(app)/attendance/resilience-actions";
 import { MONTH_NAMES_AR } from "@/lib/payroll-types";
+import { useLang } from "@/lib/i18n";
 
 interface DisputeItem {
   id: string;
@@ -55,6 +56,7 @@ export default function DisputesManagement({
   const [processing, setProcessing] = useState<string | null>(null);
   const [comment, setComment] = useState<Record<string, string>>({});
   const [isPending, startTransition] = useTransition();
+  const { t, lang } = useLang();
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error";
@@ -109,10 +111,10 @@ export default function DisputesManagement({
   };
 
   const filterLabels: Record<string, string> = {
-    PENDING: "معلقة",
-    APPROVED: "مقبولة",
-    REJECTED: "مرفوضة",
-    ALL: "الكل",
+    PENDING: t.disputes.pending,
+    APPROVED: t.disputes.approved,
+    REJECTED: t.disputes.rejected,
+    ALL: t.disputes.all,
   };
 
   return (
@@ -139,7 +141,7 @@ export default function DisputesManagement({
         <div className="bg-surface/60 rounded-3xl border border-border-main p-8 text-center">
           <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto mb-2" />
           <p className="text-sm font-medium text-muted">
-            لا توجد اعتراضات {filter !== "ALL" ? filterLabels[filter] : ""}
+            {t.disputes.noDisputes} {filter !== "ALL" ? filterLabels[filter] : ""}
           </p>
         </div>
       ) : (
@@ -175,7 +177,7 @@ export default function DisputesManagement({
                   <div className="flex items-center gap-2">
                     <DollarSign className="w-3.5 h-3.5 text-red-500" />
                     <span className="text-xs text-zinc-500">
-                      المعترض عليه: <span className="font-medium uppercase">{d.disputeType}</span>
+                      {t.disputes.disputedItem}: <span className="font-medium uppercase">{d.disputeType}</span>
                     </span>
                   </div>
                   <span className="text-sm font-bold text-red-600 dark:text-red-400">
@@ -186,7 +188,7 @@ export default function DisputesManagement({
                 <div>
                   <p className="text-xs font-medium text-zinc-500 flex items-center gap-1">
                     <MessageSquare className="w-3 h-3" />
-                    سبب الاعتراض
+                    {t.disputes.disputeReason}
                   </p>
                   <p className="text-sm text-zinc-700 dark:text-zinc-300 mt-0.5">
                     {d.reason}
@@ -194,14 +196,14 @@ export default function DisputesManagement({
                 </div>
 
                 <div className="text-xs text-zinc-400">
-                  مقدم: {new Date(d.createdAt).toLocaleString("ar-SA")}
+                  {t.disputes.submittedAt}: {new Date(d.createdAt).toLocaleString(lang === "ar" ? "ar-SA" : "en-US")}
                 </div>
 
                 {d.status !== "PENDING" && (
                   <div className="text-xs text-zinc-400 border-t border-border-main pt-2 mt-2">
-                    راجعه {d.reviewerName} في{" "}
+                    {t.disputes.reviewedBy} {d.reviewerName} {t.disputes.at}{" "}
                     {d.reviewedAt
-                      ? new Date(d.reviewedAt).toLocaleString("ar-SA")
+                      ? new Date(d.reviewedAt).toLocaleString(lang === "ar" ? "ar-SA" : "en-US")
                       : "—"}
                     {d.adminComment && (
                       <p className="mt-1 text-zinc-500 italic">
@@ -217,7 +219,7 @@ export default function DisputesManagement({
                 <div className="px-5 py-3 border-t border-border-main space-y-3">
                   <input
                     type="text"
-                    placeholder="تعليق الإدارة (اختياري)..."
+                    placeholder={t.disputes.adminComment}
                     value={comment[d.id] ?? ""}
                     onChange={(e) =>
                       setComment((prev) => ({
@@ -238,7 +240,7 @@ export default function DisputesManagement({
                       ) : (
                         <CheckCircle2 className="w-3.5 h-3.5" />
                       )}
-                      قبول (+{d.originalAmount.toFixed(2)} SAR)
+                      {t.disputes.approve} (+{d.originalAmount.toFixed(2)} SAR)
                     </button>
                     <button
                       onClick={() => handleResolve(d.id, "REJECTED")}
@@ -250,7 +252,7 @@ export default function DisputesManagement({
                       ) : (
                         <XCircle className="w-3.5 h-3.5" />
                       )}
-                      رفض
+                      {t.disputes.reject}
                     </button>
                   </div>
                 </div>

@@ -6,6 +6,7 @@
 // ============================================================
 
 import { Fingerprint, LogIn, LogOut, Coffee, Play, Loader2, ClipboardCheck } from "lucide-react";
+import { useLang } from "@/lib/i18n";
 
 interface ActionButtonsProps {
   status: "not_clocked_in" | "clocked_in" | "on_break";
@@ -26,6 +27,7 @@ export default function ActionButtons({
   onRegisterBiometric,
   checklistComplete = false,
 }: ActionButtonsProps) {
+  const { t } = useLang();
   const disabled = !isWithinFence || isLoading;
 
   // ── Biometric Registration ──
@@ -33,9 +35,9 @@ export default function ActionButtons({
     return (
       <div className="flex flex-col items-center gap-5 w-full px-2">
         <p className="text-sm text-muted text-center leading-relaxed">
-          سجّل بصمتك لبدء استخدام نظام الحضور.
+          {t.checkin.registerBiometric}
           <br />
-          <span className="text-xs text-zinc-400">يتم التسجيل مرة واحدة فقط</span>
+          <span className="text-xs text-zinc-400">{t.checkin.oneTimeOnly}</span>
         </p>
         <button
           onClick={onRegisterBiometric}
@@ -47,7 +49,7 @@ export default function ActionButtons({
           ) : (
             <Fingerprint className="w-6 h-6" />
           )}
-          <span>{isLoading ? "جاري التسجيل..." : "تسجيل البصمة"}</span>
+          <span>{isLoading ? t.checkin.registering : t.checkin.registerFingerprint}</span>
         </button>
       </div>
     );
@@ -74,7 +76,7 @@ export default function ActionButtons({
               <LogIn className="w-10 h-10" />
             )}
             <span className="text-xl font-bold">
-              {isLoading ? "جاري التحقق..." : "تسجيل حضور"}
+              {isLoading ? t.checkin.verifying : t.checkin.checkIn}
             </span>
           </div>
         </button>
@@ -82,7 +84,7 @@ export default function ActionButtons({
         {!isWithinFence && (
           <div className="text-center bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl px-5 py-3">
             <p className="text-sm text-amber-700 dark:text-amber-400 font-medium">
-              يجب أن تكون في موقع الفرع للتسجيل
+              {t.checkin.mustBeAtBranch}
             </p>
           </div>
         )}
@@ -106,7 +108,7 @@ export default function ActionButtons({
           ) : (
             <Coffee className="w-6 h-6" />
           )}
-          <span>بدء استراحة</span>
+          <span>{t.checkin.startBreak}</span>
         </button>
 
         {/* Secondary: Check Out */}
@@ -116,12 +118,12 @@ export default function ActionButtons({
           className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-3xl text-base font-semibold border-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/10 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
-          <span>تسجيل انصراف</span>
+          <span>{t.checkin.checkOut}</span>
         </button>
         {!checklistComplete && (
           <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
             <ClipboardCheck className="w-4 h-4" />
-            <span>أكمل لائحة المهام أولاً</span>
+            <span>{t.checkin.completeChecklistFirst}</span>
           </div>
         )}
       </div>
@@ -136,7 +138,7 @@ export default function ActionButtons({
         {/* Break indicator */}
         <div className="flex items-center gap-2 text-brand-orange animate-pulse">
           <Coffee className="w-5 h-5" />
-          <span className="text-base font-semibold">في استراحة الآن</span>
+          <span className="text-base font-semibold">{t.checkin.onBreakNow}</span>
         </div>
 
         {/* Primary: End Break */}
@@ -150,7 +152,7 @@ export default function ActionButtons({
           ) : (
             <Play className="w-6 h-6" />
           )}
-          <span>{isLoading ? "جاري التحقق..." : "إنهاء الاستراحة"}</span>
+          <span>{isLoading ? t.checkin.verifying : t.checkin.endBreak}</span>
         </button>
 
         {/* Secondary: Check Out */}
@@ -160,12 +162,12 @@ export default function ActionButtons({
           className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-3xl text-base font-semibold border-2 border-red-200 dark:border-red-800/50 text-red-600 dark:text-red-400 bg-red-50/50 dark:bg-red-950/10 hover:bg-red-100 dark:hover:bg-red-950/30 transition-all duration-200 active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <LogOut className="w-5 h-5" />
-          <span>تسجيل انصراف</span>
+          <span>{t.checkin.checkOut}</span>
         </button>
         {!checklistComplete && (
           <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
             <ClipboardCheck className="w-4 h-4" />
-            <span>أكمل لائحة المهام أولاً</span>
+            <span>{t.checkin.completeChecklistFirst}</span>
           </div>
         )}
       </div>

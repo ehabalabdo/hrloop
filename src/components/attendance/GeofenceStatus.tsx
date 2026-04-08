@@ -8,6 +8,7 @@ import { useEffect, useState, useCallback } from "react";
 import { MapPin, MapPinOff, Loader2, RefreshCw } from "lucide-react";
 import { checkGeofence, getGeolocationErrorMessage } from "@/lib/geofence";
 import type { GeofenceResult } from "@/lib/geofence";
+import { useLang } from "@/lib/i18n";
 
 interface GeofenceStatusProps {
   branchLatitude: number;
@@ -25,6 +26,7 @@ export default function GeofenceStatus({
   const [status, setStatus] = useState<"checking" | "within" | "outside" | "error">("checking");
   const [distance, setDistance] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { t } = useLang();
 
   const checkLocation = useCallback(async () => {
     setStatus("checking");
@@ -40,7 +42,7 @@ export default function GeofenceStatus({
       if (error && typeof error === "object" && "code" in error) {
         setErrorMessage(getGeolocationErrorMessage(error as GeolocationPositionError));
       } else {
-        setErrorMessage("تعذّر تحديد موقعك");
+        setErrorMessage(t.checkin.locationError);
       }
       onStatusChange(null);
     }
@@ -56,7 +58,7 @@ export default function GeofenceStatus({
     <button
       onClick={checkLocation}
       className="p-1.5 rounded-full hover:bg-zinc-100 transition-colors"
-      aria-label="تحديث الموقع"
+      aria-label={t.checkin.refreshLocation}
     >
       <RefreshCw className="w-3.5 h-3.5" />
     </button>
@@ -67,7 +69,7 @@ export default function GeofenceStatus({
       {status === "checking" && (
         <div className="flex items-center justify-center gap-2 text-muted bg-surface-hover/40 rounded-2xl px-5 py-3.5">
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-sm font-medium">جاري تحديد الموقع...</span>
+          <span className="text-sm font-medium">{t.checkin.detectingLocation}</span>
         </div>
       )}
 
@@ -76,11 +78,11 @@ export default function GeofenceStatus({
           <MapPin className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <div className="flex-1 min-w-0">
             <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">
-              أنت في موقع الفرع
+              {t.checkin.insideBranch}
             </span>
             {distance !== null && (
               <span className="text-xs text-emerald-600/70 dark:text-emerald-500/60 mr-1.5">
-                ({distance} متر)
+                ({distance} {t.checkin.meters})
               </span>
             )}
           </div>
@@ -93,11 +95,11 @@ export default function GeofenceStatus({
           <MapPinOff className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
           <div className="flex-1 min-w-0">
             <span className="text-sm font-semibold text-amber-700 dark:text-amber-400">
-              أنت خارج نطاق الفرع
+              {t.checkin.outsideBranch}
             </span>
             {distance !== null && (
               <span className="text-xs text-amber-600/70 dark:text-amber-500/60 mr-1.5">
-                ({distance} متر من أصل {geofenceRadius})
+                ({distance} {t.checkin.meters} {t.checkin.metersOf} {geofenceRadius})
               </span>
             )}
           </div>

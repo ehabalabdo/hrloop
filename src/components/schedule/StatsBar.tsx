@@ -12,37 +12,39 @@ import {
   Building2,
 } from "lucide-react";
 import type { ScheduleStats } from "@/lib/schedule-types";
+import { useLang } from "@/lib/i18n";
 
 interface StatsBarProps {
   stats: ScheduleStats;
 }
 
 export default function StatsBar({ stats }: StatsBarProps) {
+  const { t } = useLang();
   const statItems = [
     {
       icon: CalendarDays,
-      label: "إجمالي الورديات",
+      label: t.scheduleExtra.totalShifts,
       value: stats.totalShifts,
       color: "text-brand-purple",
       iconBg: "bg-brand-purple/10",
     },
     {
       icon: FileText,
-      label: "مسودات",
+      label: t.scheduleExtra.drafts,
       value: stats.draftShifts,
       color: "text-amber-600 dark:text-amber-400",
       iconBg: "bg-amber-100 dark:bg-amber-950/40",
     },
     {
       icon: CheckCircle2,
-      label: "منشورة",
+      label: t.scheduleExtra.published,
       value: stats.publishedShifts,
       color: "text-emerald-600 dark:text-emerald-400",
       iconBg: "bg-emerald-100 dark:bg-emerald-950/40",
     },
     {
       icon: AlertTriangle,
-      label: "نقص موظفين",
+      label: t.scheduleExtra.understaffed,
       value: stats.understaffedSlots,
       color:
         stats.understaffedSlots > 0
@@ -55,7 +57,7 @@ export default function StatsBar({ stats }: StatsBarProps) {
     },
     {
       icon: Building2,
-      label: "مكتمل التوظيف",
+      label: t.scheduleExtra.fullyStaffed,
       value: `${stats.fullyStaffedBranches}/${stats.totalBranches}`,
       color: "text-brand-purple dark:text-brand-purple-light",
       iconBg: "bg-brand-purple/10",

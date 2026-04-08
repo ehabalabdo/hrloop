@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import type { ScheduleFilter } from "@/lib/schedule-types";
 import { DAY_NAMES_SHORT_AR } from "@/lib/schedule-types";
+import { useLang } from "@/lib/i18n";
 
 interface SidebarProps {
   filters: ScheduleFilter;
@@ -53,6 +54,7 @@ export default function ScheduleSidebar({
     { dayOfWeek: number; requiredStaff: number }[]
   >([]);
   const [saving, setSaving] = useState(false);
+  const { t } = useLang();
 
   // Extract unique cities from branch addresses
   const cities = Array.from(
@@ -104,7 +106,7 @@ export default function ScheduleSidebar({
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-zinc-500" />
             <span className="text-sm font-bold text-foreground">
-              الفلاتر
+              {t.scheduleExtra.filters}
             </span>
           </div>
           <button
@@ -119,7 +121,7 @@ export default function ScheduleSidebar({
         <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-muted mb-2">
             <Building2 className="w-3.5 h-3.5" />
-            المدينة
+            {t.scheduleExtra.city}
           </label>
           <select
             value={filters.branchCity || ""}
@@ -131,7 +133,7 @@ export default function ScheduleSidebar({
             }
             className="w-full px-3 py-2 text-sm rounded-lg border border-border-main bg-surface-hover text-foreground focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
-            <option value="">جميع المدن</option>
+            <option value="">{t.scheduleExtra.allCities}</option>
             {cities.map((city) => (
               <option key={city} value={city}>
                 {city}
@@ -144,7 +146,7 @@ export default function ScheduleSidebar({
         <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-muted mb-2">
             <UserCog className="w-3.5 h-3.5" />
-            المدير
+            {t.scheduleExtra.managerFilter}
           </label>
           <select
             value={filters.managerName || ""}
@@ -156,7 +158,7 @@ export default function ScheduleSidebar({
             }
             className="w-full px-3 py-2 text-sm rounded-lg border border-border-main bg-surface-hover text-foreground focus:outline-none focus:ring-2 focus:ring-brand-purple"
           >
-            <option value="">جميع المدراء</option>
+            <option value="">{t.scheduleExtra.allManagers}</option>
             {managers.map((mgr) => (
               <option key={mgr} value={mgr}>
                 {mgr}
@@ -185,7 +187,7 @@ export default function ScheduleSidebar({
           <div className="flex items-center gap-1.5">
             <AlertTriangle className="w-3.5 h-3.5 text-orange-500" />
             <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-              نقص موظفين فقط
+              {t.scheduleExtra.understaffedOnly}
             </span>
           </div>
         </label>
@@ -202,7 +204,7 @@ export default function ScheduleSidebar({
             }
             className="w-full px-3 py-2 text-xs font-medium text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 border border-border-main rounded-xl hover:bg-surface-hover transition-colors"
           >
-            مسح الفلاتر
+            {t.scheduleExtra.clearFilters}
           </button>
         )}
 
@@ -214,7 +216,7 @@ export default function ScheduleSidebar({
           <div className="flex items-center gap-2 mb-3">
             <Settings2 className="w-4 h-4 text-zinc-500" />
             <span className="text-sm font-bold text-foreground">
-              متطلبات الموظفين
+              {t.scheduleExtra.staffRequirements}
             </span>
           </div>
 
@@ -280,7 +282,7 @@ export default function ScheduleSidebar({
                       className="w-full flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-medium bg-brand-primary hover:bg-brand-primary/90 text-white rounded-lg disabled:opacity-50 transition-colors"
                     >
                       <Save className="w-3 h-3" />
-                      {saving ? "جاري الحفظ..." : "حفظ"}
+                      {saving ? t.scheduleExtra.savingReqs : t.scheduleExtra.saveReqs}
                     </button>
                   </div>
                 )}

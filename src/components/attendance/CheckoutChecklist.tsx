@@ -16,6 +16,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { saveCheckoutChecklist } from "@/app/(app)/attendance/actions";
+import { useLang } from "@/lib/i18n";
 
 interface CheckoutChecklistProps {
   shiftId: string;
@@ -40,6 +41,7 @@ export default function CheckoutChecklist({
   const [insurancePhones, setInsurancePhones] = useState(initialData?.insurancePhones ?? false);
   const [isPending, startTransition] = useTransition();
   const [saved, setSaved] = useState(!!initialData?.completedAt);
+  const { t } = useLang();
 
   const allDone = inventoryCount && newMerchandise !== null && insurancePhones;
 
@@ -65,10 +67,10 @@ export default function CheckoutChecklist({
         <CheckCircle2 className="w-6 h-6 text-emerald-500 shrink-0" />
         <div>
           <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400">
-            تم إكمال لائحة المهام ✓
+            {t.checkin.checklistDone}
           </p>
           <p className="text-xs text-emerald-600/70 dark:text-emerald-500/60 mt-0.5">
-            يمكنك الآن تسجيل الانصراف
+            {t.checkin.canCheckOut}
           </p>
         </div>
       </div>
@@ -82,11 +84,11 @@ export default function CheckoutChecklist({
         <div className="flex items-center gap-2.5">
           <ClipboardCheck className="w-5 h-5 text-brand-purple" />
           <h3 className="text-base font-bold text-foreground">
-            لائحة المهام قبل الانصراف
+            {t.checkin.checkoutChecklist}
           </h3>
         </div>
         <p className="text-xs text-muted-light mt-1">
-          يجب إكمال جميع المهام لتتمكن من تسجيل الانصراف
+          {t.checkin.mustCompleteAll}
         </p>
       </div>
 
@@ -105,9 +107,9 @@ export default function CheckoutChecklist({
           <Package className="w-5 h-5 text-zinc-400 shrink-0" />
           <div className="flex-1 text-right">
             <p className={`text-sm font-semibold ${inventoryCount ? "text-emerald-600 dark:text-emerald-400 line-through" : "text-zinc-700 dark:text-zinc-300"}`}>
-              إنفنتوري كاونت
+              {t.checkin.inventoryCount}
             </p>
-            <p className="text-xs text-zinc-400">تم عدّ المخزون</p>
+            <p className="text-xs text-zinc-400">{t.checkin.inventoryDone}</p>
           </div>
         </button>
 
@@ -121,7 +123,7 @@ export default function CheckoutChecklist({
           <PackagePlus className="w-5 h-5 text-zinc-400 shrink-0" />
           <div className="flex-1">
             <p className={`text-sm font-semibold text-right ${newMerchandise !== null ? "text-emerald-600 dark:text-emerald-400" : "text-zinc-700 dark:text-zinc-300"}`}>
-              هل لجت بضاعة جديدة؟
+              {t.checkin.newGoods}
             </p>
             <div className="flex gap-2 mt-2">
               <button
@@ -132,7 +134,7 @@ export default function CheckoutChecklist({
                     : "bg-surface-hover text-zinc-500 hover:bg-surface-hover"
                 }`}
               >
-                نعم
+                {t.common.yes}
               </button>
               <button
                 onClick={() => setNewMerchandise(false)}
@@ -142,7 +144,7 @@ export default function CheckoutChecklist({
                     : "bg-surface-hover text-zinc-500 hover:bg-surface-hover"
                 }`}
               >
-                لا
+                {t.common.no}
               </button>
             </div>
           </div>
@@ -161,9 +163,9 @@ export default function CheckoutChecklist({
           <Smartphone className="w-5 h-5 text-zinc-400 shrink-0" />
           <div className="flex-1 text-right">
             <p className={`text-sm font-semibold ${insurancePhones ? "text-emerald-600 dark:text-emerald-400 line-through" : "text-zinc-700 dark:text-zinc-300"}`}>
-              هل أرسلت الإنشورنز فونز؟
+              {t.checkin.insurancePhones}
             </p>
-            <p className="text-xs text-zinc-400">تم إرسال هواتف التأمين</p>
+            <p className="text-xs text-zinc-400">{t.checkin.insuranceDone}</p>
           </div>
         </button>
       </div>
@@ -180,11 +182,11 @@ export default function CheckoutChecklist({
           ) : (
             <ClipboardCheck className="w-4 h-4" />
           )}
-          {isPending ? "جاري الحفظ..." : "تأكيد إكمال المهام"}
+          {isPending ? t.checkin.saving : t.checkin.confirmComplete}
         </button>
         {!allDone && (
           <p className="text-center text-xs text-amber-500 mt-2">
-            أكمل جميع المهام أولاً
+            {t.checkin.completeAllFirst}
           </p>
         )}
       </div>

@@ -17,9 +17,9 @@ interface PayrollTabsProps {
 }
 
 const TABS = [
-  { key: "payroll", label: "الرواتب", icon: Wallet },
-  { key: "disputes", label: "الاعتراضات", icon: AlertTriangle },
-  { key: "overrides", label: "التعديلات", icon: Camera },
+  { key: "payroll", icon: Wallet },
+  { key: "disputes", icon: AlertTriangle },
+  { key: "overrides", icon: Camera },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
