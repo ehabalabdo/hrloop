@@ -68,7 +68,7 @@ export default function AppSidebar({
   const [showProfile, setShowProfile] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const pathname = usePathname();
-  const { t } = useLang();
+  const { t, lang } = useLang();
 
   const isActive = (href: string) => pathname.startsWith(href);
 
@@ -148,6 +148,13 @@ export default function AppSidebar({
           })}
           {/* Separator */}
           <div className="w-px h-10 bg-zinc-200 mx-1 self-center" />
+          {/* Lang toggle in dock */}
+          <div className="flex flex-col items-center gap-0.5 px-1">
+            <div className="w-11 h-11 rounded-[14px] flex items-center justify-center">
+              <LangToggle />
+            </div>
+            <span className="text-[9px] font-bold text-zinc-400">{lang === 'ar' ? 'EN' : 'ع'}</span>
+          </div>
           {/* User avatar in dock */}
           <button
             onClick={() => { setShowProfile(!showProfile); setShowMore(false); }}
@@ -202,6 +209,13 @@ export default function AppSidebar({
               </span>
             </button>
           )}
+          {/* Lang toggle in mobile dock */}
+          <div className="flex flex-col items-center gap-0.5 px-1">
+            <div className="w-12 h-12 rounded-[14px] flex items-center justify-center">
+              <LangToggle />
+            </div>
+            <span className="text-[9px] font-bold text-zinc-400">{lang === 'ar' ? 'EN' : 'ع'}</span>
+          </div>
           {/* User avatar in mobile dock */}
           <button
             onClick={() => { setShowProfile(!showProfile); setShowMore(false); }}

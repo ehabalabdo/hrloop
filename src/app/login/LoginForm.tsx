@@ -9,6 +9,7 @@ import { useActionState } from "react";
 import { loginAction, type LoginState } from "./actions";
 import { LogIn, Mail, Lock, Loader2, AlertCircle } from "lucide-react";
 import { useLang } from "@/lib/i18n";
+import LangToggle from "@/components/layout/LangToggle";
 
 const initialState: LoginState = {};
 
@@ -17,7 +18,12 @@ export default function LoginForm() {
   const { t } = useLang();
 
   return (
-    <form action={formAction} className="space-y-4">
+    <>
+      {/* Floating language toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <LangToggle />
+      </div>
+      <form action={formAction} className="space-y-4">
       {/* Error Message */}
       {state.error && (
         <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-400" dir="rtl">
@@ -91,5 +97,6 @@ export default function LoginForm() {
         )}
       </button>
     </form>
+    </>
   );
 }
