@@ -305,7 +305,8 @@ async function main() {
             // Sometimes take a break
             const hasBreak = Math.random() < 0.4;
 
-            const logs: Parameters<typeof prisma.attendanceLog.createMany>[0]["data"] = [
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const logs: any[] = [
               {
                 userId: emp.id, shiftId: shift.id, type: "CLOCK_IN",
                 timestamp: clockInTime,
