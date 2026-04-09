@@ -31,19 +31,19 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
     if (!session || (session.role !== "OWNER" && session.role !== "MANAGER")) {
-      return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: "الملف مطلوب" }, { status: 400 });
+      return NextResponse.json({ error: "File is required" }, { status: 400 });
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: "حجم الملف يتجاوز الحد المسموح (50MB)" },
+        { error: "File size exceeds limit (50MB)" },
         { status: 400 }
       );
     }
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const mediaType = ALLOWED_TYPES[file.type];
     if (!mediaType) {
       return NextResponse.json(
-        { error: "نوع الملف غير مدعوم" },
+        { error: "File type not supported" },
         { status: 400 }
       );
     }
@@ -69,9 +69,9 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("News upload error:", error);
-    const message = error instanceof Error ? error.message : "فشل رفع الملف";
+    const message = error instanceof Error ? error.message : "Failed to upload file";
     return NextResponse.json(
-      { error: `فشل رفع الملف: ${message}` },
+      { error: `Failed to upload file: ${message}` },
       { status: 500 }
     );
   }

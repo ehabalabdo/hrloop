@@ -89,7 +89,7 @@ export async function createBranch(
       where: { name: data.name },
     });
     if (existing) {
-      return { success: false, error: "يوجد فرع بنفس الاسم بالفعل" };
+      return { success: false, error: "A branch with this name already exists" };
     }
 
     await prisma.branch.create({
@@ -111,7 +111,7 @@ export async function createBranch(
     return { success: true };
   } catch (e) {
     console.error("Failed to create branch:", e);
-    return { success: false, error: "فشل في إنشاء الفرع" };
+    return { success: false, error: "Failed to create branch" };
   }
 }
 
@@ -128,7 +128,7 @@ export async function updateBranch(
       where: { name: data.name, id: { not: id } },
     });
     if (existing) {
-      return { success: false, error: "يوجد فرع بنفس الاسم بالفعل" };
+      return { success: false, error: "A branch with this name already exists" };
     }
 
     await prisma.branch.update({
@@ -151,7 +151,7 @@ export async function updateBranch(
     return { success: true };
   } catch (e) {
     console.error("Failed to update branch:", e);
-    return { success: false, error: "فشل في تحديث الفرع" };
+    return { success: false, error: "Failed to update branch" };
   }
 }
 
@@ -170,7 +170,7 @@ export async function toggleBranchActive(
     return { success: true };
   } catch (e) {
     console.error("Failed to toggle branch:", e);
-    return { success: false, error: "فشل في تحديث حالة الفرع" };
+    return { success: false, error: "Failed to update branch status" };
   }
 }
 
@@ -190,20 +190,20 @@ export async function deleteBranch(
     });
 
     if (!branch) {
-      return { success: false, error: "الفرع غير موجود" };
+      return { success: false, error: "Branch not found" };
     }
 
     if (branch._count.users > 0) {
       return {
         success: false,
-        error: `لا يمكن حذف الفرع - يوجد ${branch._count.users} موظف مرتبط به`,
+        error: `Cannot delete branch — ${branch._count.users} employee(s) assigned to it`,
       };
     }
 
     if (branch._count.shifts > 0) {
       return {
         success: false,
-        error: `لا يمكن حذف الفرع - يوجد ${branch._count.shifts} وردية مرتبطة به`,
+        error: `Cannot delete branch — ${branch._count.shifts} shift(s) linked to it`,
       };
     }
 
@@ -211,6 +211,6 @@ export async function deleteBranch(
     return { success: true };
   } catch (e) {
     console.error("Failed to delete branch:", e);
-    return { success: false, error: "فشل في حذف الفرع" };
+    return { success: false, error: "Failed to delete branch" };
   }
 }

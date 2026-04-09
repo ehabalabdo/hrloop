@@ -8,7 +8,7 @@
 import prisma from "@/lib/db";
 import { getSession } from "@/lib/auth";
 
-const DAY_NAMES = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export interface AvailabilitySlot {
   dayOfWeek: number;
@@ -29,7 +29,7 @@ export async function getMyAvailability(): Promise<{
   lockExpiresAt: string | null;
 }> {
   const session = await getSession();
-  if (!session) throw new Error("غير مصرح");
+  if (!session) throw new Error("Unauthorized");
 
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
@@ -78,7 +78,7 @@ export async function saveAvailability(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const session = await getSession();
-    if (!session) return { success: false, error: "غير مصرح" };
+    if (!session) return { success: false, error: "Unauthorized" };
 
     // Verify user is HOURLY
     const user = await prisma.user.findUnique({
@@ -86,7 +86,7 @@ export async function saveAvailability(
       select: { employmentType: true },
     });
     if (user?.employmentType !== "HOURLY") {
-      return { success: false, error: "هذه الميزة متاحة فقط لموظفي الدوام بالساعة" };
+      return { success: false, error: "This feature is only available for hourly employees" };
     }
 
     // Check if any existing slots are still locked
@@ -98,7 +98,7 @@ export async function saveAvailability(
       (e) => e.lockedUntil && new Date(e.lockedUntil) > now
     );
     if (hasLocked) {
-      return { success: false, error: "لا يمكن تعديل الساعات — مقفلة لمدة أسبوع" };
+      return { success: false, error: "Cannot modify hours — locked for one week" };
     }
 
     // Validate entries
@@ -106,7 +106,7 @@ export async function saveAvailability(
       (e) => e.startTime && e.endTime && e.startTime < e.endTime
     );
     if (validEntries.length === 0) {
-      return { success: false, error: "يجب تحديد ساعات صحيحة ليوم واحد على الأقل" };
+      return { success: false, error: "Must specify valid hours for at least one day" };
     }
 
     // Lock until 1 week from now
@@ -130,6 +130,6 @@ export async function saveAvailability(
     return { success: true };
   } catch (e) {
     console.error("Failed to save availability:", e);
-    return { success: false, error: "فشل في حفظ الساعات" };
+    return { success: false, error: "Failed to save hours" };
   }
 }

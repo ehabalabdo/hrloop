@@ -9,7 +9,7 @@ export async function GET(
   try {
     const session = await getSession();
     if (!session) {
-      return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const { fileName } = await params;
@@ -24,17 +24,17 @@ export async function GET(
       },
     });
     if (!doc) {
-      return NextResponse.json({ error: "الملف غير موجود" }, { status: 404 });
+      return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
     // STAFF can only view their own files
     if (session.role === "STAFF" && doc.userId !== session.userId) {
-      return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     // Redirect to Vercel Blob URL
     return NextResponse.redirect(doc.fileName);
   } catch {
-    return NextResponse.json({ error: "فشل في تحميل الملف" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to download file" }, { status: 500 });
   }
 }

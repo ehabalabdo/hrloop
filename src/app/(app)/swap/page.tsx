@@ -8,8 +8,8 @@ import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "HR Loop — تبديل الورديات",
-  description: "تبديل الورديات بين الموظفين",
+  title: "HR Loop — Shift Swap",
+  description: "Shift swap between employees",
 };
 
 export const dynamic = "force-dynamic";

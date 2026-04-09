@@ -46,7 +46,7 @@ export async function createSwapRequest(data: {
 }): Promise<{ success: boolean; message: string }> {
   try {
     if (data.requesterId === data.replacementId) {
-      return { success: false, message: "لا يمكنك اختيار نفسك كبديل." };
+      return { success: false, message: "You cannot select yourself as replacement." };
     }
 
     // Verify the shift belongs to the requester
@@ -58,9 +58,9 @@ export async function createSwapRequest(data: {
       },
     });
 
-    if (!shift) return { success: false, message: "الوردية غير موجودة." };
+    if (!shift) return { success: false, message: "Shift not found." };
     if (shift.userId !== data.requesterId) {
-      return { success: false, message: "هذه الوردية ليست مسجلة لك." };
+      return { success: false, message: "This shift is not assigned to you." };
     }
 
     // Check no existing pending swap for same shift
@@ -72,7 +72,7 @@ export async function createSwapRequest(data: {
     });
 
     if (existing) {
-      return { success: false, message: "يوجد بالفعل طلب تبديل على هذه الوردية." };
+      return { success: false, message: "A swap request already exists for this shift." };
     }
 
     const replacement = await prisma.user.findUnique({
@@ -81,7 +81,7 @@ export async function createSwapRequest(data: {
     });
 
     if (!replacement) {
-      return { success: false, message: "الموظف البديل غير موجود." };
+      return { success: false, message: "Replacement employee not found." };
     }
 
     // Create the swap request
@@ -95,12 +95,12 @@ export async function createSwapRequest(data: {
     });
 
     // Notify the replacement employee
-    const shiftDate = new Date(shift.date).toLocaleDateString("ar-SA");
+    const shiftDate = new Date(shift.date).toLocaleDateString("en-US");
     await prisma.notification.create({
       data: {
         userId: data.replacementId,
-        title: "طلب تبديل وردية",
-        message: `${shift.user.fullName} يطلب منك تغطية ورديته في ${shift.branch.name} بتاريخ ${shiftDate}`,
+        title: "Shift Swap Request",
+        message: `${shift.user.fullName} is asking you to cover their shift at ${shift.branch.name} on ${shiftDate}`,
         type: "info",
         link: "/swap",
       },
@@ -114,14 +114,14 @@ export async function createSwapRequest(data: {
         action: "SWAP_REQUESTED",
         entityType: "shift_swap",
         entityId: data.shiftId,
-        description: `${shift.user.fullName} طلب تبديل وردية مع ${replacement.fullName}`,
+        description: `${shift.user.fullName} requested a shift swap with ${replacement.fullName}`,
       },
     });
 
-    return { success: true, message: "تم إرسال طلب التبديل بنجاح." };
+    return { success: true, message: "Swap request sent successfully." };
   } catch (error) {
     console.error("Create swap failed:", error);
-    return { success: false, message: "فشل في إنشاء طلب التبديل." };
+    return { success: false, message: "Failed to create swap request." };
   }
 }
 
@@ -145,12 +145,12 @@ export async function respondToSwap(data: {
       },
     });
 
-    if (!swap) return { success: false, message: "طلب التبديل غير موجود." };
+    if (!swap) return { success: false, message: "Swap request not found." };
     if (swap.replacementId !== data.replacementId) {
-      return { success: false, message: "غير مصرّح لك بالرد على هذا الطلب." };
+      return { success: false, message: "You are not authorized to respond to this request." };
     }
     if (swap.status !== "PENDING_REPLACEMENT") {
-      return { success: false, message: "هذا الطلب لم يعد بانتظار ردك." };
+      return { success: false, message: "This request is no longer awaiting your response." };
     }
 
     if (data.action === "REJECT") {
@@ -167,14 +167,14 @@ export async function respondToSwap(data: {
       await prisma.notification.create({
         data: {
           userId: swap.requesterId,
-          title: "رفض طلب التبديل",
-          message: `${swap.replacement.fullName} رفض طلب تبديل الوردية.${data.note ? ` السبب: ${data.note}` : ""}`,
+          title: "Swap Request Declined",
+          message: `${swap.replacement.fullName} declined the swap request.${data.note ? ` Reason: ${data.note}` : ""}`,
           type: "warning",
           link: "/swap",
         },
       });
 
-      return { success: true, message: "تم رفض طلب التبديل." };
+      return { success: true, message: "Swap request declined." };
     }
 
     // ACCEPT → move to PENDING_MANAGER
@@ -199,13 +199,13 @@ export async function respondToSwap(data: {
       select: { id: true },
     });
 
-    const shiftDate = new Date(swap.shift.date).toLocaleDateString("ar-SA");
+    const shiftDate = new Date(swap.shift.date).toLocaleDateString("en-US");
     for (const mgr of managers) {
       await prisma.notification.create({
         data: {
           userId: mgr.id,
-          title: "طلب تبديل بانتظار الموافقة",
-          message: `${swap.requester.fullName} يريد تبديل ورديته مع ${swap.replacement.fullName} في ${swap.shift.branch.name} بتاريخ ${shiftDate}`,
+          title: "Swap Request Pending Approval",
+          message: `${swap.requester.fullName} wants to swap their shift with ${swap.replacement.fullName} at ${swap.shift.branch.name} on ${shiftDate}`,
           type: "info",
           link: "/swap",
         },
@@ -220,14 +220,14 @@ export async function respondToSwap(data: {
         action: "SWAP_REPLACEMENT_ACCEPTED",
         entityType: "shift_swap",
         entityId: data.swapId,
-        description: `${swap.replacement.fullName} وافق على تغطية وردية ${swap.requester.fullName}`,
+        description: `${swap.replacement.fullName} accepted to cover ${swap.requester.fullName}'s shift`,
       },
     });
 
-    return { success: true, message: "تمت الموافقة. بانتظار موافقة المدير." };
+    return { success: true, message: "Accepted. Awaiting manager approval." };
   } catch (error) {
     console.error("Respond to swap failed:", error);
-    return { success: false, message: "فشل في تحديث طلب التبديل." };
+    return { success: false, message: "Failed to update swap request." };
   }
 }
 
@@ -251,9 +251,9 @@ export async function reviewSwap(data: {
       },
     });
 
-    if (!swap) return { success: false, message: "طلب التبديل غير موجود." };
+    if (!swap) return { success: false, message: "Swap request not found." };
     if (swap.status !== "PENDING_MANAGER") {
-      return { success: false, message: "هذا الطلب ليس بانتظار موافقة المدير." };
+      return { success: false, message: "This request is not awaiting manager approval." };
     }
 
     const manager = await prisma.user.findUnique({
@@ -262,7 +262,7 @@ export async function reviewSwap(data: {
     });
 
     if (!manager || (manager.role !== "OWNER" && manager.role !== "MANAGER")) {
-      return { success: false, message: "غير مصرّح لك بمراجعة هذا الطلب." };
+      return { success: false, message: "You are not authorized to review this request." };
     }
 
     if (data.action === "REJECTED") {
@@ -277,16 +277,16 @@ export async function reviewSwap(data: {
       });
 
       // Notify both employees
-      const shiftDate = new Date(swap.shift.date).toLocaleDateString("ar-SA");
-      const msg = `رفض المدير طلب تبديل الوردية بتاريخ ${shiftDate}.${data.note ? ` السبب: ${data.note}` : ""}`;
+      const shiftDate = new Date(swap.shift.date).toLocaleDateString("en-US");
+      const msg = `Manager declined the shift swap request on ${shiftDate}.${data.note ? ` Reason: ${data.note}` : ""}`;
       await prisma.notification.createMany({
         data: [
-          { userId: swap.requesterId, title: "رفض طلب التبديل", message: msg, type: "warning", link: "/swap" },
-          { userId: swap.replacementId, title: "رفض طلب التبديل", message: msg, type: "warning", link: "/swap" },
+          { userId: swap.requesterId, title: "Swap Request Declined", message: msg, type: "warning", link: "/swap" },
+          { userId: swap.replacementId, title: "Swap Request Declined", message: msg, type: "warning", link: "/swap" },
         ],
       });
 
-      return { success: true, message: "تم رفض طلب التبديل." };
+      return { success: true, message: "Swap request declined." };
     }
 
     // APPROVED → reassign the shift to the replacement employee
@@ -307,20 +307,20 @@ export async function reviewSwap(data: {
     ]);
 
     // Notify both employees
-    const shiftDate = new Date(swap.shift.date).toLocaleDateString("ar-SA");
+    const shiftDate = new Date(swap.shift.date).toLocaleDateString("en-US");
     await prisma.notification.createMany({
       data: [
         {
           userId: swap.requesterId,
-          title: "تمت الموافقة على التبديل",
-          message: `تمت الموافقة على تبديل ورديتك بتاريخ ${shiftDate}. ${swap.replacement.fullName} سيغطي مكانك.`,
+          title: "Swap Approved",
+          message: `Your shift swap on ${shiftDate} has been approved. ${swap.replacement.fullName} will cover for you.`,
           type: "success",
           link: "/swap",
         },
         {
           userId: swap.replacementId,
-          title: "تمت الموافقة على التبديل",
-          message: `تمت الموافقة على تغطيتك لوردية ${swap.requester.fullName} في ${swap.shift.branch.name} بتاريخ ${shiftDate}.`,
+          title: "Swap Approved",
+          message: `Your coverage of ${swap.requester.fullName}'s shift at ${swap.shift.branch.name} on ${shiftDate} has been approved.`,
           type: "success",
           link: "/swap",
         },
@@ -335,14 +335,14 @@ export async function reviewSwap(data: {
         action: "SWAP_APPROVED",
         entityType: "shift_swap",
         entityId: data.swapId,
-        description: `${manager.fullName} وافق على تبديل وردية ${swap.requester.fullName} مع ${swap.replacement.fullName}`,
+        description: `${manager.fullName} approved the shift swap between ${swap.requester.fullName} and ${swap.replacement.fullName}`,
       },
     });
 
-    return { success: true, message: "تمت الموافقة وتم تحديث الوردية." };
+    return { success: true, message: "Approved and shift updated." };
   } catch (error) {
     console.error("Review swap failed:", error);
-    return { success: false, message: "فشل في مراجعة طلب التبديل." };
+    return { success: false, message: "Failed to review swap request." };
   }
 }
 
@@ -360,12 +360,12 @@ export async function cancelSwap(
       include: { replacement: { select: { fullName: true } } },
     });
 
-    if (!swap) return { success: false, message: "طلب التبديل غير موجود." };
+    if (!swap) return { success: false, message: "Swap request not found." };
     if (swap.requesterId !== userId) {
-      return { success: false, message: "غير مصرّح لك بإلغاء هذا الطلب." };
+      return { success: false, message: "You are not authorized to cancel this request." };
     }
     if (swap.status !== "PENDING_REPLACEMENT" && swap.status !== "PENDING_MANAGER") {
-      return { success: false, message: "لا يمكن إلغاء هذا الطلب." };
+      return { success: false, message: "This request cannot be cancelled." };
     }
 
     await prisma.shiftSwap.update({
@@ -378,18 +378,18 @@ export async function cancelSwap(
       await prisma.notification.create({
         data: {
           userId: swap.replacementId,
-          title: "إلغاء طلب التبديل",
-          message: "تم إلغاء طلب تبديل الوردية من قبل الموظف.",
+          title: "Swap Request Cancelled",
+          message: "The shift swap request was cancelled by the employee.",
           type: "info",
           link: "/swap",
         },
       });
     }
 
-    return { success: true, message: "تم إلغاء طلب التبديل." };
+    return { success: true, message: "Swap request cancelled." };
   } catch (error) {
     console.error("Cancel swap failed:", error);
-    return { success: false, message: "فشل في إلغاء طلب التبديل." };
+    return { success: false, message: "Failed to cancel swap request." };
   }
 }
 

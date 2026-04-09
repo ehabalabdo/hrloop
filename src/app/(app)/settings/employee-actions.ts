@@ -126,13 +126,13 @@ export async function createEmployee(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     if (!data.fullName.trim()) {
-      return { success: false, error: "اسم الموظف مطلوب" };
+      return { success: false, error: "Employee name is required" };
     }
     if (!data.email.trim()) {
-      return { success: false, error: "البريد الإلكتروني مطلوب" };
+      return { success: false, error: "Email is required" };
     }
     if (!data.password || data.password.length < 6) {
-      return { success: false, error: "كلمة المرور مطلوبة (6 أحرف على الأقل)" };
+      return { success: false, error: "Password is required (at least 6 characters)" };
     }
 
     // Check for duplicate email
@@ -140,7 +140,7 @@ export async function createEmployee(
       where: { email: data.email.toLowerCase().trim() },
     });
     if (existing) {
-      return { success: false, error: "البريد الإلكتروني مستخدم بالفعل" };
+      return { success: false, error: "Email is already in use" };
     }
 
     const passwordHash = await bcrypt.hash(data.password, 12);
@@ -195,7 +195,7 @@ export async function createEmployee(
     return { success: true };
   } catch (e) {
     console.error("Failed to create employee:", e);
-    return { success: false, error: "فشل في إنشاء الموظف" };
+    return { success: false, error: "Failed to create employee" };
   }
 }
 
@@ -208,10 +208,10 @@ export async function updateEmployee(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     if (!data.fullName.trim()) {
-      return { success: false, error: "اسم الموظف مطلوب" };
+      return { success: false, error: "Employee name is required" };
     }
     if (!data.email.trim()) {
-      return { success: false, error: "البريد الإلكتروني مطلوب" };
+      return { success: false, error: "Email is required" };
     }
 
     // Check for duplicate email (exclude self)
@@ -219,7 +219,7 @@ export async function updateEmployee(
       where: { email: data.email.toLowerCase().trim(), id: { not: id } },
     });
     if (existing) {
-      return { success: false, error: "البريد الإلكتروني مستخدم بالفعل" };
+      return { success: false, error: "Email is already in use" };
     }
 
     const updateData: Record<string, unknown> = {
@@ -289,7 +289,7 @@ export async function updateEmployee(
     return { success: true };
   } catch (e) {
     console.error("Failed to update employee:", e);
-    return { success: false, error: "فشل في تحديث بيانات الموظف" };
+    return { success: false, error: "Failed to update employee" };
   }
 }
 
@@ -308,7 +308,7 @@ export async function toggleEmployeeActive(
     return { success: true };
   } catch (e) {
     console.error("Failed to toggle employee:", e);
-    return { success: false, error: "فشل في تحديث حالة الموظف" };
+    return { success: false, error: "Failed to update employee status" };
   }
 }
 
@@ -327,20 +327,20 @@ export async function deleteEmployee(
     });
 
     if (!user) {
-      return { success: false, error: "الموظف غير موجود" };
+      return { success: false, error: "Employee not found" };
     }
 
     if (user._count.managedBranches > 0) {
       return {
         success: false,
-        error: `لا يمكن حذف الموظف — مسؤول عن ${user._count.managedBranches} فرع`,
+        error: `Cannot delete employee — manages ${user._count.managedBranches} branch(es)`,
       };
     }
 
     if (user._count.shifts > 0 || user._count.attendanceLogs > 0) {
       return {
         success: false,
-        error: "لا يمكن حذف الموظف — لديه سجلات ورديات أو حضور. يمكنك تعطيله بدلاً من ذلك",
+        error: "Cannot delete employee — has shift or attendance records. You can deactivate instead.",
       };
     }
 
@@ -348,7 +348,7 @@ export async function deleteEmployee(
     return { success: true };
   } catch (e) {
     console.error("Failed to delete employee:", e);
-    return { success: false, error: "فشل في حذف الموظف" };
+    return { success: false, error: "Failed to delete employee" };
   }
 }
 
@@ -376,7 +376,7 @@ export async function deleteEmployeeDocument(
       where: { id: docId },
     });
     if (!doc) {
-      return { success: false, error: "الملف غير موجود" };
+      return { success: false, error: "File not found" };
     }
 
     // Delete file from filesystem
@@ -391,6 +391,6 @@ export async function deleteEmployeeDocument(
     return { success: true };
   } catch (e) {
     console.error("Failed to delete document:", e);
-    return { success: false, error: "فشل في حذف الملف" };
+    return { success: false, error: "Failed to delete file" };
   }
 }

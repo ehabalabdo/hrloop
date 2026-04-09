@@ -379,8 +379,8 @@ export async function sendShiftReminder(userId: string) {
   await prisma.notification.create({
     data: {
       userId,
-      title: "تذكير بالوردية",
-      message: `ورديتك اليوم في فرع ${shift.branch.name} من ${startTime} إلى ${endTime}`,
+      title: "Shift Reminder",
+      message: `Your shift today at ${shift.branch.name} branch from ${startTime} to ${endTime}`,
       type: "shift_reminder",
       link: "/attendance",
     },

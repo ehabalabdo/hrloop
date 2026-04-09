@@ -73,11 +73,11 @@ export async function createAnnouncement(data: {
 }): Promise<{ success: boolean; error?: string }> {
   const session = await getSession();
   if (!session || (session.role !== "OWNER" && session.role !== "MANAGER")) {
-    return { success: false, error: "غير مصرح" };
+    return { success: false, error: "Unauthorized" };
   }
 
   if (!data.content.trim()) {
-    return { success: false, error: "المحتوى مطلوب" };
+    return { success: false, error: "Content is required" };
   }
 
   await prisma.announcement.create({
@@ -99,19 +99,19 @@ export async function deleteAnnouncement(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   const session = await getSession();
-  if (!session) return { success: false, error: "غير مصرح" };
+  if (!session) return { success: false, error: "Unauthorized" };
 
   const announcement = await prisma.announcement.findUnique({
     where: { id },
   });
 
   if (!announcement) {
-    return { success: false, error: "المنشور غير موجود" };
+    return { success: false, error: "Post not found" };
   }
 
   // Only the author or OWNER can delete
   if (announcement.authorId !== session.userId && session.role !== "OWNER") {
-    return { success: false, error: "غير مصرح بالحذف" };
+    return { success: false, error: "Not authorized to delete" };
   }
 
   await prisma.announcement.delete({ where: { id } });
@@ -126,7 +126,7 @@ export async function togglePinAnnouncement(
 ): Promise<{ success: boolean; error?: string }> {
   const session = await getSession();
   if (!session || session.role !== "OWNER") {
-    return { success: false, error: "فقط المالك يمكنه تثبيت المنشورات" };
+    return { success: false, error: "Only the owner can pin posts" };
   }
 
   const announcement = await prisma.announcement.findUnique({
@@ -134,7 +134,7 @@ export async function togglePinAnnouncement(
   });
 
   if (!announcement) {
-    return { success: false, error: "المنشور غير موجود" };
+    return { success: false, error: "Post not found" };
   }
 
   await prisma.announcement.update({

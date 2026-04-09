@@ -20,7 +20,7 @@ export async function GET(
 ) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { fileName } = await params;
@@ -41,6 +41,6 @@ export async function GET(
       },
     });
   } catch {
-    return NextResponse.json({ error: "الملف غير موجود" }, { status: 404 });
+    return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
 }

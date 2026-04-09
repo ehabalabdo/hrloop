@@ -25,7 +25,7 @@ export async function loginAction(
   const password = formData.get("password") as string;
 
   if (!email || !password) {
-    return { error: "البريد الإلكتروني وكلمة المرور مطلوبان" };
+    return { error: "Email and password are required" };
   }
 
   try {
@@ -42,22 +42,22 @@ export async function loginAction(
     const user = users[0];
 
     if (!user) {
-      return { error: "المستخدم غير موجود — تأكد من البريد الإلكتروني" };
+      return { error: "User not found — check your email" };
     }
 
     if (!user.is_active) {
-      return { error: "هذا الحساب معطل. تواصل مع المدير" };
+      return { error: "This account is disabled. Contact the manager" };
     }
 
     if (!user.password_hash) {
-      return { error: "لم يتم تعيين كلمة مرور — تواصل مع المدير" };
+      return { error: "No password set — contact the manager" };
     }
 
     // Verify password
     const passwordValid = await bcrypt.compare(password, user.password_hash as string);
 
     if (!passwordValid) {
-      return { error: "كلمة المرور خاطئة — حاول مرة أخرى" };
+      return { error: "Wrong password — try again" };
     }
 
     // Create session
@@ -69,7 +69,7 @@ export async function loginAction(
     });
   } catch (err) {
     console.error("Login error:", err);
-    return { error: "حدث خطأ في النظام. حاول مرة أخرى" };
+    return { error: "A system error occurred. Try again" };
   }
 
   redirect("/dashboard");

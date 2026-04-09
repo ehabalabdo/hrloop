@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   try {
     const session = await getSession();
     if (!session || (session.role !== "OWNER" && session.role !== "MANAGER")) {
-      return NextResponse.json({ error: "غير مصرح" }, { status: 403 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
     const formData = await request.formData();
@@ -31,28 +31,28 @@ export async function POST(request: NextRequest) {
 
     if (!userId || !file) {
       return NextResponse.json(
-        { error: "بيانات ناقصة" },
+        { error: "Missing data" },
         { status: 400 }
       );
     }
 
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: "حجم الملف يتجاوز الحد المسموح (10MB)" },
+        { error: "File size exceeds limit (10MB)" },
         { status: 400 }
       );
     }
 
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: "نوع الملف غير مدعوم" },
+        { error: "File type not supported" },
         { status: 400 }
       );
     }
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
-      return NextResponse.json({ error: "الموظف غير موجود" }, { status: 404 });
+      return NextResponse.json({ error: "Employee not found" }, { status: 404 });
     }
 
     const blob = await put(`employees/${userId}/${file.name}`, file, {
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     console.error("Upload failed:", e);
     return NextResponse.json(
-      { error: "فشل في رفع الملف" },
+      { error: "Failed to upload file" },
       { status: 500 }
     );
   }
