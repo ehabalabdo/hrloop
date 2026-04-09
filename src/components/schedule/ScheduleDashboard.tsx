@@ -34,7 +34,7 @@ import type {
   BranchWithSchedule,
   ScheduleEntry,
 } from "@/lib/schedule-types";
-import { DAY_NAMES_AR, DAY_NAMES_SHORT_AR } from "@/lib/schedule-types";
+import { DAY_NAMES, DAY_NAMES_SHORT } from "@/lib/schedule-types";
 
 import {
   getWeeklySchedule,
@@ -67,9 +67,9 @@ const getInitials = (name: string) => {
 };
 
 // Formatter for Shift Times
-const formatTime = (dateString?: Date | string) => {
+const formatTime = (dateString?: Date | string, locale = "en-US") => {
   if (!dateString) return "--:--";
-  return new Date(dateString).toLocaleTimeString("ar-SA", {
+  return new Date(dateString).toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -84,7 +84,8 @@ export default function ScheduleDashboard({
   const [branches, setBranches] = useState(initialBranches);
   const [weekStart, setWeekStart] = useState(initialWeekStart);
   const [isPending, startTransition] = useTransition();
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const locale = lang === "ar" ? "ar-SA" : "en-US";
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [toast, setToast] = useState<{
     message: string;
@@ -252,7 +253,7 @@ export default function ScheduleDashboard({
           </div>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => exportSchedulePDF(data, weekStart)}
+              onClick={() => exportSchedulePDF(data, weekStart, lang)}
               className="flex items-center gap-1.5 px-3 py-2 bg-zinc-100 text-zinc-600 rounded-xl text-xs font-bold hover:bg-zinc-200 active:scale-95 transition-all"
               title={t.schedule.exportPdf}
             >
@@ -371,7 +372,7 @@ export default function ScheduleDashboard({
               const date = new Date(dateStr);
               const dayNum = date.getDate();
               const dayIdx = date.getDay();
-              const dayName = DAY_NAMES_SHORT_AR[dayIdx];
+              const dayName = lang === "ar" ? t.dayNamesShort[dayIdx] : DAY_NAMES_SHORT[dayIdx];
               const isSelected = i === selectedDay;
               const isDayToday = dateStr === todayStr;
 
@@ -415,10 +416,10 @@ export default function ScheduleDashboard({
         <div className="flex items-center justify-between mb-5 px-1">
           <div className="flex items-center gap-2.5">
             <h2 className="text-lg font-extrabold text-foreground">
-              {DAY_NAMES_AR[currentDayOfWeek]}
+              {lang === "ar" ? t.dayNames[currentDayOfWeek] : DAY_NAMES[currentDayOfWeek]}
             </h2>
             <span className="text-sm text-muted">
-              {new Date(currentDate).toLocaleDateString("ar-SA", { day: "numeric", month: "long" })}
+              {new Date(currentDate).toLocaleDateString(locale, { day: "numeric", month: "long" })}
             </span>
           </div>
           {isToday && (
@@ -561,7 +562,8 @@ export default function ScheduleDashboard({
 function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id: string) => void }) {
   const isDraft = entry.status === "DRAFT";
   const isManager = entry.userRole === "MANAGER";
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const locale = lang === "ar" ? "ar-SA" : "en-US";
   
   return (
     <div className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all ${
@@ -587,7 +589,7 @@ function EmployeeRow({ entry, onRemove }: { entry: ScheduleEntry, onRemove: (id:
         </div>
         <div className="flex items-center gap-1.5 text-xs text-muted mt-0.5">
           <Clock className="w-3 h-3" />
-          <span dir="ltr">{formatTime(entry.scheduledStart)} - {formatTime(entry.scheduledEnd)}</span>
+          <span dir="ltr">{formatTime(entry.scheduledStart, locale)} - {formatTime(entry.scheduledEnd, locale)}</span>
         </div>
       </div>
 

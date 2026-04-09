@@ -3,7 +3,7 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import type { WeeklyScheduleData } from "@/lib/schedule-types";
-import { DAY_NAMES_AR } from "@/lib/schedule-types";
+import { DAY_NAMES, DAY_NAMES_AR } from "@/lib/schedule-types";
 
 /**
  * Export the weekly schedule as a landscape PDF table.
@@ -33,7 +33,8 @@ function fmtTime(dateStr?: string | Date): string {
 
 export function exportSchedulePDF(
   data: WeeklyScheduleData,
-  weekStart: string
+  weekStart: string,
+  lang: "ar" | "en" = "ar"
 ) {
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
 
@@ -50,7 +51,7 @@ export function exportSchedulePDF(
     "Branch",
     ...weekDays.map((ds, i) => {
       const d = new Date(ds);
-      const dayName = DAY_NAMES_AR[d.getDay()];
+      const dayName = lang === "ar" ? DAY_NAMES_AR[d.getDay()] : DAY_NAMES[d.getDay()];
       const dateLabel = `${d.getDate()}/${d.getMonth() + 1}`;
       return `${dayName}\n${dateLabel}`;
     }),
